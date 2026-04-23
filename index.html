@@ -8,550 +8,221 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Gowun+Dodum&family=Gaegu:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --cream:#FFF6E3;
-    --paper:#FFFBEF;
-    --ink:#2B1D10;
-    --ink-soft:#5B4A36;
-    --brick:#D9543A;        /* 벽돌색 포인트 */
-    --brick-deep:#B23A22;
-    --mustard:#F0B84A;      /* 머스타드 */
-    --mustard-deep:#D99A28;
-    --moss:#6B8E4E;         /* 이끼/공원 */
-    --moss-deep:#4F7037;
-    --sky:#7FB8D9;
-    --pink:#E89A9A;
-    --shadow:#2B1D10;
-    --grid:#EADFC2;
-  }
+:root{
+  --cream:#FFF6E3;--paper:#FFFBEF;--ink:#2B1D10;--ink-soft:#5B4A36;
+  --brick:#D9543A;--brick-deep:#B23A22;--mustard:#F0B84A;--mustard-deep:#D99A28;
+  --moss:#6B8E4E;--moss-deep:#4F7037;--sky:#7FB8D9;--pink:#E89A9A;--grid:#EADFC2;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{font-family:'Gowun Dodum','Gaegu',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;opacity:.35;pointer-events:none;z-index:0;}
+body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(rgba(43,29,16,.04) 1px,transparent 1px);background-size:3px 3px;pointer-events:none;z-index:1;}
+.app{position:relative;z-index:2;max-width:480px;min-height:100vh;margin:0 auto;background:var(--paper);box-shadow:8px 0 0 var(--ink),-8px 0 0 var(--ink);border-left:3px solid var(--ink);border-right:3px solid var(--ink);padding-bottom:90px;}
 
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;}
-  body{
-    font-family:'Gowun Dodum','Gaegu',sans-serif;
-    background:var(--cream);
-    color:var(--ink);
-    overflow-x:hidden;
-    image-rendering:pixelated;
-    -webkit-font-smoothing:antialiased;
-  }
+/* HEADER */
+.header{position:sticky;top:0;z-index:50;background:var(--mustard);border-bottom:3px solid var(--ink);padding:14px 18px;box-shadow:0 4px 0 var(--ink);}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'DotGothic16',sans-serif;font-size:22px;letter-spacing:-.5px;}
+.logo-pixel{width:36px;height:36px;background:var(--brick);border:3px solid var(--ink);position:relative;box-shadow:3px 3px 0 var(--ink);flex-shrink:0;}
+.logo-pixel::before{content:"";position:absolute;top:6px;left:6px;right:6px;bottom:14px;background:var(--paper);border-bottom:2px solid var(--ink);}
+.logo-pixel::after{content:"";position:absolute;bottom:4px;left:12px;width:8px;height:10px;background:var(--ink);}
+.bell{width:40px;height:40px;background:var(--paper);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center;cursor:pointer;font-size:18px;transition:all .1s;}
+.bell:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
+.bell-dot{position:absolute;margin-left:22px;margin-top:-22px;width:10px;height:10px;background:var(--brick);border:2px solid var(--ink);border-radius:50%;}
+.loc-bar{margin-top:12px;background:var(--paper);border:3px solid var(--ink);padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);}
+.loc-bar:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
+.loc-pin{font-size:16px;}.loc-text{flex:1;font-weight:700;}.loc-arrow{font-family:'VT323';font-size:22px;color:var(--brick);}
 
-  /* Pixel grid backdrop */
-  body::before{
-    content:"";
-    position:fixed;inset:0;
-    background-image:
-      linear-gradient(var(--grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: 24px 24px;
-    opacity:.35;
-    pointer-events:none;
-    z-index:0;
-  }
+/* MARQUEE */
+.marquee{background:var(--ink);color:var(--mustard);padding:6px 0;font-family:'DotGothic16';font-size:13px;overflow:hidden;white-space:nowrap;border-bottom:3px solid var(--ink);}
+.marquee-track{display:inline-block;animation:mScroll 22s linear infinite;padding-left:100%;}
+@keyframes mScroll{from{transform:translateX(0);}to{transform:translateX(-100%);}}
+.marquee-track span{margin-right:48px;}
+.marquee-track span::before{content:"★ ";color:var(--brick);}
 
-  /* Grain overlay */
-  body::after{
-    content:"";
-    position:fixed;inset:0;
-    background-image: radial-gradient(rgba(43,29,16,.04) 1px, transparent 1px);
-    background-size:3px 3px;
-    pointer-events:none;
-    z-index:1;
-  }
+/* STEPS */
+.hero{padding:20px 18px 0;}
+.hero-title{font-family:'DotGothic16',sans-serif;font-size:28px;line-height:1.3;margin-bottom:4px;}
+.hero-title span{color:var(--brick);}
+.hero-sub{font-size:14px;color:var(--ink-soft);margin-bottom:16px;}
+.step-card{margin:0 18px 16px;background:var(--paper);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:16px;}
+.step-card-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.step-num{font-family:'DotGothic16';width:28px;height:28px;background:var(--brick);color:var(--paper);border:2px solid var(--ink);display:grid;place-items:center;font-size:16px;}
+.step-label{font-weight:700;font-size:15px;}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:7px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gaegu';font-weight:700;font-size:15px;cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:all .1s;}
+.chip:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink);}
+.chip.active{background:var(--brick);color:var(--paper);}
+.select{width:100%;padding:10px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gowun Dodum';font-size:15px;font-weight:700;box-shadow:3px 3px 0 var(--ink);appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(-45deg,transparent 50%,var(--ink) 50%);background-position:calc(100% - 16px) 18px,calc(100% - 10px) 18px;background-size:6px 6px;background-repeat:no-repeat;}
 
-  .app{
-    position:relative;
-    z-index:2;
-    max-width:480px;
-    min-height:100vh;
-    margin:0 auto;
-    background:var(--paper);
-    box-shadow:
-      8px 0 0 var(--ink),
-      -8px 0 0 var(--ink);
-    border-left:3px solid var(--ink);
-    border-right:3px solid var(--ink);
-    padding-bottom:90px;
-  }
+/* CATEGORY FILTER - 크고 직관적 */
+.cat-filter{padding:0 18px 16px;display:flex;gap:8px;flex-wrap:wrap;}
+.cat-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 14px;background:var(--cream);border:2.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer;transition:all .1s;min-width:60px;}
+.cat-btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
+.cat-btn.on{background:var(--brick);color:var(--paper);}
+.cat-btn .cat-ico{font-size:22px;}
+.cat-btn .cat-lbl{font-family:'DotGothic16';font-size:11px;white-space:nowrap;}
 
-  /* ===== HEADER ===== */
-  .header{
-    position:sticky;top:0;
-    z-index:50;
-    background:var(--mustard);
-    border-bottom:3px solid var(--ink);
-    padding:14px 18px;
-    box-shadow:0 4px 0 var(--ink);
-  }
-  .header-row{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:10px;
-  }
-  .logo{
-    display:flex;align-items:center;gap:10px;
-    font-family:'DotGothic16',sans-serif;
-    font-size:22px;
-    letter-spacing:-.5px;
-  }
-  .logo-pixel{
-    width:36px;height:36px;
-    background:var(--brick);
-    border:3px solid var(--ink);
-    position:relative;
-    box-shadow:3px 3px 0 var(--ink);
-    flex-shrink:0;
-  }
-  .logo-pixel::before{
-    content:"";
-    position:absolute;
-    top:6px;left:6px;right:6px;bottom:14px;
-    background:var(--paper);
-    border-bottom:2px solid var(--ink);
-  }
-  .logo-pixel::after{
-    content:"";
-    position:absolute;
-    bottom:4px;left:12px;
-    width:8px;height:10px;
-    background:var(--ink);
-  }
+/* SHOP LIST */
+.list-head{display:flex;justify-content:space-between;align-items:center;padding:0 18px 10px;}
+.list-title{font-family:'DotGothic16';font-size:20px;}
+.list-title em{color:var(--brick);font-style:normal;}
+.shop-list{padding:0 18px;display:flex;flex-direction:column;gap:10px;}
 
-  .bell{
-    width:40px;height:40px;
-    background:var(--paper);
-    border:3px solid var(--ink);
-    box-shadow:3px 3px 0 var(--ink);
-    display:grid;place-items:center;
-    cursor:pointer;
-    font-size:18px;
-    transition:all .1s;
-  }
-  .bell:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
-  .bell-dot{
-    position:absolute;margin-left:22px;margin-top:-22px;
-    width:10px;height:10px;background:var(--brick);
-    border:2px solid var(--ink);border-radius:50%;
-  }
+/* SHOP CARD - 층수 왼쪽 세로 배지 */
+.shop{background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:0;cursor:pointer;transition:all .12s;position:relative;overflow:hidden;display:flex;}
+.shop:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
+.shop.vacant{background:repeating-linear-gradient(45deg,var(--paper),var(--paper) 8px,#F3E9CE 8px,#F3E9CE 16px);}
+.floor-badge{writing-mode:vertical-rl;text-orientation:mixed;background:var(--ink);color:var(--mustard);font-family:'DotGothic16';font-size:13px;padding:8px 6px;display:flex;align-items:center;justify-content:center;min-width:30px;flex-shrink:0;letter-spacing:2px;}
+.floor-badge.b{background:var(--moss);}
+.floor-badge.f1{background:var(--sky);color:var(--ink);}
+.floor-badge.f2{background:var(--mustard-deep);color:var(--ink);}
+.floor-badge.vac{background:var(--brick);}
+.shop-body{display:flex;align-items:center;gap:12px;padding:12px;flex:1;min-width:0;}
+.shop-icon{width:50px;height:50px;border:3px solid var(--ink);display:grid;place-items:center;font-size:24px;flex-shrink:0;box-shadow:2px 2px 0 var(--ink);}
+.icon-food{background:#FFD56B;}.icon-beauty{background:#F6B4CB;}.icon-realestate{background:#A7C6E5;}.icon-mart{background:#B8D67A;}.icon-edu{background:#C8B0E5;}.icon-fashion{background:#F5A97B;}.icon-life{background:#E5D5A7;}.icon-etc{background:#D4D4D4;}.icon-vacant{background:#E8DCC0;}
+.shop-info{flex:1;min-width:0;}
+.shop-name{font-weight:700;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.shop-meta{font-size:12px;color:var(--ink-soft);margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.shop-tag{padding:2px 7px;background:var(--cream);border:1.5px solid var(--ink);font-size:11px;font-weight:700;}
+.shop-tag.room{background:var(--mustard);}
+.shop-arrow{font-family:'VT323';font-size:28px;color:var(--brick);}
+.vacancy-badge{position:absolute;top:6px;right:6px;background:var(--brick);color:var(--paper);font-family:'DotGothic16';font-size:11px;padding:2px 6px;border:2px solid var(--ink);transform:rotate(6deg);}
 
-  /* Location bar */
-  .loc-bar{
-    margin-top:12px;
-    background:var(--paper);
-    border:3px solid var(--ink);
-    padding:8px 12px;
-    display:flex;align-items:center;gap:8px;
-    font-size:14px;
-    cursor:pointer;
-    box-shadow:3px 3px 0 var(--ink);
-  }
-  .loc-bar:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
-  .loc-pin{font-size:16px;}
-  .loc-text{flex:1;font-weight:700;}
-  .loc-arrow{font-family:'VT323';font-size:22px;color:var(--brick);}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 18px;margin-bottom:16px;}
+.stat{background:var(--moss);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:10px 8px;text-align:center;color:var(--paper);}
+.stat:nth-child(2){background:var(--sky);}.stat:nth-child(3){background:var(--pink);}
+.stat-num{font-family:'DotGothic16';font-size:22px;line-height:1;color:var(--paper);}
+.stat-lbl{font-size:11px;margin-top:4px;font-weight:700;}
 
-  /* ===== HERO (home) ===== */
-  .hero{
-    padding:20px 18px 0;
-  }
-  .hero-title{
-    font-family:'DotGothic16',sans-serif;
-    font-size:28px;
-    line-height:1.3;
-    margin-bottom:4px;
-  }
-  .hero-title span{color:var(--brick);}
-  .hero-sub{
-    font-size:14px;color:var(--ink-soft);
-    margin-bottom:16px;
-  }
+/* DETAIL SHEET */
+.sheet{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;background:rgba(43,29,16,.4);}
+.sheet.open{display:flex;}
+.sheet-inner{width:100%;max-width:480px;background:var(--paper);border-top:3px solid var(--ink);border-left:3px solid var(--ink);border-right:3px solid var(--ink);padding:20px 18px 30px;animation:slideUp .3s cubic-bezier(.2,.8,.3,1.1);max-height:90vh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.sheet-handle{width:56px;height:5px;background:var(--ink);margin:0 auto 16px;}
+.sheet-title-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px;}
+.sheet-icon{width:56px;height:56px;border:3px solid var(--ink);display:grid;place-items:center;font-size:28px;flex-shrink:0;box-shadow:3px 3px 0 var(--ink);}
+.sheet-name{font-family:'DotGothic16';font-size:24px;line-height:1.2;}
+.sheet-cat{color:var(--brick);font-weight:700;font-size:14px;margin-top:4px;}
+.sheet-floor-tag{display:inline-block;background:var(--ink);color:var(--mustard);font-family:'DotGothic16';font-size:12px;padding:3px 10px;margin-top:6px;}
+.sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
+.sg-cell{background:var(--cream);border:2px solid var(--ink);padding:10px;}
+.sg-lbl{font-size:11px;color:var(--ink-soft);font-weight:700;}
+.sg-val{font-weight:700;font-size:15px;margin-top:2px;}
+.cta-row{display:flex;gap:8px;margin-top:14px;}
+.cta{flex:1;padding:12px;font-family:'DotGothic16';font-size:15px;border:3px solid var(--ink);cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:all .1s;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;}
+.cta:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
+.cta-call{background:var(--moss);color:var(--paper);}
+.cta-chat{background:var(--brick);color:var(--paper);}
+.cta-save{background:var(--mustard);}
 
-  /* Step chooser (지역→아파트→상가) */
-  .step-card{
-    margin:0 18px 16px;
-    background:var(--paper);
-    border:3px solid var(--ink);
-    box-shadow:5px 5px 0 var(--ink);
-    padding:16px;
-  }
-  .step-card-head{
-    display:flex;align-items:center;gap:8px;
-    margin-bottom:12px;
-  }
-  .step-num{
-    font-family:'DotGothic16';
-    width:28px;height:28px;
-    background:var(--brick);color:var(--paper);
-    border:2px solid var(--ink);
-    display:grid;place-items:center;
-    font-size:16px;
-  }
-  .step-label{font-weight:700;font-size:15px;}
+/* LIKE */
+.like-section{display:flex;align-items:center;gap:10px;margin:14px 0 0;padding:12px;background:var(--cream);border:2px solid var(--ink);}
+.like-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--paper);border:3px solid var(--ink);font-family:'DotGothic16';font-size:16px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:all .1s;user-select:none;}
+.like-btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
+.like-btn.liked{background:var(--brick);color:var(--paper);}
+.like-heart{font-size:20px;transition:transform .2s;}
+.like-btn.liked .like-heart{transform:scale(1.3);}
+.like-count{font-size:18px;}
 
-  .chip-row{
-    display:flex;flex-wrap:wrap;gap:8px;
-  }
-  .chip{
-    padding:7px 12px;
-    background:var(--cream);
-    border:2px solid var(--ink);
-    font-family:'Gaegu';font-weight:700;
-    font-size:15px;
-    cursor:pointer;
-    box-shadow:2px 2px 0 var(--ink);
-    transition:all .1s;
-  }
-  .chip:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink);}
-  .chip.active{background:var(--brick);color:var(--paper);}
-  .chip.disabled{opacity:.35;pointer-events:none;}
+/* REVIEW - 인스타그램 스타일 */
+.review-section{margin-top:16px;}
+.review-title{font-family:'DotGothic16';font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.review-title em{color:var(--brick);font-style:normal;font-size:13px;}
+.review-list{display:flex;flex-direction:column;}
+.review-item{padding:12px 0;border-bottom:1.5px solid var(--grid);display:flex;gap:10px;}
+.review-item:last-child{border-bottom:0;}
+.review-avatar{width:34px;height:34px;background:var(--mustard);border:2px solid var(--ink);display:grid;place-items:center;font-family:'DotGothic16';font-size:13px;flex-shrink:0;}
+.review-content{flex:1;}
+.review-nick{font-weight:700;font-size:13px;}
+.review-text{font-size:14px;margin-top:3px;line-height:1.6;word-break:break-all;}
+.review-date{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+.review-input-row{display:flex;gap:8px;align-items:flex-end;margin-top:12px;padding-top:12px;border-top:2px solid var(--ink);}
+.review-avatar-me{width:34px;height:34px;background:var(--moss);color:var(--paper);border:2px solid var(--ink);display:grid;place-items:center;font-family:'DotGothic16';font-size:13px;flex-shrink:0;}
+.review-input{flex:1;background:var(--cream);border:2px solid var(--ink);padding:8px 10px;font-family:'Gowun Dodum';font-size:14px;resize:none;min-height:38px;max-height:100px;overflow-y:auto;}
+.review-input:focus{outline:none;border-color:var(--brick);}
+.review-send{padding:8px 12px;background:var(--brick);color:var(--paper);border:2px solid var(--ink);font-family:'DotGothic16';font-size:14px;cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:all .1s;white-space:nowrap;}
+.review-send:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink);}
 
-  .select{
-    width:100%;
-    padding:10px 12px;
-    background:var(--cream);
-    border:2px solid var(--ink);
-    font-family:'Gowun Dodum';
-    font-size:15px;font-weight:700;
-    box-shadow:3px 3px 0 var(--ink);
-    appearance:none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
-                      linear-gradient(-45deg, transparent 50%, var(--ink) 50%);
-    background-position: calc(100% - 16px) 18px, calc(100% - 10px) 18px;
-    background-size: 6px 6px;
-    background-repeat: no-repeat;
-  }
+/* TABBAR */
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:90;max-width:480px;margin:0 auto;background:var(--paper);border-top:3px solid var(--ink);border-left:3px solid var(--ink);border-right:3px solid var(--ink);display:grid;grid-template-columns:repeat(4,1fr);height:70px;}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font-family:'Gaegu';font-weight:700;font-size:12px;color:var(--ink-soft);border-right:2px solid var(--ink);}
+.tab:last-child{border-right:0;}
+.tab-ico{font-size:22px;}
+.tab.active{background:var(--brick);color:var(--paper);}
 
-  /* ===== STATS / badges ===== */
-  .stats{
-    display:grid;grid-template-columns:repeat(3,1fr);
-    gap:8px;padding:0 18px;margin-bottom:16px;
-  }
-  .stat{
-    background:var(--moss);
-    border:3px solid var(--ink);
-    box-shadow:3px 3px 0 var(--ink);
-    padding:10px 8px;
-    text-align:center;
-    color:var(--paper);
-  }
-  .stat:nth-child(2){background:var(--sky);}
-  .stat:nth-child(3){background:var(--pink);}
-  .stat-num{
-    font-family:'DotGothic16';font-size:22px;
-    line-height:1;color:var(--paper);
-  }
-  .stat-lbl{font-size:11px;margin-top:4px;font-weight:700;}
+/* VIEWS */
+.view{display:none;animation:fadeIn .25s;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
-  /* ===== SHOP LIST ===== */
-  .list-head{
-    display:flex;justify-content:space-between;align-items:end;
-    padding:0 18px 10px;
-  }
-  .list-title{
-    font-family:'DotGothic16';font-size:20px;
-  }
-  .list-title em{color:var(--brick);font-style:normal;}
-  .filter-btns{display:flex;gap:6px;}
-  .fbtn{
-    font-family:'Gaegu';font-weight:700;font-size:12px;
-    padding:4px 10px;background:var(--paper);
-    border:2px solid var(--ink);cursor:pointer;
-  }
-  .fbtn.on{background:var(--ink);color:var(--paper);}
+/* COMMUNITY */
+.board{padding:16px 18px;}
+.board-head{font-family:'DotGothic16';font-size:20px;margin-bottom:12px;}
+.post{background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:14px;margin-bottom:10px;}
+.post-tag{display:inline-block;background:var(--moss);color:var(--paper);font-family:'DotGothic16';font-size:11px;padding:2px 8px;border:2px solid var(--ink);margin-bottom:8px;}
+.post-tag.sale{background:var(--brick);}
+.post-tag.notice{background:var(--sky);}
+.post-title{font-weight:700;font-size:15px;}
+.post-meta{font-size:11px;color:var(--ink-soft);margin-top:6px;display:flex;gap:10px;}
+.post-heart{color:var(--brick);}
 
-  .shop-list{padding:0 18px;display:flex;flex-direction:column;gap:10px;}
-  .shop{
-    background:var(--paper);
-    border:3px solid var(--ink);
-    box-shadow:4px 4px 0 var(--ink);
-    padding:14px;
-    display:flex;gap:12px;align-items:center;
-    cursor:pointer;
-    transition:all .12s;
-    position:relative;
-    overflow:hidden;
-  }
-  .shop:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
-  .shop.vacant{
-    background:repeating-linear-gradient(45deg,
-      var(--paper), var(--paper) 8px,
-      #F3E9CE 8px, #F3E9CE 16px);
-  }
+/* MATCH */
+.match-section{padding:16px 18px;}
+.match-head{font-family:'DotGothic16';font-size:20px;margin-bottom:12px;}
+.match-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.match-stat{background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:14px;text-align:center;}
+.match-stat-num{font-family:'DotGothic16';font-size:28px;color:var(--brick);}
+.match-stat-lbl{font-size:12px;color:var(--ink-soft);margin-top:4px;font-weight:700;}
+.vacant-card{background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);margin-bottom:10px;overflow:hidden;}
+.vacant-card-top{background:var(--brick);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.vacant-card-floor{font-family:'DotGothic16';font-size:22px;color:var(--paper);}
+.vacant-card-room{font-family:'DotGothic16';font-size:15px;color:rgba(255,255,255,.85);}
+.vacant-card-body{padding:12px 14px;}
+.vacant-card-name{font-weight:700;font-size:14px;margin-bottom:8px;}
+.want-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.want-tag{padding:3px 10px;background:var(--mustard);border:1.5px solid var(--ink);font-size:11px;font-weight:700;}
+.interest-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
+.ibar{flex:1;height:6px;background:var(--grid);border:1.5px solid var(--ink);}
+.ifill{height:100%;background:var(--brick);}
 
-  .shop-icon{
-    width:54px;height:54px;
-    border:3px solid var(--ink);
-    display:grid;place-items:center;
-    font-size:26px;
-    flex-shrink:0;
-    box-shadow:2px 2px 0 var(--ink);
-  }
-  .icon-food{background:#FFD56B;}
-  .icon-beauty{background:#F6B4CB;}
-  .icon-realestate{background:#A7C6E5;}
-  .icon-mart{background:#B8D67A;}
-  .icon-edu{background:#C8B0E5;}
-  .icon-fashion{background:#F5A97B;}
-  .icon-life{background:#E5D5A7;}
-  .icon-etc{background:#D4D4D4;}
-  .icon-vacant{background:#E8DCC0;}
+/* MY */
+.profile{padding:20px 18px;text-align:center;}
+.avatar{width:80px;height:80px;margin:0 auto 10px;background:var(--mustard);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);display:grid;place-items:center;font-size:40px;}
+.profile-name{font-family:'DotGothic16';font-size:22px;}
+.profile-role{color:var(--ink-soft);font-size:13px;margin-top:4px;}
+.menu-list{padding:0 18px;display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.menu-item{background:var(--paper);border:3px solid var(--ink);padding:14px;font-weight:700;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);}
+.menu-item:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
+.menu-ico{font-size:22px;}
+.menu-arrow{margin-left:auto;font-family:'VT323';font-size:22px;color:var(--brick);}
 
-  .shop-info{flex:1;min-width:0;}
-  .shop-name{
-    font-weight:700;font-size:16px;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  }
-  .shop-meta{
-    font-size:12px;color:var(--ink-soft);
-    margin-top:2px;
-    display:flex;align-items:center;gap:6px;flex-wrap:wrap;
-  }
-  .shop-tag{
-    padding:2px 6px;background:var(--cream);
-    border:1.5px solid var(--ink);
-    font-size:11px;font-weight:700;
-  }
-  .shop-arrow{
-    font-family:'VT323';font-size:28px;color:var(--brick);
-  }
-  .vacancy-badge{
-    position:absolute;top:8px;right:8px;
-    background:var(--brick);color:var(--paper);
-    font-family:'DotGothic16';font-size:11px;
-    padding:2px 6px;border:2px solid var(--ink);
-    transform:rotate(6deg);
-  }
-
-  /* ===== DETAIL SHEET ===== */
-  .sheet{
-    position:fixed;inset:0;
-    z-index:100;
-    display:none;
-    align-items:flex-end;justify-content:center;
-    background:rgba(43,29,16,.4);
-  }
-  .sheet.open{display:flex;}
-  .sheet-inner{
-    width:100%;max-width:480px;
-    background:var(--paper);
-    border-top:3px solid var(--ink);
-    border-left:3px solid var(--ink);
-    border-right:3px solid var(--ink);
-    border-radius:0;
-    padding:20px 18px 30px;
-    animation:slideUp .3s cubic-bezier(.2,.8,.3,1.1);
-    max-height:85vh;overflow-y:auto;
-  }
-  @keyframes slideUp{
-    from{transform:translateY(100%);}
-    to{transform:translateY(0);}
-  }
-  .sheet-handle{
-    width:56px;height:5px;background:var(--ink);
-    margin:0 auto 16px;
-  }
-  .sheet-title-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px;}
-  .sheet-icon{
-    width:56px;height:56px;
-    border:3px solid var(--ink);
-    display:grid;place-items:center;font-size:28px;
-    flex-shrink:0;
-    box-shadow:3px 3px 0 var(--ink);
-  }
-  .sheet-name{font-family:'DotGothic16';font-size:24px;line-height:1.2;}
-  .sheet-cat{color:var(--brick);font-weight:700;font-size:14px;margin-top:4px;}
-
-  .sheet-badges{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0;}
-  .sb{
-    padding:5px 10px;
-    background:var(--cream);
-    border:2px solid var(--ink);
-    font-size:12px;font-weight:700;
-  }
-  .sb.primary{background:var(--mustard);}
-
-  .sheet-grid{
-    display:grid;grid-template-columns:1fr 1fr;gap:8px;
-    margin:14px 0;
-  }
-  .sg-cell{
-    background:var(--cream);
-    border:2px solid var(--ink);
-    padding:10px;
-  }
-  .sg-lbl{font-size:11px;color:var(--ink-soft);font-weight:700;}
-  .sg-val{font-weight:700;font-size:15px;margin-top:2px;}
-
-  .cta-row{display:flex;gap:8px;margin-top:14px;}
-  .cta{
-    flex:1;padding:12px;
-    font-family:'DotGothic16';font-size:15px;
-    border:3px solid var(--ink);
-    cursor:pointer;
-    box-shadow:4px 4px 0 var(--ink);
-    transition:all .1s;
-    text-align:center;
-    display:flex;align-items:center;justify-content:center;gap:6px;
-  }
-  .cta:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
-  .cta-call{background:var(--moss);color:var(--paper);}
-  .cta-chat{background:var(--brick);color:var(--paper);}
-  .cta-save{background:var(--mustard);}
-
-  /* Vacant CTA */
-  .vacant-hero{
-    background:var(--mustard);
-    border:3px solid var(--ink);
-    padding:16px;
-    text-align:center;
-    margin:14px 0;
-    box-shadow:4px 4px 0 var(--ink);
-  }
-  .vacant-hero h3{
-    font-family:'DotGothic16';font-size:18px;margin-bottom:6px;
-  }
-  .vacant-hero p{font-size:13px;color:var(--ink-soft);}
-
-  /* ===== BOTTOM TAB ===== */
-  .tabbar{
-    position:fixed;bottom:0;left:0;right:0;
-    z-index:90;
-    max-width:480px;margin:0 auto;
-    background:var(--paper);
-    border-top:3px solid var(--ink);
-    border-left:3px solid var(--ink);
-    border-right:3px solid var(--ink);
-    display:grid;grid-template-columns:repeat(4,1fr);
-    height:70px;
-  }
-  .tab{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:3px;
-    cursor:pointer;
-    font-family:'Gaegu';font-weight:700;font-size:12px;
-    color:var(--ink-soft);
-    border-right:2px solid var(--ink);
-  }
-  .tab:last-child{border-right:0;}
-  .tab-ico{font-size:22px;}
-  .tab.active{
-    background:var(--brick);color:var(--paper);
-  }
-  .tab.active .tab-ico{filter:drop-shadow(0 0 0 var(--paper));}
-
-  /* Views */
-  .view{display:none;animation:fadeIn .25s;}
-  .view.active{display:block;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-  /* Community view */
-  .board{padding:16px 18px;}
-  .board-head{
-    font-family:'DotGothic16';font-size:20px;margin-bottom:12px;
-  }
-  .post{
-    background:var(--paper);
-    border:3px solid var(--ink);
-    box-shadow:4px 4px 0 var(--ink);
-    padding:14px;margin-bottom:10px;
-  }
-  .post-tag{
-    display:inline-block;
-    background:var(--moss);color:var(--paper);
-    font-family:'DotGothic16';font-size:11px;
-    padding:2px 8px;border:2px solid var(--ink);
-    margin-bottom:8px;
-  }
-  .post-tag.sale{background:var(--brick);}
-  .post-tag.notice{background:var(--sky);}
-  .post-title{font-weight:700;font-size:15px;}
-  .post-meta{font-size:11px;color:var(--ink-soft);margin-top:6px;display:flex;gap:10px;}
-  .post-heart{color:var(--brick);}
-
-  /* My view */
-  .profile{
-    padding:20px 18px;text-align:center;
-  }
-  .avatar{
-    width:80px;height:80px;margin:0 auto 10px;
-    background:var(--mustard);
-    border:3px solid var(--ink);
-    box-shadow:4px 4px 0 var(--ink);
-    display:grid;place-items:center;
-    font-size:40px;
-  }
-  .profile-name{font-family:'DotGothic16';font-size:22px;}
-  .profile-role{color:var(--ink-soft);font-size:13px;margin-top:4px;}
-  .menu-list{padding:0 18px;display:flex;flex-direction:column;gap:8px;margin-top:16px;}
-  .menu-item{
-    background:var(--paper);
-    border:3px solid var(--ink);
-    padding:14px;
-    font-weight:700;
-    display:flex;align-items:center;gap:10px;
-    cursor:pointer;
-    box-shadow:3px 3px 0 var(--ink);
-  }
-  .menu-item:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
-  .menu-ico{font-size:22px;}
-  .menu-arrow{margin-left:auto;font-family:'VT323';font-size:22px;color:var(--brick);}
-
-  /* Loading */
-  .loading{
-    padding:40px 18px;text-align:center;
-    font-family:'DotGothic16';font-size:16px;
-    color:var(--ink-soft);
-  }
-  .loader-pixel{
-    display:inline-block;
-    width:16px;height:16px;background:var(--brick);
-    margin-right:4px;
-    animation:blink 1s steps(2) infinite;
-    vertical-align:middle;
-  }
-  .loader-pixel:nth-child(2){animation-delay:.2s;background:var(--mustard);}
-  .loader-pixel:nth-child(3){animation-delay:.4s;background:var(--moss);}
-  @keyframes blink{50%{opacity:.2;}}
-
-  .empty{
-    padding:40px 18px;text-align:center;
-    color:var(--ink-soft);
-  }
-  .empty-ico{font-size:48px;margin-bottom:8px;}
-
-  /* Banner marquee */
-  .marquee{
-    background:var(--ink);color:var(--mustard);
-    padding:6px 0;font-family:'DotGothic16';font-size:13px;
-    overflow:hidden;white-space:nowrap;
-    border-bottom:3px solid var(--ink);
-  }
-  .marquee-track{
-    display:inline-block;
-    animation:mScroll 22s linear infinite;
-    padding-left:100%;
-  }
-  @keyframes mScroll{
-    from{transform:translateX(0);}
-    to{transform:translateX(-100%);}
-  }
-  .marquee-track span{margin-right:48px;}
-  .marquee-track span::before{content:"★ ";color:var(--brick);}
+/* UTIL */
+.loading{padding:40px 18px;text-align:center;font-family:'DotGothic16';font-size:16px;color:var(--ink-soft);}
+.loader-pixel{display:inline-block;width:16px;height:16px;background:var(--brick);margin-right:4px;animation:blink 1s steps(2) infinite;vertical-align:middle;}
+.loader-pixel:nth-child(2){animation-delay:.2s;background:var(--mustard);}
+.loader-pixel:nth-child(3){animation-delay:.4s;background:var(--moss);}
+@keyframes blink{50%{opacity:.2;}}
+.empty{padding:40px 18px;text-align:center;color:var(--ink-soft);}
+.empty-ico{font-size:48px;margin-bottom:8px;}
+.vacant-hero{background:var(--mustard);border:3px solid var(--ink);padding:16px;text-align:center;margin:14px 0;box-shadow:4px 4px 0 var(--ink);}
+.vacant-hero h3{font-family:'DotGothic16';font-size:18px;margin-bottom:6px;}
+.vacant-hero p{font-size:13px;color:var(--ink-soft);}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- HEADER -->
   <div class="header">
     <div class="header-row">
       <div class="logo">
         <div class="logo-pixel"></div>
         <div>우리상가<br><span style="font-size:11px;font-family:'Gaegu';font-weight:700;">아파트 상가 정보 · BETA</span></div>
       </div>
-      <div class="bell" onclick="alert('알림 3개가 있어요!\n\n• 대림1차상가 치킨집 오픈!\n• 공실 1건 등록\n• 이번주 할인 쿠폰')">
-        🔔
-        <div class="bell-dot"></div>
-      </div>
+      <div class="bell">🔔<div class="bell-dot"></div></div>
     </div>
     <div class="loc-bar" onclick="switchTab('home')">
       <span class="loc-pin">📍</span>
@@ -570,51 +241,39 @@
     </div>
   </div>
 
-  <!-- VIEW: HOME -->
+  <!-- HOME -->
   <div class="view active" id="view-home">
     <div class="hero">
       <div class="hero-title">우리 아파트<br>상가 <span>한눈에</span> 🏘️</div>
       <div class="hero-sub">주민과 사장님을 이어주는 동네 정보</div>
     </div>
 
-    <!-- STEP 1: 지역 -->
     <div class="step-card">
-      <div class="step-card-head">
-        <div class="step-num">1</div>
-        <div class="step-label">지역 선택</div>
-      </div>
+      <div class="step-card-head"><div class="step-num">1</div><div class="step-label">지역 선택</div></div>
       <div class="chip-row" id="gu-chips"></div>
       <div class="chip-row" id="dong-chips" style="margin-top:8px;"></div>
     </div>
 
-    <!-- STEP 2: 아파트 -->
     <div class="step-card" id="step-apt" style="display:none;">
-      <div class="step-card-head">
-        <div class="step-num">2</div>
-        <div class="step-label">아파트 선택</div>
-      </div>
+      <div class="step-card-head"><div class="step-num">2</div><div class="step-label">아파트 선택</div></div>
       <select class="select" id="apt-select" onchange="selectApt(this.value)">
         <option value="">— 아파트를 선택하세요 —</option>
       </select>
     </div>
 
-    <!-- STATS -->
-    <div class="stats" id="stats" style="display:none;">
-      <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-lbl">전체 상가</div></div>
-      <div class="stat"><div class="stat-num" id="stat-open">0</div><div class="stat-lbl">영업중</div></div>
-      <div class="stat"><div class="stat-num" id="stat-vacant">0</div><div class="stat-lbl">공실</div></div>
+    <!-- 업종 필터 - 크고 직관적 -->
+    <div class="cat-filter" id="cat-filter" style="display:none;">
+      <div class="cat-btn on" data-f="all"><span class="cat-ico">🏪</span><span class="cat-lbl">전체</span></div>
+      <div class="cat-btn" data-f="food"><span class="cat-ico">🍜</span><span class="cat-lbl">음식/카페</span></div>
+      <div class="cat-btn" data-f="beauty"><span class="cat-ico">💇</span><span class="cat-lbl">미용/운동</span></div>
+      <div class="cat-btn" data-f="realestate"><span class="cat-ico">🏡</span><span class="cat-lbl">부동산</span></div>
+      <div class="cat-btn" data-f="mart"><span class="cat-ico">🥬</span><span class="cat-lbl">마트</span></div>
+      <div class="cat-btn" data-f="vacant"><span class="cat-ico">❓</span><span class="cat-lbl">공실</span></div>
     </div>
 
-    <!-- SHOP LIST -->
     <div id="shop-section" style="display:none;">
       <div class="list-head">
         <div class="list-title">상가 <em id="apt-title">목록</em></div>
-        <div class="filter-btns" id="filters">
-          <div class="fbtn on" data-f="all">전체</div>
-          <div class="fbtn" data-f="food">음식</div>
-          <div class="fbtn" data-f="beauty">미용</div>
-          <div class="fbtn" data-f="vacant">공실</div>
-        </div>
       </div>
       <div class="shop-list" id="shop-list"></div>
     </div>
@@ -623,426 +282,432 @@
       <span class="loader-pixel"></span><span class="loader-pixel"></span><span class="loader-pixel"></span>
       <div style="margin-top:10px;">상가 정보 불러오는 중...</div>
     </div>
-
     <div id="empty" class="empty" style="display:none;">
-      <div class="empty-ico">🏚️</div>
-      <div>아파트를 선택하면<br>상가 정보가 나타나요</div>
+      <div class="empty-ico">🏚️</div><div>아파트를 선택하면<br>상가 정보가 나타나요</div>
     </div>
   </div>
 
-  <!-- VIEW: COMMUNITY -->
+  <!-- COMMUNITY -->
   <div class="view" id="view-community">
     <div class="board">
       <div class="board-head">동네 사랑방 💬</div>
-
-      <div class="post">
-        <div class="post-tag sale">할인</div>
-        <div class="post-title">주민 전용 — 아메리카노 1+1 이벤트</div>
-        <div class="post-meta">
-          <span>블루삭 커피 · 대림1차상가</span>
-          <span class="post-heart">♥ 23</span>
-        </div>
-      </div>
-
-      <div class="post">
-        <div class="post-tag notice">공지</div>
-        <div class="post-title">이번주 금요일 상가 대청소 안내</div>
-        <div class="post-meta">
-          <span>관리사무소 · 3일 전</span>
-          <span class="post-heart">♥ 8</span>
-        </div>
-      </div>
-
-      <div class="post">
-        <div class="post-tag">매칭</div>
-        <div class="post-title">학원 원장님 구합니다 — 공실 B1호</div>
-        <div class="post-meta">
-          <span>대림1차상가 · 오늘</span>
-          <span class="post-heart">♥ 12</span>
-        </div>
-      </div>
-
-      <div class="post">
-        <div class="post-tag sale">할인</div>
-        <div class="post-title">탑스크린 — 신규 회원 3회 무료</div>
-        <div class="post-meta">
-          <span>골프아카데미 · 1일 전</span>
-          <span class="post-heart">♥ 45</span>
-        </div>
-      </div>
-
-      <div class="post">
-        <div class="post-tag">질문</div>
-        <div class="post-title">저녁 식사하기 좋은 곳 추천해주세요!</div>
-        <div class="post-meta">
-          <span>좌동 주민 · 2시간 전</span>
-          <span class="post-heart">♥ 7</span>
-        </div>
-      </div>
+      <div class="post"><div class="post-tag sale">할인</div><div class="post-title">주민 전용 — 아메리카노 1+1 이벤트</div><div class="post-meta"><span>블루삭 커피 · 대림1차상가</span><span class="post-heart">♥ 23</span></div></div>
+      <div class="post"><div class="post-tag notice">공지</div><div class="post-title">이번주 금요일 상가 대청소 안내</div><div class="post-meta"><span>관리사무소 · 3일 전</span><span class="post-heart">♥ 8</span></div></div>
+      <div class="post"><div class="post-tag">매칭</div><div class="post-title">학원 원장님 구합니다 — 공실 B1호</div><div class="post-meta"><span>대림1차상가 · 오늘</span><span class="post-heart">♥ 12</span></div></div>
+      <div class="post"><div class="post-tag sale">할인</div><div class="post-title">탑스크린 — 신규 회원 3회 무료</div><div class="post-meta"><span>골프아카데미 · 1일 전</span><span class="post-heart">♥ 45</span></div></div>
     </div>
   </div>
 
-  <!-- VIEW: MATCH (사장님 ↔ 주민) -->
+  <!-- MATCH -->
   <div class="view" id="view-match">
-    <div class="board">
-      <div class="board-head">매칭 & 공실 🤝</div>
-
-      <div class="vacant-hero">
-        <h3>공실 발견했어요!</h3>
-        <p>우리 아파트에 새로운 가게가 들어오길<br>원하시나요?</p>
+    <div class="match-section">
+      <div class="match-head">매칭 & 공실 현황 🤝</div>
+      <div class="match-stats">
+        <div class="match-stat"><div class="match-stat-num" id="match-vacant-cnt">—</div><div class="match-stat-lbl">📍 현재 공실</div></div>
+        <div class="match-stat"><div class="match-stat-num" id="match-total-cnt">—</div><div class="match-stat-lbl">🏪 전체 상가</div></div>
       </div>
-
-      <div class="post">
-        <div class="post-tag notice">공실</div>
-        <div class="post-title">대림1차상가 1F 110호 · 15평</div>
-        <div class="post-meta">
-          <span>카페/베이커리 추천</span>
-          <span class="post-heart">관심 12</span>
-        </div>
+      <div id="vacant-list">
+        <div class="empty"><div class="empty-ico">🏚️</div><div>홈에서 아파트를<br>먼저 선택해주세요</div></div>
       </div>
-
-      <div class="post">
-        <div class="post-tag notice">공실</div>
-        <div class="post-title">대림1차상가 B1 B2호 · 30평</div>
-        <div class="post-meta">
-          <span>학원/헬스장 추천</span>
-          <span class="post-heart">관심 8</span>
-        </div>
-      </div>
-
-      <div class="post">
-        <div class="post-tag sale">사장님</div>
-        <div class="post-title">주민 데이터 대시보드 구독</div>
-        <div class="post-meta">
-          <span>어떤 업종이 필요한지 한눈에</span>
-          <span class="post-heart">NEW</span>
-        </div>
+      <div style="margin-top:16px;background:var(--mustard);border:3px solid var(--ink);padding:16px;box-shadow:4px 4px 0 var(--ink);">
+        <div style="font-family:'DotGothic16';font-size:16px;margin-bottom:8px;">사장님이라면?</div>
+        <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;">주민 수요 데이터를 보고<br>어떤 업종이 필요한지 확인하세요</div>
+        <div style="margin-top:10px;background:var(--ink);color:var(--mustard);font-family:'DotGothic16';font-size:13px;padding:8px;text-align:center;cursor:pointer;">📊 주민 수요 리포트 받기</div>
       </div>
     </div>
   </div>
 
-  <!-- VIEW: MY -->
+  <!-- MY -->
   <div class="view" id="view-my">
     <div class="profile">
       <div class="avatar">🧑‍🌾</div>
-      <div class="profile-name">찐 님</div>
+      <div class="profile-name" id="my-nick">찐 님</div>
       <div class="profile-role">부산 해운대구 · 주민</div>
     </div>
     <div class="menu-list">
       <div class="menu-item"><span class="menu-ico">💾</span>저장한 상가<span class="menu-arrow">▶</span></div>
       <div class="menu-item"><span class="menu-ico">🎟️</span>내 쿠폰<span class="menu-arrow">▶</span></div>
-      <div class="menu-item"><span class="menu-ico">✍️</span>내가 쓴 글<span class="menu-arrow">▶</span></div>
+      <div class="menu-item"><span class="menu-ico">✍️</span>내가 쓴 리뷰<span class="menu-arrow">▶</span></div>
       <div class="menu-item"><span class="menu-ico">🏪</span>사장님 모드<span class="menu-arrow">▶</span></div>
       <div class="menu-item"><span class="menu-ico">⚙️</span>설정<span class="menu-arrow">▶</span></div>
-      <div class="menu-item"><span class="menu-ico">💌</span>의견 보내기<span class="menu-arrow">▶</span></div>
+      <div class="menu-item" onclick="changeNick()"><span class="menu-ico">👤</span>닉네임 변경<span class="menu-arrow">▶</span></div>
     </div>
-    <div style="text-align:center;margin-top:24px;font-family:'DotGothic16';font-size:12px;color:var(--ink-soft);">
-      v0.1.0 · made by 찐
-    </div>
+    <div style="text-align:center;margin-top:24px;font-family:'DotGothic16';font-size:12px;color:var(--ink-soft);">v0.2.0 · made by 찐</div>
   </div>
 
-  <!-- TAB BAR -->
   <div class="tabbar">
-    <div class="tab active" data-tab="home" onclick="switchTab('home')">
-      <div class="tab-ico">🏠</div>
-      <div>홈</div>
-    </div>
-    <div class="tab" data-tab="community" onclick="switchTab('community')">
-      <div class="tab-ico">💬</div>
-      <div>사랑방</div>
-    </div>
-    <div class="tab" data-tab="match" onclick="switchTab('match')">
-      <div class="tab-ico">🤝</div>
-      <div>매칭</div>
-    </div>
-    <div class="tab" data-tab="my" onclick="switchTab('my')">
-      <div class="tab-ico">👤</div>
-      <div>MY</div>
-    </div>
+    <div class="tab active" data-tab="home" onclick="switchTab('home')"><div class="tab-ico">🏠</div><div>홈</div></div>
+    <div class="tab" data-tab="community" onclick="switchTab('community')"><div class="tab-ico">💬</div><div>사랑방</div></div>
+    <div class="tab" data-tab="match" onclick="switchTab('match')"><div class="tab-ico">🤝</div><div>매칭</div></div>
+    <div class="tab" data-tab="my" onclick="switchTab('my')"><div class="tab-ico">👤</div><div>MY</div></div>
   </div>
 </div>
 
-<!-- DETAIL SHEET -->
+<!-- SHEET -->
 <div class="sheet" id="sheet" onclick="if(event.target===this)closeSheet()">
   <div class="sheet-inner" id="sheet-inner"></div>
 </div>
 
 <script>
-/* ============================================
-   CONFIG - 구글 시트 (public, gviz json)
-============================================ */
-const SHEET_ID = '1mfP3BQ1EbVO__xZO4MA0FMtUC3OqMf8Kp30hyuj9ymE';
-const GID = '39887238';
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+const SHEET_URL='https://docs.google.com/spreadsheets/d/1mfP3BQ1EbVO__xZO4MA0FMtUC3OqMf8Kp30hyuj9ymE/export?format=csv&gid=39887238';
+const GAS_URL='https://script.google.com/macros/s/AKfycbzIc4i7dtndXruXO4bs0HOosYxwhnmTSjTocBpmJPcMVnNIS8dDmMHiqxOZIDp8qRA_/exec';
 
-/* ============================================
-   STATE
-============================================ */
-let allData = [];
-let selectedGu = null;
-let selectedDong = null;
-let selectedApt = null;
-let currentFilter = 'all';
+let allData=[],selectedGu=null,selectedDong=null,selectedApt=null,currentFilter='all';
+let myNickname=localStorage.getItem('sang_nick')||'익명'+Math.floor(Math.random()*1000);
+localStorage.setItem('sang_nick',myNickname);
+document.getElementById('my-nick').textContent=myNickname+' 님';
 
-/* ============================================
-   CATEGORY ICONS
-============================================ */
-const CAT_MAP = {
-  '음식/카페': {icon:'🍜', cls:'icon-food', tag:'food'},
-  '음식': {icon:'🍜', cls:'icon-food', tag:'food'},
-  '미용/뷰티/운동': {icon:'💇', cls:'icon-beauty', tag:'beauty'},
-  '미용': {icon:'💇', cls:'icon-beauty', tag:'beauty'},
-  '부동산/인테리어': {icon:'🏡', cls:'icon-realestate', tag:'realestate'},
-  '부동산': {icon:'🏡', cls:'icon-realestate', tag:'realestate'},
-  '마트/식료품': {icon:'🥬', cls:'icon-mart', tag:'mart'},
-  '마트': {icon:'🥬', cls:'icon-mart', tag:'mart'},
-  '학원/교육': {icon:'📚', cls:'icon-edu', tag:'edu'},
-  '교육': {icon:'📚', cls:'icon-edu', tag:'edu'},
-  '패션/잡화': {icon:'👗', cls:'icon-fashion', tag:'fashion'},
-  '생활/편의': {icon:'🛠️', cls:'icon-life', tag:'life'},
-  '기타': {icon:'🏪', cls:'icon-etc', tag:'etc'},
+const CAT_MAP={
+  '음식/카페':{icon:'🍜',cls:'icon-food',tag:'food'},'음식':{icon:'🍜',cls:'icon-food',tag:'food'},
+  '미용/뷰티/운동':{icon:'💇',cls:'icon-beauty',tag:'beauty'},'미용':{icon:'💇',cls:'icon-beauty',tag:'beauty'},
+  '부동산/인테리어':{icon:'🏡',cls:'icon-realestate',tag:'realestate'},'부동산':{icon:'🏡',cls:'icon-realestate',tag:'realestate'},
+  '마트/식료품':{icon:'🥬',cls:'icon-mart',tag:'mart'},'마트':{icon:'🥬',cls:'icon-mart',tag:'mart'},
+  '학원/교육':{icon:'📚',cls:'icon-edu',tag:'edu'},'교육':{icon:'📚',cls:'icon-edu',tag:'edu'},
+  '패션/잡화':{icon:'👗',cls:'icon-fashion',tag:'fashion'},'생활/편의':{icon:'🛠️',cls:'icon-life',tag:'life'},
+  '기타':{icon:'🏪',cls:'icon-etc',tag:'etc'}
 };
-function getCat(name){
-  if(!name) return CAT_MAP['기타'];
-  return CAT_MAP[name] || CAT_MAP['기타'];
+function getCat(n){return n?(CAT_MAP[n]||CAT_MAP['기타']):CAT_MAP['기타'];}
+
+function floorCls(f){
+  if(!f)return'';
+  const u=f.toUpperCase();
+  if(u.startsWith('B'))return'b';
+  if(u==='1F')return'f1';
+  if(u==='2F')return'f2';
+  return'';
 }
 
-/* ============================================
-   FETCH DATA
-============================================ */
 function parseCSV(text){
-  const lines = text.trim().split("\n");
-  const headers = lines[0].split(",").map(h => h.replace(/"/g,"").trim());
-  return lines.slice(1).map(line => {
-    const cols = [];
-    let cur = "", inQ = false;
+  const lines=text.trim().split('\n');
+  const headers=lines[0].split(',').map(h=>h.replace(/"/g,'').trim());
+  return lines.slice(1).map(line=>{
+    const cols=[];let cur='',inQ=false;
     for(let i=0;i<line.length;i++){
-      const ch = line[i];
-      if(ch === String.fromCharCode(34)){ inQ=!inQ; }
-      else if(ch==="," && !inQ){ cols.push(cur.trim()); cur=""; }
-      else { cur+=ch; }
+      const ch=line[i];
+      if(ch===String.fromCharCode(34)){inQ=!inQ;}
+      else if(ch===','&&!inQ){cols.push(cur.trim());cur='';}
+      else{cur+=ch;}
     }
     cols.push(cur.trim());
-    const obj = {};
-    headers.forEach((h,i) => obj[h] = (cols[i]||"").replace(/"/g,"").trim());
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=(cols[i]||'').replace(/"/g,'').trim());
     return obj;
   });
 }
+
 async function loadData(){
   try{
-    const res = await fetch(SHEET_URL);
-    const text = await res.text();
-    const rows = parseCSV(text);
-    allData = rows.filter(r => r["시"] || r["아파트명"]);
+    const res=await fetch(SHEET_URL);
+    const text=await res.text();
+    allData=parseCSV(text).filter(r=>r['시']||r['아파트명']);
     buildGuChips();
-  } catch(e){
-    console.error(e);
-    document.getElementById("gu-chips").innerHTML = "<div style=color:var(--brick);font-weight:700;>시트 로드 실패 — 공개 설정을 확인해주세요</div>";
+  }catch(e){
+    document.getElementById('gu-chips').innerHTML='<div style="color:var(--brick);font-weight:700;">시트 로드 실패</div>';
   }
 }
 
-/* ============================================
-   BUILD UI
-============================================ */
 function buildGuChips(){
-  const gus = [...new Set(allData.map(d => d['구']).filter(Boolean))];
-  const wrap = document.getElementById('gu-chips');
-  wrap.innerHTML = gus.map(g =>
-    `<div class="chip" onclick="selectGu('${g}')">${g}</div>`
-  ).join('');
+  const gus=[...new Set(allData.map(d=>d['구']).filter(Boolean))];
+  document.getElementById('gu-chips').innerHTML=gus.map(g=>`<div class="chip" onclick="selectGu('${g}')">${g}</div>`).join('');
 }
-
 function selectGu(gu){
-  selectedGu = gu;
-  selectedDong = null;
-  selectedApt = null;
-  document.querySelectorAll('#gu-chips .chip').forEach(c=>{
-    c.classList.toggle('active', c.textContent === gu);
-  });
-  const dongs = [...new Set(allData.filter(d => d['구']===gu).map(d => d['동']).filter(Boolean))];
-  document.getElementById('dong-chips').innerHTML = dongs.map(d =>
-    `<div class="chip" onclick="selectDong('${d}')">${d}</div>`
-  ).join('');
+  selectedGu=gu;selectedDong=null;selectedApt=null;
+  document.querySelectorAll('#gu-chips .chip').forEach(c=>c.classList.toggle('active',c.textContent===gu));
+  const dongs=[...new Set(allData.filter(d=>d['구']===gu).map(d=>d['동']).filter(Boolean))];
+  document.getElementById('dong-chips').innerHTML=dongs.map(d=>`<div class="chip" onclick="selectDong('${d}')">${d}</div>`).join('');
   document.getElementById('step-apt').style.display='none';
-  document.getElementById('stats').style.display='none';
+  document.getElementById('cat-filter').style.display='none';
   document.getElementById('shop-section').style.display='none';
   document.getElementById('empty').style.display='block';
   updateLoc();
 }
-
 function selectDong(dong){
-  selectedDong = dong;
-  selectedApt = null;
-  document.querySelectorAll('#dong-chips .chip').forEach(c=>{
-    c.classList.toggle('active', c.textContent === dong);
-  });
-  const apts = [...new Set(
-    allData.filter(d => d['구']===selectedGu && d['동']===dong).map(d => d['아파트명']).filter(Boolean)
-  )];
-  const sel = document.getElementById('apt-select');
-  sel.innerHTML = '<option value="">— 아파트를 선택하세요 —</option>' +
-    apts.map(a => `<option value="${a}">${a}</option>`).join('');
+  selectedDong=dong;selectedApt=null;
+  document.querySelectorAll('#dong-chips .chip').forEach(c=>c.classList.toggle('active',c.textContent===dong));
+  const apts=[...new Set(allData.filter(d=>d['구']===selectedGu&&d['동']===dong).map(d=>d['아파트명']).filter(Boolean))];
+  const sel=document.getElementById('apt-select');
+  sel.innerHTML='<option value="">— 아파트를 선택하세요 —</option>'+apts.map(a=>`<option value="${a}">${a}</option>`).join('');
   document.getElementById('step-apt').style.display='block';
   updateLoc();
 }
-
 function selectApt(apt){
-  if(!apt){
-    document.getElementById('stats').style.display='none';
-    document.getElementById('shop-section').style.display='none';
-    return;
-  }
-  selectedApt = apt;
-  updateLoc();
+  if(!apt){document.getElementById('shop-section').style.display='none';return;}
+  selectedApt=apt;updateLoc();
   document.getElementById('loading').style.display='block';
   document.getElementById('empty').style.display='none';
-  setTimeout(()=>{
-    document.getElementById('loading').style.display='none';
-    renderShops();
-  }, 450);
+  document.getElementById('shop-section').style.display='none';
+  setTimeout(()=>{document.getElementById('loading').style.display='none';renderShops();},450);
 }
-
 function updateLoc(){
-  let txt = '부산 — 지역 선택';
-  if(selectedGu) txt = `부산 ${selectedGu}`;
-  if(selectedDong) txt += ` ${selectedDong}`;
-  if(selectedApt) txt += ` · ${selectedApt}`;
-  document.getElementById('loc-text').textContent = txt;
-}
-
-function getShopsForApt(){
-  return allData.filter(d =>
-    d['구']===selectedGu && d['동']===selectedDong && d['아파트명']===selectedApt
-  );
+  let txt='부산 — 지역 선택';
+  if(selectedGu)txt=`부산 ${selectedGu}`;
+  if(selectedDong)txt+=` ${selectedDong}`;
+  if(selectedApt)txt+=` · ${selectedApt}`;
+  document.getElementById('loc-text').textContent=txt;
 }
 
 function renderShops(){
-  const shops = getShopsForApt();
-  const total = shops.length;
-  const vacant = shops.filter(s => (s['공실여부']||'').includes('공실') || !(s['업체명']||'').trim()).length;
-  const open = total - vacant;
-
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-open').textContent = open;
-  document.getElementById('stat-vacant').textContent = vacant;
-  document.getElementById('stats').style.display='grid';
-
-  document.getElementById('apt-title').textContent = selectedApt;
+  const shops=allData.filter(d=>d['구']===selectedGu&&d['동']===selectedDong&&d['아파트명']===selectedApt);
+  const vacants=shops.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
+  document.getElementById('apt-title').textContent=selectedApt;
+  document.getElementById('cat-filter').style.display='flex';
   document.getElementById('shop-section').style.display='block';
+  document.getElementById('match-vacant-cnt').textContent=vacants.length;
+  document.getElementById('match-total-cnt').textContent=shops.length;
+  renderVacantList(vacants);
+  applyFilter(shops);
+}
 
-  // filter
-  let filtered = shops;
-  if(currentFilter === 'food') filtered = shops.filter(s => (s['업종분류']||'').includes('음식'));
-  else if(currentFilter === 'beauty') filtered = shops.filter(s => (s['업종분류']||'').includes('미용'));
-  else if(currentFilter === 'vacant') filtered = shops.filter(s => (s['공실여부']||'').includes('공실') || !(s['업체명']||'').trim());
+function applyFilter(shops){
+  let f=shops;
+  if(currentFilter==='food')f=shops.filter(s=>(s['업종분류']||'').includes('음식'));
+  else if(currentFilter==='beauty')f=shops.filter(s=>(s['업종분류']||'').includes('미용'));
+  else if(currentFilter==='realestate')f=shops.filter(s=>(s['업종분류']||'').includes('부동산'));
+  else if(currentFilter==='mart')f=shops.filter(s=>(s['업종분류']||'').includes('마트'));
+  else if(currentFilter==='vacant')f=shops.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
 
-  const list = document.getElementById('shop-list');
-  if(filtered.length === 0){
-    list.innerHTML = `<div class="empty"><div class="empty-ico">🔎</div>조건에 맞는 상가가 없어요</div>`;
-    return;
-  }
-
-  list.innerHTML = filtered.map((s, i) => {
-    const isVacant = (s['공실여부']||'').includes('공실') || !(s['업체명']||'').trim();
-    const cat = getCat(s['업종분류']);
-    const icon = isVacant ? '❓' : cat.icon;
-    const iconCls = isVacant ? 'icon-vacant' : cat.cls;
-    const name = isVacant ? '공실' : s['업체명'];
-    const subInfo = [s['층'], s['호수']].filter(Boolean).join(' ');
+  const list=document.getElementById('shop-list');
+  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-ico">🔎</div>조건에 맞는 상가가 없어요</div>';return;}
+  list.innerHTML=f.map(s=>{
+    const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
+    const cat=getCat(s['업종분류']);
+    const icon=isV?'❓':cat.icon;
+    const icls=isV?'icon-vacant':cat.cls;
+    const name=isV?'공실':s['업체명'];
+    const floor=s['층']||'';
+    const fc=floorCls(floor)+(isV?' vac':'');
     return `
-      <div class="shop ${isVacant?'vacant':''}" onclick='openDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
-        ${isVacant ? '<div class="vacancy-badge">공실</div>' : ''}
-        <div class="shop-icon ${iconCls}">${icon}</div>
-        <div class="shop-info">
-          <div class="shop-name">${name}</div>
-          <div class="shop-meta">
-            <span class="shop-tag">${subInfo || '-'}</span>
-            ${s['업종분류'] ? `<span>${s['업종분류']}</span>` : ''}
+      <div class="shop${isV?' vacant':''}" onclick='openDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
+        ${isV?'<div class="vacancy-badge">공실</div>':''}
+        <div class="floor-badge ${fc}">${floor||'?'}</div>
+        <div class="shop-body">
+          <div class="shop-icon ${icls}">${icon}</div>
+          <div class="shop-info">
+            <div class="shop-name">${name}</div>
+            <div class="shop-meta">
+              <span class="shop-tag room">${s['호수']||'-'}</span>
+              ${s['업종분류']?`<span>${s['업종분류']}</span>`:''}
+            </div>
           </div>
+          <div class="shop-arrow">▶</div>
         </div>
-        <div class="shop-arrow">▶</div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
-/* FILTER BUTTONS */
-document.getElementById('filters').addEventListener('click', e => {
-  if(!e.target.classList.contains('fbtn')) return;
-  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
-  e.target.classList.add('on');
-  currentFilter = e.target.dataset.f;
-  if(selectedApt) renderShops();
+function renderVacantList(vacants){
+  const el=document.getElementById('vacant-list');
+  if(!vacants.length){el.innerHTML='<div class="empty"><div class="empty-ico">🎉</div><div>현재 공실이 없어요!</div></div>';return;}
+  el.innerHTML=vacants.map(s=>`
+    <div class="vacant-card">
+      <div class="vacant-card-top">
+        <div class="vacant-card-floor">${s['층']||'?'}</div>
+        <div class="vacant-card-room">${s['호수']||''} · ${s['상가명']||''}</div>
+      </div>
+      <div class="vacant-card-body">
+        <div class="vacant-card-name">${s['아파트명']} 공실</div>
+        <div class="interest-row">
+          <span>주민관심</span>
+          <div class="ibar"><div class="ifill" style="width:${Math.floor(Math.random()*60+20)}%"></div></div>
+          <span style="font-weight:700;color:var(--brick);">높음</span>
+        </div>
+        <div class="want-tags">
+          <span class="want-tag">☕ 카페</span>
+          <span class="want-tag">📚 학원</span>
+          <span class="want-tag">🍱 도시락</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('cat-filter').addEventListener('click',e=>{
+  const btn=e.target.closest('.cat-btn');if(!btn)return;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');currentFilter=btn.dataset.f;
+  if(selectedApt){
+    const shops=allData.filter(d=>d['구']===selectedGu&&d['동']===selectedDong&&d['아파트명']===selectedApt);
+    applyFilter(shops);
+  }
 });
 
-/* ============================================
-   DETAIL SHEET
-============================================ */
-function openDetail(s){
-  const isVacant = (s['공실여부']||'').includes('공실') || !(s['업체명']||'').trim();
-  const cat = getCat(s['업종분류']);
-  const icon = isVacant ? '❓' : cat.icon;
-  const iconCls = isVacant ? 'icon-vacant' : cat.cls;
-  const name = isVacant ? '공실 호수' : s['업체명'];
+function makeKey(s){return`${s['아파트명']}_${s['상가명']}_${s['층']}_${s['호수']}`.replace(/\s/g,'');}
 
-  const body = isVacant ? `
-    <div class="sheet-handle"></div>
-    <div class="sheet-title-row">
-      <div class="sheet-icon ${iconCls}">${icon}</div>
-      <div>
-        <div class="sheet-name">${name}</div>
-        <div class="sheet-cat">입점 문의 가능</div>
+async function gasGet(params){
+  const url=GAS_URL+'?'+new URLSearchParams(params);
+  try{const r=await fetch(url);return r.json();}catch(e){return null;}
+}
+async function gasPost(body){
+  try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)});}catch(e){}
+}
+
+async function openDetail(s){
+  const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
+  const cat=getCat(s['업종분류']);
+  const icon=isV?'❓':cat.icon;
+  const icls=isV?'icon-vacant':cat.cls;
+  const name=isV?'공실':s['업체명'];
+  const floor=s['층']||'';
+  const key=makeKey(s);
+
+  if(isV){
+    document.getElementById('sheet-inner').innerHTML=`
+      <div class="sheet-handle"></div>
+      <div class="sheet-title-row">
+        <div class="sheet-icon ${icls}">${icon}</div>
+        <div><div class="sheet-name">공실</div><div class="sheet-cat">입점 문의 가능</div><div class="sheet-floor-tag">${floor} · ${s['호수']||''}</div></div>
       </div>
-    </div>
-    <div class="sheet-grid">
-      <div class="sg-cell"><div class="sg-lbl">아파트</div><div class="sg-val">${s['아파트명']||'-'}</div></div>
-      <div class="sg-cell"><div class="sg-lbl">상가동</div><div class="sg-val">${s['상가명']||'-'}</div></div>
-      <div class="sg-cell"><div class="sg-lbl">층</div><div class="sg-val">${s['층']||'-'}</div></div>
-      <div class="sg-cell"><div class="sg-lbl">호수</div><div class="sg-val">${s['호수']||'-'}</div></div>
-    </div>
-    <div class="vacant-hero">
-      <h3>이 자리에 관심있어요!</h3>
-      <p>사장님이라면 주민 수요 데이터를<br>받아볼 수 있어요</p>
-    </div>
-    <div class="cta-row">
-      <div class="cta cta-save" onclick="alert('관심 공실에 저장했어요!')">💾 관심</div>
-      <div class="cta cta-chat" onclick="alert('관리사무소 연락처로 연결!')">💬 문의</div>
-    </div>
-  ` : `
+      <div class="sheet-grid">
+        <div class="sg-cell"><div class="sg-lbl">아파트</div><div class="sg-val">${s['아파트명']||'-'}</div></div>
+        <div class="sg-cell"><div class="sg-lbl">상가동</div><div class="sg-val">${s['상가명']||'-'}</div></div>
+        <div class="sg-cell"><div class="sg-lbl">층</div><div class="sg-val">${floor||'-'}</div></div>
+        <div class="sg-cell"><div class="sg-lbl">호수</div><div class="sg-val">${s['호수']||'-'}</div></div>
+      </div>
+      <div class="vacant-hero"><h3>이 자리에 관심있어요!</h3><p>사장님이라면 주민 수요 데이터를<br>받아볼 수 있어요</p></div>
+      <div class="cta-row">
+        <div class="cta cta-save" onclick="alert('관심 공실에 저장했어요!')">💾 관심</div>
+        <div class="cta cta-chat" onclick="alert('관리사무소 연결!')">💬 문의</div>
+      </div>`;
+    document.getElementById('sheet').classList.add('open');
+    return;
+  }
+
+  document.getElementById('sheet-inner').innerHTML=`
     <div class="sheet-handle"></div>
     <div class="sheet-title-row">
-      <div class="sheet-icon ${iconCls}">${icon}</div>
+      <div class="sheet-icon ${icls}">${icon}</div>
       <div>
         <div class="sheet-name">${name}</div>
         <div class="sheet-cat">${s['업종분류']||'기타'}</div>
+        <div class="sheet-floor-tag">${floor} · ${s['호수']||''}</div>
       </div>
-    </div>
-    <div class="sheet-badges">
-      <span class="sb primary">주민 인증</span>
-      <span class="sb">♥ 24</span>
-      <span class="sb">리뷰 12</span>
     </div>
     <div class="sheet-grid">
       <div class="sg-cell"><div class="sg-lbl">아파트</div><div class="sg-val">${s['아파트명']||'-'}</div></div>
       <div class="sg-cell"><div class="sg-lbl">상가동</div><div class="sg-val">${s['상가명']||'-'}</div></div>
-      <div class="sg-cell"><div class="sg-lbl">층</div><div class="sg-val">${s['층']||'-'}</div></div>
+      <div class="sg-cell"><div class="sg-lbl">층</div><div class="sg-val">${floor||'-'}</div></div>
       <div class="sg-cell"><div class="sg-lbl">호수</div><div class="sg-val">${s['호수']||'-'}</div></div>
     </div>
     <div class="cta-row">
-      <div class="cta cta-save" onclick="alert('저장했어요!')">💾 저장</div>
-      <div class="cta cta-chat" onclick="alert('사장님과 채팅 연결!')">💬 채팅</div>
-      <div class="cta cta-call" onclick="alert('전화 연결!')">📞 전화</div>
+      <div class="cta cta-save" onclick="alert('저장!')">💾 저장</div>
+      <div class="cta cta-call" onclick="alert('전화!')">📞 전화</div>
     </div>
-  `;
+    <div class="like-section">
+      <button class="like-btn" id="like-btn-${key}" onclick="toggleLike('${key}')">
+        <span class="like-heart">🤍</span>
+        <span class="like-count" id="like-count-${key}">...</span>
+      </button>
+      <span style="font-size:13px;color:var(--ink-soft);">주민들이 좋아해요</span>
+    </div>
+    <div class="review-section">
+      <div class="review-title">리뷰 <em id="review-cnt-${key}"></em></div>
+      <div class="review-list" id="review-list-${key}">
+        <div style="padding:16px 0;text-align:center;color:var(--ink-soft);font-size:13px;">불러오는 중...</div>
+      </div>
+      <div class="review-input-row">
+        <div class="review-avatar-me">${myNickname.slice(0,2)}</div>
+        <textarea class="review-input" id="review-input-${key}" placeholder="리뷰를 남겨보세요..." rows="1"
+          oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+        <button class="review-send" onclick="submitReview('${key}')">게시</button>
+      </div>
+    </div>`;
 
-  document.getElementById('sheet-inner').innerHTML = body;
   document.getElementById('sheet').classList.add('open');
+  loadDetail(key);
 }
+
+async function loadDetail(key){
+  const [likeData,reviewData]=await Promise.all([gasGet({action:'likes',key}),gasGet({action:'reviews',key})]);
+  // 좋아요
+  const count=(likeData&&likeData.count)||0;
+  const liked=localStorage.getItem('liked_'+key)==='1';
+  const btn=document.getElementById('like-btn-'+key);
+  const cntEl=document.getElementById('like-count-'+key);
+  if(btn&&cntEl){
+    cntEl.textContent=count;
+    btn.querySelector('.like-heart').textContent=liked?'❤️':'🤍';
+    if(liked)btn.classList.add('liked');
+  }
+  renderReviews(key,reviewData||[]);
+}
+
+async function toggleLike(key){
+  const btn=document.getElementById('like-btn-'+key);
+  const cntEl=document.getElementById('like-count-'+key);
+  if(!btn)return;
+  const liked=localStorage.getItem('liked_'+key)==='1';
+  const cur=parseInt(cntEl.textContent)||0;
+  if(liked){
+    localStorage.removeItem('liked_'+key);
+    btn.classList.remove('liked');
+    btn.querySelector('.like-heart').textContent='🤍';
+    cntEl.textContent=Math.max(0,cur-1);
+    await gasPost({action:'like',key,delta:-1});
+  }else{
+    localStorage.setItem('liked_'+key,'1');
+    btn.classList.add('liked');
+    btn.querySelector('.like-heart').textContent='❤️';
+    cntEl.textContent=cur+1;
+    await gasPost({action:'like',key,delta:1});
+  }
+}
+
+function renderReviews(key,reviews){
+  const list=document.getElementById('review-list-'+key);
+  const cntEl=document.getElementById('review-cnt-'+key);
+  if(!list)return;
+  if(cntEl)cntEl.textContent=reviews.length?`(${reviews.length})`:'';
+  if(!reviews.length){
+    list.innerHTML='<div style="padding:16px 0;text-align:center;color:var(--ink-soft);font-size:13px;">첫 번째 리뷰를 남겨보세요 👋</div>';
+    return;
+  }
+  list.innerHTML=reviews.map(r=>{
+    const nick=r.nickname||'익명';
+    const dateStr=r.date?new Date(r.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}):'';
+    return `
+      <div class="review-item">
+        <div class="review-avatar">${nick.slice(0,2)}</div>
+        <div class="review-content">
+          <div class="review-nick">${nick}</div>
+          <div class="review-text">${r.text||''}</div>
+          <div class="review-date">${dateStr}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function submitReview(key){
+  const input=document.getElementById('review-input-'+key);
+  if(!input)return;
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';input.style.height='auto';
+
+  const list=document.getElementById('review-list-'+key);
+  const cntEl=document.getElementById('review-cnt-'+key);
+  const noMsg=list.querySelector('div[style]');
+  if(noMsg)list.innerHTML='';
+
+  const item=document.createElement('div');
+  item.className='review-item';
+  item.innerHTML=`
+    <div class="review-avatar">${myNickname.slice(0,2)}</div>
+    <div class="review-content">
+      <div class="review-nick">${myNickname}</div>
+      <div class="review-text">${text}</div>
+      <div class="review-date">방금</div>
+    </div>`;
+  list.appendChild(item);
+  item.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  if(cntEl){
+    const cur=parseInt((cntEl.textContent||'0').replace(/[()]/g,''))||0;
+    cntEl.textContent=`(${cur+1})`;
+  }
+  await gasPost({action:'review',key,nickname:myNickname,text});
+}
+
 function closeSheet(){document.getElementById('sheet').classList.remove('open');}
 
-/* ============================================
-   TABS
-============================================ */
 function switchTab(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
@@ -1051,7 +716,15 @@ function switchTab(name){
   window.scrollTo(0,0);
 }
 
-/* INIT */
+function changeNick(){
+  const n=prompt('닉네임을 입력하세요',myNickname);
+  if(n&&n.trim()){
+    myNickname=n.trim();
+    localStorage.setItem('sang_nick',myNickname);
+    document.getElementById('my-nick').textContent=myNickname+' 님';
+  }
+}
+
 loadData();
 </script>
 </body>
