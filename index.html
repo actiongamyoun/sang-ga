@@ -211,6 +211,88 @@ body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(r
 .vacant-hero{background:var(--mustard);border:3px solid var(--ink);padding:16px;text-align:center;margin:14px 0;box-shadow:4px 4px 0 var(--ink);}
 .vacant-hero h3{font-family:'DotGothic16';font-size:18px;margin-bottom:6px;}
 .vacant-hero p{font-size:13px;color:var(--ink-soft);}
+
+/* ===== COMMUNITY ===== */
+.board{padding:0;}
+.board-header{
+  position:sticky;top:0;z-index:10;
+  background:var(--paper);border-bottom:3px solid var(--ink);
+  padding:14px 18px 10px;
+}
+.board-head{font-family:'DotGothic16';font-size:20px;margin-bottom:10px;}
+.cat-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;}
+.cat-tabs::-webkit-scrollbar{display:none;}
+.ctab{
+  padding:6px 12px;background:var(--cream);border:2px solid var(--ink);
+  font-family:'DotGothic16';font-size:12px;white-space:nowrap;
+  cursor:pointer;box-shadow:2px 2px 0 var(--ink);flex-shrink:0;
+}
+.ctab.on{background:var(--brick);color:var(--paper);}
+.write-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin:12px 18px 0;padding:12px;
+  background:var(--mustard);border:3px solid var(--ink);
+  font-family:'DotGothic16';font-size:15px;
+  cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:all .1s;
+}
+.write-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
+.post-list{padding:12px 18px;display:flex;flex-direction:column;gap:10px;}
+.post{
+  background:var(--paper);border:3px solid var(--ink);
+  box-shadow:4px 4px 0 var(--ink);overflow:hidden;cursor:pointer;
+  transition:all .12s;
+}
+.post:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
+.post-top{padding:12px 14px 8px;border-bottom:1.5px solid var(--grid);}
+.post-tag{display:inline-block;color:var(--paper);font-family:'DotGothic16';font-size:11px;padding:2px 8px;border:2px solid var(--ink);margin-bottom:8px;}
+.post-tag.sale{background:var(--brick);}
+.post-tag.notice{background:var(--sky);color:var(--ink);}
+.post-tag.qna{background:var(--moss);}
+.post-title{font-weight:700;font-size:15px;line-height:1.4;}
+.post-content-preview{font-size:13px;color:var(--ink-soft);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.post-bottom{padding:8px 14px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-soft);}
+.post-nick{font-weight:700;}
+.post-apt{background:var(--cream);border:1.5px solid var(--ink);padding:1px 6px;font-size:11px;}
+.post-actions{margin-left:auto;display:flex;gap:10px;align-items:center;}
+.post-like{cursor:pointer;display:flex;align-items:center;gap:3px;}
+.post-like.liked{color:var(--brick);}
+.post-report{cursor:pointer;color:var(--ink-soft);font-size:11px;}
+
+/* 글쓰기 모달 */
+.modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center;background:rgba(43,29,16,.5);}
+.modal.open{display:flex;}
+.modal-inner{
+  width:100%;max-width:480px;background:var(--paper);
+  border-top:3px solid var(--ink);border-left:3px solid var(--ink);border-right:3px solid var(--ink);
+  padding:20px 18px 30px;animation:slideUp .3s cubic-bezier(.2,.8,.3,1.1);
+  max-height:90vh;overflow-y:auto;
+}
+.modal-head{font-family:'DotGothic16';font-size:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.modal-close{font-size:22px;cursor:pointer;font-family:'VT323';color:var(--brick);}
+.form-label{font-family:'DotGothic16';font-size:13px;margin-bottom:6px;display:block;}
+.form-select{width:100%;padding:10px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gowun Dodum';font-size:14px;margin-bottom:12px;appearance:none;}
+.form-input{width:100%;padding:10px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gowun Dodum';font-size:14px;margin-bottom:12px;}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--brick);}
+.form-textarea{width:100%;padding:10px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gowun Dodum';font-size:14px;resize:none;min-height:100px;margin-bottom:12px;}
+.form-textarea:focus{outline:none;border-color:var(--brick);}
+.form-submit{
+  width:100%;padding:14px;background:var(--brick);color:var(--paper);
+  border:3px solid var(--ink);font-family:'DotGothic16';font-size:16px;
+  cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:all .1s;
+}
+.form-submit:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
+.pending-notice{
+  margin:0 18px 10px;padding:10px 12px;
+  background:var(--mustard);border:2px solid var(--ink);
+  font-size:12px;font-family:'DotGothic16';
+}
+
+/* 포스트 상세 시트 */
+.post-detail-body{padding:14px;}
+.post-detail-title{font-family:'DotGothic16';font-size:20px;margin-bottom:8px;}
+.post-detail-content{font-size:14px;line-height:1.7;color:var(--ink);margin-bottom:14px;white-space:pre-wrap;}
+.post-detail-meta{font-size:12px;color:var(--ink-soft);padding-bottom:12px;border-bottom:2px solid var(--grid);display:flex;gap:10px;flex-wrap:wrap;}
+
 </style>
 </head>
 <body>
@@ -220,7 +302,7 @@ body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(r
     <div class="header-row">
       <div class="logo">
         <div class="logo-pixel"></div>
-        <div>우리동네상가<br><span style="font-size:11px;font-family:'Gaegu';font-weight:700;">아파트 상가 정보 </span></div>
+        <div>우리상가<br><span style="font-size:11px;font-family:'Gaegu';font-weight:700;">아파트 상가 정보 · BETA</span></div>
       </div>
       <div class="bell">🔔<div class="bell-dot"></div></div>
     </div>
@@ -232,12 +314,8 @@ body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(r
   </div>
 
   <div class="marquee">
-    <div class="marquee-track">
-      <span>오픈러닝 화이팅 </span>
-      <span>박상무 집문제 잘 풀리길 </span>
-      <span>이이사 주식도 대박 나길 </span>
-      <span>나도 한번 잘살아 보세~ </span>
-      <span>동네 사랑방 커뮤니티 오픈</span>
+    <div class="marquee-track" id="marquee-track">
+      <span>로딩 중...</span>
     </div>
   </div>
 
@@ -290,11 +368,20 @@ body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(r
   <!-- COMMUNITY -->
   <div class="view" id="view-community">
     <div class="board">
-      <div class="board-head">동네 사랑방 💬</div>
-      <div class="post"><div class="post-tag sale">할인</div><div class="post-title">주민 전용 — 아메리카노 1+1 이벤트</div><div class="post-meta"><span>블루삭 커피 · 대림1차상가</span><span class="post-heart">♥ 23</span></div></div>
-      <div class="post"><div class="post-tag notice">공지</div><div class="post-title">이번주 금요일 상가 대청소 안내</div><div class="post-meta"><span>관리사무소 · 3일 전</span><span class="post-heart">♥ 8</span></div></div>
-      <div class="post"><div class="post-tag">매칭</div><div class="post-title">학원 원장님 구합니다 — 공실 B1호</div><div class="post-meta"><span>대림1차상가 · 오늘</span><span class="post-heart">♥ 12</span></div></div>
-      <div class="post"><div class="post-tag sale">할인</div><div class="post-title">탑스크린 — 신규 회원 3회 무료</div><div class="post-meta"><span>골프아카데미 · 1일 전</span><span class="post-heart">♥ 45</span></div></div>
+      <div class="board-header">
+        <div class="board-head">동네 사랑방 💬</div>
+        <div class="cat-tabs">
+          <div class="ctab on" data-c="all">전체</div>
+          <div class="ctab" data-c="할인/이벤트">🎟 할인/이벤트</div>
+          <div class="ctab" data-c="공지">📢 공지</div>
+          <div class="ctab" data-c="질문/추천">❓ 질문/추천</div>
+        </div>
+      </div>
+      <div class="write-btn" onclick="openWriteModal()">✏️ 글쓰기</div>
+      <div class="pending-notice">📋 작성한 글은 관리자 승인 후 게시돼요</div>
+      <div class="post-list" id="post-list">
+        <div class="loading"><span class="loader-pixel"></span><span class="loader-pixel"></span><span class="loader-pixel"></span><div style="margin-top:10px;">사랑방 불러오는 중...</div></div>
+      </div>
     </div>
   </div>
 
@@ -341,6 +428,34 @@ body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(r
     <div class="tab" data-tab="match" onclick="switchTab('match')"><div class="tab-ico">🤝</div><div>매칭</div></div>
     <div class="tab" data-tab="my" onclick="switchTab('my')"><div class="tab-ico">👤</div><div>MY</div></div>
   </div>
+</div>
+
+<!-- 글쓰기 모달 -->
+<div class="modal" id="write-modal" onclick="if(event.target===this)closeWriteModal()">
+  <div class="modal-inner">
+    <div class="modal-head">
+      <span>글쓰기</span>
+      <span class="modal-close" onclick="closeWriteModal()">✕</span>
+    </div>
+    <label class="form-label">카테고리</label>
+    <select class="form-select" id="write-cat">
+      <option value="할인/이벤트">🎟 할인/이벤트</option>
+      <option value="공지">📢 공지</option>
+      <option value="질문/추천">❓ 질문/추천</option>
+    </select>
+    <label class="form-label">제목</label>
+    <input class="form-input" id="write-title" placeholder="제목을 입력하세요" maxlength="60" />
+    <label class="form-label">내용</label>
+    <textarea class="form-textarea" id="write-content" placeholder="내용을 입력하세요"></textarea>
+    <label class="form-label">닉네임</label>
+    <input class="form-input" id="write-nick" placeholder="닉네임" />
+    <button class="form-submit" onclick="submitPost()">📮 승인 요청하기</button>
+  </div>
+</div>
+
+<!-- 포스트 상세 시트 -->
+<div class="sheet" id="post-sheet" onclick="if(event.target===this)closePostSheet()">
+  <div class="sheet-inner" id="post-sheet-inner"></div>
 </div>
 
 <!-- SHEET -->
@@ -714,6 +829,7 @@ function switchTab(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelector(`.tab[data-tab="${name}"]`).classList.add('active');
   window.scrollTo(0,0);
+  if(name==='community') loadPosts();
 }
 
 function changeNick(){
@@ -725,7 +841,280 @@ function changeNick(){
   }
 }
 
+
+/* ========== COMMUNITY ========== */
+let currentCat = 'all';
+let allPosts = [];
+
+async function loadPosts(){
+  const apt = selectedApt || '';
+  try{
+    const data = await gasGet({action:'posts', apt});
+    allPosts = data || [];
+  }catch(e){ allPosts=[]; }
+  renderPosts();
+}
+
+function renderPosts(){
+  const list = document.getElementById('post-list');
+  if(!list) return;
+  let filtered = allPosts;
+  if(currentCat !== 'all') filtered = allPosts.filter(p => p.category === currentCat);
+  if(!filtered.length){
+    list.innerHTML = '<div class="empty"><div class="empty-ico">📭</div><div>아직 게시글이 없어요<br>첫 글을 올려보세요!</div></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(p => {
+    const tagCls = p.category==='할인/이벤트'?'sale': p.category==='공지'?'notice':'qna';
+    const dateStr = p.date ? new Date(p.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}) : '';
+    const postLiked = localStorage.getItem('post_liked_'+p.id)==='1';
+    return `
+      <div class="post" onclick="openPostDetail('${p.id}')">
+        <div class="post-top">
+          <div class="post-tag ${tagCls}">${p.category}</div>
+          <div class="post-title">${p.title}</div>
+          <div class="post-content-preview">${p.content}</div>
+        </div>
+        <div class="post-bottom">
+          <span class="post-nick">${p.nickname}</span>
+          ${p.apt ? `<span class="post-apt">${p.apt}</span>` : ''}
+          <span>${dateStr}</span>
+          <div class="post-actions">
+            <span class="post-like${postLiked?' liked':''}" onclick="event.stopPropagation();togglePostLike('${p.id}',this)">
+              ${postLiked?'❤️':'🤍'} <span class="post-like-cnt" id="plc-${p.id}">...</span>
+            </span>
+            <span class="post-report" onclick="event.stopPropagation();reportPost('${p.id}')">🚨</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  // 좋아요 수 로드
+  filtered.forEach(p => loadPostLike(p.id));
+}
+
+async function loadPostLike(postId){
+  const data = await gasGet({action:'likes', key:'post_'+postId});
+  const el = document.getElementById('plc-'+postId);
+  if(el) el.textContent = (data&&data.count)||0;
+}
+
+async function togglePostLike(postId, el){
+  const key = 'post_'+postId;
+  const liked = localStorage.getItem('post_liked_'+postId)==='1';
+  const cntEl = document.getElementById('plc-'+postId);
+  const cur = parseInt(cntEl?.textContent)||0;
+  if(liked){
+    localStorage.removeItem('post_liked_'+postId);
+    el.classList.remove('liked');
+    el.innerHTML = '🤍 <span class="post-like-cnt" id="plc-'+postId+'">'+(Math.max(0,cur-1))+'</span>';
+    await gasPost({action:'like',key,delta:-1});
+  } else {
+    localStorage.setItem('post_liked_'+postId,'1');
+    el.classList.add('liked');
+    el.innerHTML = '❤️ <span class="post-like-cnt" id="plc-'+postId+'">'+(cur+1)+'</span>';
+    await gasPost({action:'like',key,delta:1});
+  }
+}
+
+async function openPostDetail(postId){
+  const post = allPosts.find(p=>p.id===postId);
+  if(!post) return;
+  const tagCls = post.category==='할인/이벤트'?'sale': post.category==='공지'?'notice':'qna';
+  const dateStr = post.date ? new Date(post.date).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}) : '';
+
+  document.getElementById('post-sheet-inner').innerHTML = `
+    <div class="sheet-handle"></div>
+    <div class="post-detail-body">
+      <div style="margin-bottom:8px;"><span class="post-tag ${tagCls}">${post.category}</span></div>
+      <div class="post-detail-title">${post.title}</div>
+      <div class="post-detail-meta">
+        <span>${post.nickname}</span>
+        ${post.apt?`<span class="post-apt">${post.apt}</span>`:''}
+        <span>${dateStr}</span>
+      </div>
+      <div class="post-detail-content">${post.content}</div>
+      <div class="like-section" style="margin-bottom:14px;">
+        <button class="like-btn" id="pdlike-${postId}" onclick="togglePostLikeDetail('${postId}')">
+          <span class="like-heart">${localStorage.getItem('post_liked_'+postId)==='1'?'❤️':'🤍'}</span>
+          <span class="like-count" id="pdlc-${postId}">...</span>
+        </button>
+        <span style="font-size:13px;color:var(--ink-soft);">좋아요</span>
+        <span style="margin-left:auto;cursor:pointer;font-size:13px;color:var(--ink-soft);" onclick="reportPost('${postId}')">🚨 신고</span>
+      </div>
+      <!-- 댓글 -->
+      <div class="review-section">
+        <div class="review-title">댓글 <em id="ccnt-${postId}"></em></div>
+        <div class="review-list" id="clist-${postId}">
+          <div style="padding:12px 0;text-align:center;color:var(--ink-soft);font-size:13px;">불러오는 중...</div>
+        </div>
+        <div class="review-input-row">
+          <div class="review-avatar-me">${myNickname.slice(0,2)}</div>
+          <textarea class="review-input" id="cinput-${postId}" placeholder="댓글을 남겨보세요..." rows="1"
+            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+          <button class="review-send" onclick="submitComment('${postId}')">게시</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('post-sheet').classList.add('open');
+  loadPostLikeDetail(postId);
+  loadComments(postId);
+}
+
+async function loadPostLikeDetail(postId){
+  const data = await gasGet({action:'likes', key:'post_'+postId});
+  const count = (data&&data.count)||0;
+  const el = document.getElementById('pdlc-'+postId);
+  if(el) el.textContent = count;
+  const liked = localStorage.getItem('post_liked_'+postId)==='1';
+  const btn = document.getElementById('pdlike-'+postId);
+  if(btn){
+    btn.querySelector('.like-heart').textContent = liked?'❤️':'🤍';
+    if(liked) btn.classList.add('liked');
+  }
+}
+
+async function togglePostLikeDetail(postId){
+  const key='post_'+postId;
+  const liked=localStorage.getItem('post_liked_'+postId)==='1';
+  const btn=document.getElementById('pdlike-'+postId);
+  const cntEl=document.getElementById('pdlc-'+postId);
+  const cur=parseInt(cntEl?.textContent)||0;
+  if(liked){
+    localStorage.removeItem('post_liked_'+postId);
+    btn?.classList.remove('liked');
+    if(btn) btn.querySelector('.like-heart').textContent='🤍';
+    if(cntEl) cntEl.textContent=Math.max(0,cur-1);
+    await gasPost({action:'like',key,delta:-1});
+  } else {
+    localStorage.setItem('post_liked_'+postId,'1');
+    btn?.classList.add('liked');
+    if(btn) btn.querySelector('.like-heart').textContent='❤️';
+    if(cntEl) cntEl.textContent=cur+1;
+    await gasPost({action:'like',key,delta:1});
+  }
+}
+
+async function loadComments(postId){
+  const data = await gasGet({action:'comments', key:postId});
+  const comments = data||[];
+  const list = document.getElementById('clist-'+postId);
+  const cntEl = document.getElementById('ccnt-'+postId);
+  if(cntEl) cntEl.textContent = comments.length?`(${comments.length})`:'';
+  if(!list) return;
+  if(!comments.length){
+    list.innerHTML='<div style="padding:12px 0;text-align:center;color:var(--ink-soft);font-size:13px;">첫 댓글을 남겨보세요 💬</div>';
+    return;
+  }
+  list.innerHTML = comments.map(c=>{
+    const dateStr = c.date?new Date(c.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}):'';
+    return `
+      <div class="review-item">
+        <div class="review-avatar">${(c.nickname||'익명').slice(0,2)}</div>
+        <div class="review-content">
+          <div class="review-nick">${c.nickname||'익명'}</div>
+          <div class="review-text">${c.text||''}</div>
+          <div class="review-date">${dateStr}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function submitComment(postId){
+  const input = document.getElementById('cinput-'+postId);
+  if(!input) return;
+  const text = input.value.trim();
+  if(!text) return;
+  input.value=''; input.style.height='auto';
+
+  const list = document.getElementById('clist-'+postId);
+  const cntEl = document.getElementById('ccnt-'+postId);
+  const noMsg = list?.querySelector('div[style]');
+  if(noMsg) list.innerHTML='';
+
+  const item = document.createElement('div');
+  item.className='review-item';
+  item.innerHTML=`
+    <div class="review-avatar">${myNickname.slice(0,2)}</div>
+    <div class="review-content">
+      <div class="review-nick">${myNickname}</div>
+      <div class="review-text">${text}</div>
+      <div class="review-date">방금</div>
+    </div>`;
+  list?.appendChild(item);
+  item.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(cntEl){
+    const cur=parseInt((cntEl.textContent||'0').replace(/[()]/g,''))||0;
+    cntEl.textContent=`(${cur+1})`;
+  }
+  await gasPost({action:'comment', postId, nickname:myNickname, text});
+}
+
+function closePostSheet(){ document.getElementById('post-sheet').classList.remove('open'); }
+
+/* 글쓰기 모달 */
+function openWriteModal(){
+  document.getElementById('write-nick').value = myNickname;
+  document.getElementById('write-modal').classList.add('open');
+}
+function closeWriteModal(){ document.getElementById('write-modal').classList.remove('open'); }
+
+async function submitPost(){
+  const cat = document.getElementById('write-cat').value;
+  const title = document.getElementById('write-title').value.trim();
+  const content_text = document.getElementById('write-content').value.trim();
+  const nick = document.getElementById('write-nick').value.trim() || myNickname;
+  if(!title){ alert('제목을 입력해주세요'); return; }
+  if(!content_text){ alert('내용을 입력해주세요'); return; }
+
+  const btn = document.querySelector('.form-submit');
+  btn.textContent = '전송 중...';
+  btn.style.opacity = '.6';
+
+  await gasPost({action:'post', category:cat, title, content:content_text, nickname:nick, apt:selectedApt||''});
+
+  btn.textContent = '📮 승인 요청하기';
+  btn.style.opacity = '1';
+  closeWriteModal();
+  document.getElementById('write-title').value='';
+  document.getElementById('write-content').value='';
+  alert('✅ 글이 접수됐어요!\n관리자 승인 후 게시돼요.');
+}
+
+function reportPost(postId){
+  const reason = prompt('신고 사유를 입력해주세요:');
+  if(!reason) return;
+  gasPost({action:'report', targetId:postId, targetType:'post', nickname:myNickname, reason});
+  alert('신고가 접수됐어요. 검토 후 조치할게요.');
+}
+
+/* 카테고리 탭 */
+document.getElementById('view-community').addEventListener('click', e=>{
+  const tab = e.target.closest('.ctab');
+  if(!tab) return;
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('on'));
+  tab.classList.add('on');
+  currentCat = tab.dataset.c;
+  renderPosts();
+});
+
+
+/* ========== NOTICES (마퀴 광고판) ========== */
+async function loadNotices(){
+  try{
+    const data = await gasGet({action:'notices'});
+    const items = data && data.length ? data : ['우리상가에 오신 것을 환영해요!'];
+    const track = document.getElementById('marquee-track');
+    if(!track) return;
+    // 두 번 반복해서 끊김 없이 흐르게
+    track.innerHTML = [...items, ...items].map(t => `<span>${t}</span>`).join('');
+  }catch(e){
+    console.error('공지 로드 실패', e);
+  }
+}
+
 loadData();
+loadNotices();
 </script>
 </body>
 </html>
