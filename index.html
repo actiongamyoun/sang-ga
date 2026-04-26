@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>우리상가 · 아파트 상가 정보</title>
+<title>우리동네상가 · 아파트 상가 정보</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Gowun+Dodum&family=Gaegu:wght@400;700&family=VT323&display=swap" rel="stylesheet">
@@ -302,7 +302,7 @@ body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(r
     <div class="header-row">
       <div class="logo">
         <div class="logo-pixel"></div>
-        <div>우리상가<br><span style="font-size:11px;font-family:'Gaegu';font-weight:700;">아파트 상가 정보 · BETA</span></div>
+        <div>우리동네상가<br><span style="font-size:11px;font-family:'Gaegu';font-weight:700;">아파트 상가 정보 · BETA</span></div>
       </div>
       <div class="bell">🔔<div class="bell-dot"></div></div>
     </div>
@@ -406,20 +406,34 @@ body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(r
 
   <!-- MY -->
   <div class="view" id="view-my">
-    <div class="profile">
-      <div class="avatar">🧑‍🌾</div>
-      <div class="profile-name" id="my-nick">찐 님</div>
-      <div class="profile-role">부산 해운대구 · 주민</div>
+    <!-- 비로그인 -->
+    <div id="my-guest">
+      <div class="profile">
+        <div class="avatar">🏚️</div>
+        <div class="profile-name">로그인이 필요해요</div>
+        <div class="profile-role">닉네임과 비밀번호로 간편 가입</div>
+      </div>
+      <div style="padding:0 18px;display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+        <div class="cta cta-chat" style="box-shadow:4px 4px 0 var(--ink);" onclick="openAuthModal('login')">🔑 로그인</div>
+        <div class="cta cta-save" style="box-shadow:4px 4px 0 var(--ink);" onclick="openAuthModal('register')">✏️ 회원가입</div>
+      </div>
     </div>
-    <div class="menu-list">
-      <div class="menu-item"><span class="menu-ico">💾</span>저장한 상가<span class="menu-arrow">▶</span></div>
-      <div class="menu-item"><span class="menu-ico">🎟️</span>내 쿠폰<span class="menu-arrow">▶</span></div>
-      <div class="menu-item"><span class="menu-ico">✍️</span>내가 쓴 리뷰<span class="menu-arrow">▶</span></div>
-      <div class="menu-item"><span class="menu-ico">🏪</span>사장님 모드<span class="menu-arrow">▶</span></div>
-      <div class="menu-item"><span class="menu-ico">⚙️</span>설정<span class="menu-arrow">▶</span></div>
-      <div class="menu-item" onclick="changeNick()"><span class="menu-ico">👤</span>닉네임 변경<span class="menu-arrow">▶</span></div>
+    <!-- 로그인 상태 -->
+    <div id="my-loggedin" style="display:none;">
+      <div class="profile">
+        <div class="avatar" id="my-avatar">🧑‍🌾</div>
+        <div class="profile-name" id="my-nick">—</div>
+        <div class="profile-role" id="my-apt">우리동네상가 회원</div>
+      </div>
+      <div class="menu-list">
+        <div class="menu-item" onclick="showMySavedShops()"><span class="menu-ico">💾</span>저장한 상가<span class="menu-arrow">▶</span></div>
+        <div class="menu-item" onclick="showMyReviews()"><span class="menu-ico">✍️</span>내가 쓴 리뷰/댓글<span class="menu-arrow">▶</span></div>
+        <div class="menu-item" onclick="showMyLikes()"><span class="menu-ico">❤️</span>좋아요한 상가/글<span class="menu-arrow">▶</span></div>
+        <div class="menu-item" onclick="openChangePwModal()"><span class="menu-ico">🔒</span>비밀번호 변경<span class="menu-arrow">▶</span></div>
+        <div class="menu-item" onclick="logout()" style="color:var(--brick);"><span class="menu-ico">🚪</span>로그아웃<span class="menu-arrow">▶</span></div>
+      </div>
     </div>
-    <div style="text-align:center;margin-top:24px;font-family:'DotGothic16';font-size:12px;color:var(--ink-soft);">v0.2.0 · made by 찐</div>
+    <div style="text-align:center;margin-top:24px;font-family:'DotGothic16';font-size:12px;color:var(--ink-soft);">v0.3.0 · 우리동네상가</div>
   </div>
 
   <div class="tabbar">
@@ -428,6 +442,45 @@ body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(r
     <div class="tab" data-tab="match" onclick="switchTab('match')"><div class="tab-ico">🤝</div><div>매칭</div></div>
     <div class="tab" data-tab="my" onclick="switchTab('my')"><div class="tab-ico">👤</div><div>MY</div></div>
   </div>
+</div>
+
+<!-- 로그인/회원가입 모달 -->
+<div class="modal" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="modal-inner">
+    <div class="modal-head">
+      <span id="auth-modal-title">로그인</span>
+      <span class="modal-close" onclick="closeAuthModal()">✕</span>
+    </div>
+    <label class="form-label">닉네임</label>
+    <input class="form-input" id="auth-nick" placeholder="닉네임 입력" maxlength="12" />
+    <div id="nick-check-msg" style="font-size:12px;margin:-8px 0 10px;display:none;"></div>
+    <label class="form-label">비밀번호</label>
+    <input class="form-input" id="auth-pw" type="password" placeholder="비밀번호 입력" maxlength="20" />
+    <div id="auth-mode-toggle" style="text-align:center;font-size:13px;color:var(--ink-soft);margin-bottom:14px;cursor:pointer;" onclick="toggleAuthMode()"></div>
+    <button class="form-submit" id="auth-submit-btn" onclick="submitAuth()">로그인</button>
+  </div>
+</div>
+
+<!-- 비밀번호 변경 모달 -->
+<div class="modal" id="changepw-modal" onclick="if(event.target===this)closeChangePwModal()">
+  <div class="modal-inner">
+    <div class="modal-head">
+      <span>비밀번호 변경</span>
+      <span class="modal-close" onclick="closeChangePwModal()">✕</span>
+    </div>
+    <label class="form-label">현재 비밀번호</label>
+    <input class="form-input" id="cur-pw" type="password" placeholder="현재 비밀번호" />
+    <label class="form-label">새 비밀번호</label>
+    <input class="form-input" id="new-pw" type="password" placeholder="새 비밀번호" />
+    <label class="form-label">새 비밀번호 확인</label>
+    <input class="form-input" id="new-pw2" type="password" placeholder="새 비밀번호 확인" />
+    <button class="form-submit" onclick="submitChangePw()">변경하기</button>
+  </div>
+</div>
+
+<!-- MY 서브 시트 -->
+<div class="sheet" id="my-sheet" onclick="if(event.target===this)document.getElementById('my-sheet').classList.remove('open')">
+  <div class="sheet-inner" id="my-sheet-inner"></div>
 </div>
 
 <!-- 글쓰기 모달 -->
@@ -714,7 +767,10 @@ async function gasGet(params){
   try{const r=await fetch(url);return r.json();}catch(e){return null;}
 }
 async function gasPost(body){
-  try{await fetch(GAS_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)});}catch(e){}
+  try{
+    const res = await fetch(GAS_URL,{method:'POST',body:JSON.stringify(body)});
+    return res.json();
+  }catch(e){ return null; }
 }
 
 async function openDetail(s){
@@ -893,16 +949,207 @@ function switchTab(name){
   window.scrollTo(0,0);
   if(name==='community') loadPosts();
   if(name==='match') loadAllVacants();
+  if(name==='my') renderMyTab();
 }
 
-function changeNick(){
-  const n=prompt('닉네임을 입력하세요',myNickname);
-  if(n&&n.trim()){
-    myNickname=n.trim();
-    localStorage.setItem('sang_nick',myNickname);
-    document.getElementById('my-nick').textContent=myNickname+' 님';
+
+/* ========== AUTH (로그인/회원가입) ========== */
+let currentUser = null; // {nickname, apt}
+let authMode = 'login'; // 'login' | 'register'
+
+function initAuth(){
+  const saved = localStorage.getItem('wdns_user');
+  if(saved){
+    try{
+      currentUser = JSON.parse(saved);
+      myNickname = currentUser.nickname;
+      renderMyTab();
+    }catch(e){ localStorage.removeItem('wdns_user'); }
+  } else {
+    renderMyTab();
   }
 }
+
+function renderMyTab(){
+  const guest = document.getElementById('my-guest');
+  const loggedin = document.getElementById('my-loggedin');
+  if(!guest || !loggedin) return;
+  if(currentUser){
+    guest.style.display = 'none';
+    loggedin.style.display = 'block';
+    document.getElementById('my-nick').textContent = currentUser.nickname + ' 님';
+    document.getElementById('my-apt').textContent = currentUser.apt ? `📍 ${currentUser.apt}` : '우리동네상가 회원';
+    // 아바타 이니셜
+    document.getElementById('my-avatar').textContent = currentUser.nickname.slice(0,1) + '🏘️';
+  } else {
+    guest.style.display = 'block';
+    loggedin.style.display = 'none';
+  }
+}
+
+function openAuthModal(mode){
+  authMode = mode;
+  document.getElementById('auth-nick').value = '';
+  document.getElementById('auth-pw').value = '';
+  document.getElementById('nick-check-msg').style.display = 'none';
+  updateAuthModal();
+  document.getElementById('auth-modal').classList.add('open');
+}
+function closeAuthModal(){ document.getElementById('auth-modal').classList.remove('open'); }
+
+function updateAuthModal(){
+  document.getElementById('auth-modal-title').textContent = authMode==='login' ? '🔑 로그인' : '✏️ 회원가입';
+  document.getElementById('auth-submit-btn').textContent = authMode==='login' ? '로그인' : '가입하기';
+  document.getElementById('auth-mode-toggle').textContent = authMode==='login' ? '계정이 없으신가요? → 회원가입' : '이미 계정이 있으신가요? → 로그인';
+}
+
+function toggleAuthMode(){
+  authMode = authMode==='login' ? 'register' : 'login';
+  updateAuthModal();
+}
+
+async function submitAuth(){
+  const nick = document.getElementById('auth-nick').value.trim();
+  const pw = document.getElementById('auth-pw').value.trim();
+  if(!nick){ alert('닉네임을 입력해주세요'); return; }
+  if(!pw){ alert('비밀번호를 입력해주세요'); return; }
+  if(pw.length < 4){ alert('비밀번호는 4자 이상이어야 해요'); return; }
+
+  const btn = document.getElementById('auth-submit-btn');
+  btn.textContent = '처리 중...'; btn.style.opacity='.6';
+
+  if(authMode === 'register'){
+    // 닉네임 중복 체크
+    const check = await gasGet({action:'checkNick', nickname:nick});
+    if(check && check.exists){
+      btn.textContent='가입하기'; btn.style.opacity='1';
+      showNickMsg('이미 사용 중인 닉네임이에요 ❌', false);
+      return;
+    }
+    const res = await gasPost({action:'register', nickname:nick, password:pw, apt: selectedApt||''});
+    btn.textContent='가입하기'; btn.style.opacity='1';
+    if(res && res.ok){
+      currentUser = {nickname:nick, apt:selectedApt||''};
+      myNickname = nick;
+      localStorage.setItem('wdns_user', JSON.stringify(currentUser));
+      closeAuthModal();
+      renderMyTab();
+      alert('🎉 가입 완료! 환영해요 ' + nick + ' 님!');
+    } else {
+      alert((res&&res.msg)||'가입에 실패했어요. 다시 시도해주세요.');
+    }
+  } else {
+    const res = await gasPost({action:'login', nickname:nick, password:pw});
+    btn.textContent='로그인'; btn.style.opacity='1';
+    if(res && res.ok){
+      currentUser = {nickname:nick, apt:res.apt||''};
+      myNickname = nick;
+      localStorage.setItem('wdns_user', JSON.stringify(currentUser));
+      closeAuthModal();
+      renderMyTab();
+      alert('👋 반가워요 ' + nick + ' 님!');
+    } else {
+      alert((res&&res.msg)||'로그인에 실패했어요.');
+    }
+  }
+}
+
+function showNickMsg(msg, ok){
+  const el = document.getElementById('nick-check-msg');
+  el.textContent = msg;
+  el.style.color = ok ? 'var(--moss)' : 'var(--brick)';
+  el.style.display = 'block';
+}
+
+function logout(){
+  if(!confirm('로그아웃 할까요?')) return;
+  currentUser = null;
+  localStorage.removeItem('wdns_user');
+  renderMyTab();
+}
+
+/* 비밀번호 변경 */
+function openChangePwModal(){
+  document.getElementById('cur-pw').value='';
+  document.getElementById('new-pw').value='';
+  document.getElementById('new-pw2').value='';
+  document.getElementById('changepw-modal').classList.add('open');
+}
+function closeChangePwModal(){ document.getElementById('changepw-modal').classList.remove('open'); }
+
+async function submitChangePw(){
+  const curPw = document.getElementById('cur-pw').value.trim();
+  const newPw = document.getElementById('new-pw').value.trim();
+  const newPw2 = document.getElementById('new-pw2').value.trim();
+  if(!curPw||!newPw){ alert('비밀번호를 입력해주세요'); return; }
+  if(newPw !== newPw2){ alert('새 비밀번호가 일치하지 않아요'); return; }
+  if(newPw.length < 4){ alert('비밀번호는 4자 이상이어야 해요'); return; }
+  if(!currentUser){ alert('로그인이 필요해요'); return; }
+
+  const res = await gasPost({action:'updateUser', nickname:currentUser.nickname, currentPw:curPw, newPw});
+  if(res && res.ok){
+    closeChangePwModal();
+    alert('✅ 비밀번호가 변경됐어요!');
+  } else {
+    alert((res&&res.msg)||'변경에 실패했어요.');
+  }
+}
+
+/* MY 서브 메뉴 */
+function showMySavedShops(){
+  const saved = Object.keys(localStorage).filter(k=>k.startsWith('liked_')&&!k.startsWith('liked_post'));
+  const inner = document.getElementById('my-sheet-inner');
+  inner.innerHTML = `
+    <div class="sheet-handle"></div>
+    <div style="font-family:'DotGothic16';font-size:18px;margin-bottom:14px;">💾 저장한 상가</div>
+    ${!saved.length
+      ? '<div class="empty"><div class="empty-ico">💔</div><div>저장한 상가가 없어요</div></div>'
+      : saved.map(k=>{
+          const key = k.replace('liked_','');
+          const parts = key.split('_');
+          return `<div class="menu-item" style="margin-bottom:8px;border:2px solid var(--ink);padding:12px;">
+            <span class="menu-ico">🏪</span>
+            <span style="flex:1;">${parts[0]||'상가'} ${parts[2]||''} ${parts[3]||''}</span>
+          </div>`;
+        }).join('')
+    }`;
+  document.getElementById('my-sheet').classList.add('open');
+}
+
+function showMyReviews(){
+  const inner = document.getElementById('my-sheet-inner');
+  inner.innerHTML = `
+    <div class="sheet-handle"></div>
+    <div style="font-family:'DotGothic16';font-size:18px;margin-bottom:14px;">✍️ 내가 쓴 리뷰/댓글</div>
+    <div class="empty"><div class="empty-ico">📝</div><div>기록된 리뷰는 상가 상세에서<br>직접 확인할 수 있어요</div></div>`;
+  document.getElementById('my-sheet').classList.add('open');
+}
+
+function showMyLikes(){
+  const likedShops = Object.keys(localStorage).filter(k=>k.startsWith('liked_')&&!k.startsWith('liked_post_'));
+  const likedPosts = Object.keys(localStorage).filter(k=>k.startsWith('post_liked_'));
+  const inner = document.getElementById('my-sheet-inner');
+  inner.innerHTML = `
+    <div class="sheet-handle"></div>
+    <div style="font-family:'DotGothic16';font-size:18px;margin-bottom:14px;">❤️ 좋아요 목록</div>
+    <div style="font-family:'DotGothic16';font-size:13px;color:var(--ink-soft);margin-bottom:8px;">상가 (${likedShops.length})</div>
+    ${!likedShops.length
+      ? '<div style="color:var(--ink-soft);font-size:13px;margin-bottom:14px;">좋아요한 상가가 없어요</div>'
+      : likedShops.map(k=>{
+          const parts = k.replace('liked_','').split('_');
+          return `<div style="padding:10px;background:var(--cream);border:2px solid var(--ink);margin-bottom:6px;">🏪 ${parts[0]||'상가'} ${parts[2]||''} ${parts[3]||''}</div>`;
+        }).join('')
+    }
+    <div style="font-family:'DotGothic16';font-size:13px;color:var(--ink-soft);margin:8px 0;">사랑방 글 (${likedPosts.length})</div>
+    ${!likedPosts.length
+      ? '<div style="color:var(--ink-soft);font-size:13px;">좋아요한 글이 없어요</div>'
+      : `<div style="padding:10px;background:var(--cream);border:2px solid var(--ink);">💬 ${likedPosts.length}개의 글에 좋아요했어요</div>`
+    }`;
+  document.getElementById('my-sheet').classList.add('open');
+}
+
+function changeNick(){} // deprecated - 로그인 기반으로 변경됨
+
 
 
 /* ========== COMMUNITY ========== */
@@ -1178,6 +1425,7 @@ async function loadNotices(){
 
 loadData();
 loadNotices();
+initAuth();
 </script>
 </body>
 </html>
