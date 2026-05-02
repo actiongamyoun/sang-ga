@@ -1,522 +1,371 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>우리동네상가 · 아파트 상가 정보</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Gowun+Dodum&family=Gaegu:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>우리동네상가</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{
+  primary:'#003D9B','primary-c':'#0052CC',
+  surface:'#F8F9FF','surface-low':'#EFF4FF',
+  'surface-high':'#DCE9FF','surface-highest':'#D3E4FE',
+  ink:'#0B1C30','ink-2':'#434654',outline:'#737685',
+  secondary:'#006C49',
+},fontFamily:{display:['Manrope'],body:['Plus Jakarta Sans'],mono:['IBM Plex Mono']}}}}
+</script>
 <style>
-:root{
-  --cream:#FFF6E3;--paper:#FFFBEF;--ink:#2B1D10;--ink-soft:#5B4A36;
-  --brick:#D9543A;--brick-deep:#B23A22;--mustard:#F0B84A;--mustard-deep:#D99A28;
-  --moss:#6B8E4E;--moss-deep:#4F7037;--sky:#7FB8D9;--pink:#E89A9A;--grid:#EADFC2;
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;}
-body{font-family:'Gowun Dodum','Gaegu',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
-body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;opacity:.35;pointer-events:none;z-index:0;}
-body::after{content:"";position:fixed;inset:0;background-image:radial-gradient(rgba(43,29,16,.04) 1px,transparent 1px);background-size:3px 3px;pointer-events:none;z-index:1;}
-.app{position:relative;z-index:2;max-width:480px;min-height:100vh;margin:0 auto;background:var(--paper);box-shadow:8px 0 0 var(--ink),-8px 0 0 var(--ink);border-left:3px solid var(--ink);border-right:3px solid var(--ink);padding-bottom:90px;}
-
-/* HEADER */
-.header{position:sticky;top:0;z-index:50;background:var(--mustard);border-bottom:3px solid var(--ink);padding:14px 18px;box-shadow:0 4px 0 var(--ink);}
-.header-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.logo{display:flex;align-items:center;gap:10px;font-family:'DotGothic16',sans-serif;font-size:22px;letter-spacing:-.5px;}
-.logo-pixel{width:36px;height:36px;background:var(--brick);border:3px solid var(--ink);position:relative;box-shadow:3px 3px 0 var(--ink);flex-shrink:0;}
-.logo-pixel::before{content:"";position:absolute;top:6px;left:6px;right:6px;bottom:14px;background:var(--paper);border-bottom:2px solid var(--ink);}
-.logo-pixel::after{content:"";position:absolute;bottom:4px;left:12px;width:8px;height:10px;background:var(--ink);}
-.bell{width:40px;height:40px;background:var(--paper);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center;cursor:pointer;font-size:18px;transition:all .1s;}
-.bell:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
-.bell-dot{position:absolute;margin-left:22px;margin-top:-22px;width:10px;height:10px;background:var(--brick);border:2px solid var(--ink);border-radius:50%;}
-.loc-bar{margin-top:12px;background:var(--paper);border:3px solid var(--ink);padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);}
-.loc-bar:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
-.loc-pin{font-size:16px;}.loc-text{flex:1;font-weight:700;}.loc-arrow{font-family:'VT323';font-size:22px;color:var(--brick);}
-
-/* MARQUEE */
-.marquee{background:var(--ink);color:var(--mustard);padding:6px 0;font-family:'DotGothic16';font-size:13px;overflow:hidden;white-space:nowrap;border-bottom:3px solid var(--ink);}
-.marquee-track{display:inline-block;animation:mScroll 22s linear infinite;padding-left:100%;}
-@keyframes mScroll{from{transform:translateX(0);}to{transform:translateX(-100%);}}
-.marquee-track span{margin-right:48px;}
-.marquee-track span::before{content:"★ ";color:var(--brick);}
-
-/* STEPS */
-.hero{padding:20px 18px 0;}
-.hero-title{font-family:'DotGothic16',sans-serif;font-size:28px;line-height:1.3;margin-bottom:4px;}
-.hero-title span{color:var(--brick);}
-.hero-sub{font-size:14px;color:var(--ink-soft);margin-bottom:16px;}
-.step-card{margin:0 18px 16px;background:var(--paper);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:16px;}
-.step-card-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.step-num{font-family:'DotGothic16';width:28px;height:28px;background:var(--brick);color:var(--paper);border:2px solid var(--ink);display:grid;place-items:center;font-size:16px;}
-.step-label{font-weight:700;font-size:15px;}
-.chip-row{display:flex;flex-wrap:wrap;gap:8px;}
-.chip{padding:7px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gaegu';font-weight:700;font-size:15px;cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:all .1s;}
-.chip:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink);}
-.chip.active{background:var(--brick);color:var(--paper);}
-.select{width:100%;padding:10px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gowun Dodum';font-size:15px;font-weight:700;box-shadow:3px 3px 0 var(--ink);appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(-45deg,transparent 50%,var(--ink) 50%);background-position:calc(100% - 16px) 18px,calc(100% - 10px) 18px;background-size:6px 6px;background-repeat:no-repeat;}
-
-/* CATEGORY FILTER - 크고 직관적 */
-.cat-filter{padding:0 18px 16px;display:flex;gap:8px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
-.cat-filter::-webkit-scrollbar{display:none;}
-.cat-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 14px;background:var(--cream);border:2.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer;transition:all .1s;min-width:64px;flex-shrink:0;position:relative;}
-.cat-btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
-.cat-btn.on{background:var(--brick);color:var(--paper);}
-.cat-btn .cat-ico{font-size:22px;}
-.cat-btn .cat-lbl{font-family:'DotGothic16';font-size:11px;white-space:nowrap;}
-.cat-badge{position:absolute;top:-6px;right:-6px;background:var(--brick);color:var(--paper);font-family:'DotGothic16';font-size:10px;min-width:18px;height:18px;border:2px solid var(--ink);border-radius:0;display:flex;align-items:center;justify-content:center;padding:0 3px;}
-.cat-btn.on .cat-badge{background:var(--paper);color:var(--brick);}
-
-/* SHOP LIST */
-.list-head{display:flex;justify-content:space-between;align-items:center;padding:0 18px 10px;}
-.list-title{font-family:'DotGothic16';font-size:20px;}
-.list-title em{color:var(--brick);font-style:normal;}
-.shop-list{padding:0 18px;display:flex;flex-direction:column;gap:10px;}
-
-/* SHOP CARD - 층수 왼쪽 세로 배지 */
-.shop{background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:0;cursor:pointer;transition:all .12s;position:relative;overflow:hidden;display:flex;}
-.shop:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
-.shop.vacant{background:repeating-linear-gradient(45deg,var(--paper),var(--paper) 8px,#F3E9CE 8px,#F3E9CE 16px);}
-.floor-badge{background:var(--ink);color:var(--mustard);font-family:'DotGothic16';font-size:12px;padding:0 10px;display:flex;align-items:center;justify-content:center;min-width:44px;flex-shrink:0;white-space:nowrap;}
-.floor-badge.b{background:var(--moss);}
-.floor-badge.f1{background:var(--sky);color:var(--ink);}
-.floor-badge.f2{background:var(--mustard-deep);color:var(--ink);}
-.floor-badge.vac{background:var(--brick);}
-.shop-body{display:flex;align-items:center;gap:12px;padding:12px;flex:1;min-width:0;}
-.shop-icon{width:50px;height:50px;border:3px solid var(--ink);display:grid;place-items:center;font-size:24px;flex-shrink:0;box-shadow:2px 2px 0 var(--ink);}
-.icon-food{background:#FFD56B;}.icon-beauty{background:#F6B4CB;}.icon-realestate{background:#A7C6E5;}.icon-mart{background:#B8D67A;}.icon-edu{background:#C8B0E5;}.icon-fashion{background:#F5A97B;}.icon-life{background:#E5D5A7;}.icon-etc{background:#D4D4D4;}.icon-vacant{background:#E8DCC0;}
-.shop-info{flex:1;min-width:0;}
-.shop-name{font-weight:700;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.shop-meta{font-size:12px;color:var(--ink-soft);margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.shop-tag{padding:2px 7px;background:var(--cream);border:1.5px solid var(--ink);font-size:11px;font-weight:700;}
-.shop-tag.room{background:var(--mustard);}
-.shop-arrow{font-family:'VT323';font-size:28px;color:var(--brick);}
-.vacancy-badge{position:absolute;top:6px;right:6px;background:var(--brick);color:var(--paper);font-family:'DotGothic16';font-size:11px;padding:2px 6px;border:2px solid var(--ink);transform:rotate(6deg);}
-
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 18px;margin-bottom:16px;}
-.stat{background:var(--moss);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:10px 8px;text-align:center;color:var(--paper);}
-.stat:nth-child(2){background:var(--sky);}.stat:nth-child(3){background:var(--pink);}
-.stat-num{font-family:'DotGothic16';font-size:22px;line-height:1;color:var(--paper);}
-.stat-lbl{font-size:11px;margin-top:4px;font-weight:700;}
-
-/* DETAIL SHEET */
-.sheet{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;background:rgba(43,29,16,.4);}
-.sheet.open{display:flex;}
-.sheet-inner{width:100%;max-width:480px;background:var(--paper);border-top:3px solid var(--ink);border-left:3px solid var(--ink);border-right:3px solid var(--ink);padding:20px 18px 30px;animation:slideUp .3s cubic-bezier(.2,.8,.3,1.1);max-height:90vh;overflow-y:auto;}
-@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.sheet-handle{width:56px;height:5px;background:var(--ink);margin:0 auto 16px;}
-.sheet-title-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px;}
-.sheet-icon{width:56px;height:56px;border:3px solid var(--ink);display:grid;place-items:center;font-size:28px;flex-shrink:0;box-shadow:3px 3px 0 var(--ink);}
-.sheet-name{font-family:'DotGothic16';font-size:24px;line-height:1.2;}
-.sheet-cat{color:var(--brick);font-weight:700;font-size:14px;margin-top:4px;}
-.sheet-floor-tag{display:inline-block;background:var(--ink);color:var(--mustard);font-family:'DotGothic16';font-size:12px;padding:3px 10px;margin-top:6px;}
-.sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
-.sg-cell{background:var(--cream);border:2px solid var(--ink);padding:10px;}
-.sg-lbl{font-size:11px;color:var(--ink-soft);font-weight:700;}
-.sg-val{font-weight:700;font-size:15px;margin-top:2px;}
-.cta-row{display:flex;gap:8px;margin-top:14px;}
-.cta{flex:1;padding:12px;font-family:'DotGothic16';font-size:15px;border:3px solid var(--ink);cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:all .1s;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;}
-.cta:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
-.cta-call{background:var(--moss);color:var(--paper);}
-.cta-chat{background:var(--brick);color:var(--paper);}
-.cta-save{background:var(--mustard);}
-
-/* LIKE */
-.like-section{display:flex;align-items:center;gap:10px;margin:14px 0 0;padding:12px;background:var(--cream);border:2px solid var(--ink);}
-.like-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--paper);border:3px solid var(--ink);font-family:'DotGothic16';font-size:16px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:all .1s;user-select:none;}
-.like-btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
-.like-btn.liked{background:var(--brick);color:var(--paper);}
-.like-heart{font-size:20px;transition:transform .2s;}
-.like-btn.liked .like-heart{transform:scale(1.3);}
-.like-count{font-size:18px;}
-
-/* REVIEW - 인스타그램 스타일 */
-.review-section{margin-top:16px;}
-.review-title{font-family:'DotGothic16';font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.review-title em{color:var(--brick);font-style:normal;font-size:13px;}
-.review-list{display:flex;flex-direction:column;}
-.review-item{padding:12px 0;border-bottom:1.5px solid var(--grid);display:flex;gap:10px;}
-.review-item:last-child{border-bottom:0;}
-.review-avatar{width:34px;height:34px;background:var(--mustard);border:2px solid var(--ink);display:grid;place-items:center;font-family:'DotGothic16';font-size:13px;flex-shrink:0;}
-.review-content{flex:1;}
-.review-nick{font-weight:700;font-size:13px;}
-.review-text{font-size:14px;margin-top:3px;line-height:1.6;word-break:break-all;}
-.review-date{font-size:11px;color:var(--ink-soft);margin-top:4px;}
-.review-input-row{display:flex;gap:8px;align-items:flex-end;margin-top:12px;padding-top:12px;border-top:2px solid var(--ink);}
-.review-avatar-me{width:34px;height:34px;background:var(--moss);color:var(--paper);border:2px solid var(--ink);display:grid;place-items:center;font-family:'DotGothic16';font-size:13px;flex-shrink:0;}
-.review-input{flex:1;background:var(--cream);border:2px solid var(--ink);padding:8px 10px;font-family:'Gowun Dodum';font-size:14px;resize:none;min-height:38px;max-height:100px;overflow-y:auto;}
-.review-input:focus{outline:none;border-color:var(--brick);}
-.review-send{padding:8px 12px;background:var(--brick);color:var(--paper);border:2px solid var(--ink);font-family:'DotGothic16';font-size:14px;cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:all .1s;white-space:nowrap;}
-.review-send:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink);}
-
-/* TABBAR */
-.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:90;max-width:480px;margin:0 auto;background:var(--paper);border-top:3px solid var(--ink);border-left:3px solid var(--ink);border-right:3px solid var(--ink);display:grid;grid-template-columns:repeat(4,1fr);height:70px;}
-.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font-family:'Gaegu';font-weight:700;font-size:12px;color:var(--ink-soft);border-right:2px solid var(--ink);}
-.tab:last-child{border-right:0;}
-.tab-ico{font-size:22px;}
-.tab.active{background:var(--brick);color:var(--paper);}
-
-/* VIEWS */
-.view{display:none;animation:fadeIn .25s;}
-.view.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-/* COMMUNITY */
-.board{padding:16px 18px;}
-.board-head{font-family:'DotGothic16';font-size:20px;margin-bottom:12px;}
-.post{background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:14px;margin-bottom:10px;}
-.post-tag{display:inline-block;background:var(--moss);color:var(--paper);font-family:'DotGothic16';font-size:11px;padding:2px 8px;border:2px solid var(--ink);margin-bottom:8px;}
-.post-tag.sale{background:var(--brick);}
-.post-tag.notice{background:var(--sky);}
-.post-title{font-weight:700;font-size:15px;}
-.post-meta{font-size:11px;color:var(--ink-soft);margin-top:6px;display:flex;gap:10px;}
-.post-heart{color:var(--brick);}
-
-/* MATCH */
-.match-section{padding:16px 18px;}
-.match-head{font-family:'DotGothic16';font-size:20px;margin-bottom:12px;}
-.match-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.match-stat{background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:14px;text-align:center;}
-.match-stat-num{font-family:'DotGothic16';font-size:28px;color:var(--brick);}
-.match-stat-lbl{font-size:12px;color:var(--ink-soft);margin-top:4px;font-weight:700;}
-.vacant-card{background:var(--paper);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);margin-bottom:10px;overflow:hidden;}
-.vacant-card-top{background:var(--brick);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
-.vacant-card-floor{font-family:'DotGothic16';font-size:22px;color:var(--paper);}
-.vacant-card-room{font-family:'DotGothic16';font-size:15px;color:rgba(255,255,255,.85);}
-.vacant-card-body{padding:12px 14px;}
-.vacant-card-name{font-weight:700;font-size:14px;margin-bottom:8px;}
-.want-tags{display:flex;gap:6px;flex-wrap:wrap;}
-.want-tag{padding:3px 10px;background:var(--mustard);border:1.5px solid var(--ink);font-size:11px;font-weight:700;}
-.interest-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
-.ibar{flex:1;height:6px;background:var(--grid);border:1.5px solid var(--ink);}
-.ifill{height:100%;background:var(--brick);}
-
-/* MY */
-.profile{padding:20px 18px;text-align:center;}
-.avatar{width:80px;height:80px;margin:0 auto 10px;background:var(--mustard);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);display:grid;place-items:center;font-size:40px;}
-.profile-name{font-family:'DotGothic16';font-size:22px;}
-.profile-role{color:var(--ink-soft);font-size:13px;margin-top:4px;}
-.menu-list{padding:0 18px;display:flex;flex-direction:column;gap:8px;margin-top:16px;}
-.menu-item{background:var(--paper);border:3px solid var(--ink);padding:14px;font-weight:700;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);}
-.menu-item:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);}
-.menu-ico{font-size:22px;}
-.menu-arrow{margin-left:auto;font-family:'VT323';font-size:22px;color:var(--brick);}
-
-/* UTIL */
-.loading{padding:40px 18px;text-align:center;font-family:'DotGothic16';font-size:16px;color:var(--ink-soft);}
-.loader-pixel{display:inline-block;width:16px;height:16px;background:var(--brick);margin-right:4px;animation:blink 1s steps(2) infinite;vertical-align:middle;}
-.loader-pixel:nth-child(2){animation-delay:.2s;background:var(--mustard);}
-.loader-pixel:nth-child(3){animation-delay:.4s;background:var(--moss);}
-@keyframes blink{50%{opacity:.2;}}
-.empty{padding:40px 18px;text-align:center;color:var(--ink-soft);}
-.empty-ico{font-size:48px;margin-bottom:8px;}
-.vacant-hero{background:var(--mustard);border:3px solid var(--ink);padding:16px;text-align:center;margin:14px 0;box-shadow:4px 4px 0 var(--ink);}
-.vacant-hero h3{font-family:'DotGothic16';font-size:18px;margin-bottom:6px;}
-.vacant-hero p{font-size:13px;color:var(--ink-soft);}
-
-/* ===== COMMUNITY ===== */
-.board{padding:0;}
-.board-header{
-  position:sticky;top:0;z-index:10;
-  background:var(--paper);border-bottom:3px solid var(--ink);
-  padding:14px 18px 10px;
-}
-.board-head{font-family:'DotGothic16';font-size:20px;margin-bottom:10px;}
-.cat-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;}
-.cat-tabs::-webkit-scrollbar{display:none;}
-.ctab{
-  padding:6px 12px;background:var(--cream);border:2px solid var(--ink);
-  font-family:'DotGothic16';font-size:12px;white-space:nowrap;
-  cursor:pointer;box-shadow:2px 2px 0 var(--ink);flex-shrink:0;
-}
-.ctab.on{background:var(--brick);color:var(--paper);}
-.write-btn{
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  margin:12px 18px 0;padding:12px;
-  background:var(--mustard);border:3px solid var(--ink);
-  font-family:'DotGothic16';font-size:15px;
-  cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:all .1s;
-}
-.write-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
-.post-list{padding:12px 18px;display:flex;flex-direction:column;gap:10px;}
-.post{
-  background:var(--paper);border:3px solid var(--ink);
-  box-shadow:4px 4px 0 var(--ink);overflow:hidden;cursor:pointer;
-  transition:all .12s;
-}
-.post:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
-.post-top{padding:12px 14px 8px;border-bottom:1.5px solid var(--grid);}
-.post-tag{display:inline-block;color:var(--paper);font-family:'DotGothic16';font-size:11px;padding:2px 8px;border:2px solid var(--ink);margin-bottom:8px;}
-.post-tag.sale{background:var(--brick);}
-.post-tag.notice{background:var(--sky);color:var(--ink);}
-.post-tag.qna{background:var(--moss);}
-.post-title{font-weight:700;font-size:15px;line-height:1.4;}
-.post-content-preview{font-size:13px;color:var(--ink-soft);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.post-bottom{padding:8px 14px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-soft);}
-.post-nick{font-weight:700;}
-.post-apt{background:var(--cream);border:1.5px solid var(--ink);padding:1px 6px;font-size:11px;}
-.post-actions{margin-left:auto;display:flex;gap:10px;align-items:center;}
-.post-like{cursor:pointer;display:flex;align-items:center;gap:3px;}
-.post-like.liked{color:var(--brick);}
-.post-report{cursor:pointer;color:var(--ink-soft);font-size:11px;}
-
-/* 글쓰기 모달 */
-.modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center;background:rgba(43,29,16,.5);}
+.ms{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+.ms-fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#F8F9FF;color:#0B1C30;min-height:100dvh;}
+h1,h2,h3{font-family:'Manrope',sans-serif;}
+::-webkit-scrollbar{display:none;}
+.glass{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+.panel{display:none;}.panel.active{display:block;animation:fadeUp .2s ease;}
+.view{display:none;}.view.active{display:block;animation:fadeUp .2s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.scroll-x{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.g-a{background:linear-gradient(135deg,#667EEA,#764BA2);}
+.g-b{background:linear-gradient(135deg,#F093FB,#F5576C);}
+.g-c{background:linear-gradient(135deg,#4FACFE,#00F2FE);}
+.g-d{background:linear-gradient(135deg,#43E97B,#38F9D7);}
+.g-e{background:linear-gradient(135deg,#FA709A,#FEE140);}
+.g-f{background:linear-gradient(135deg,#A18CD1,#FBC2EB);}
+.g-g{background:linear-gradient(135deg,#ffecd2,#fcb69f);}
+.g-h{background:linear-gradient(135deg,#a1c4fd,#c2e9fb);}
+.fc-b{background:#2E7D32;color:#fff;}.fc-1{background:#1565C0;color:#fff;}
+.fc-2{background:#6A1B9A;color:#fff;}.fc-3{background:#E65100;color:#fff;}
+.fc-4{background:#AD1457;color:#fff;}.fc-etc{background:#37474F;color:#fff;}
+@keyframes heartPop{0%{transform:scale(1);}50%{transform:scale(1.4);}100%{transform:scale(1);}}
+.heart-pop{animation:heartPop .3s ease;}
+.modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center;background:rgba(11,28,48,.4);}
 .modal.open{display:flex;}
-.modal-inner{
-  width:100%;max-width:480px;background:var(--paper);
-  border-top:3px solid var(--ink);border-left:3px solid var(--ink);border-right:3px solid var(--ink);
-  padding:20px 18px 30px;animation:slideUp .3s cubic-bezier(.2,.8,.3,1.1);
-  max-height:90vh;overflow-y:auto;
-}
-.modal-head{font-family:'DotGothic16';font-size:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
-.modal-close{font-size:22px;cursor:pointer;font-family:'VT323';color:var(--brick);}
-.form-label{font-family:'DotGothic16';font-size:13px;margin-bottom:6px;display:block;}
-.form-select{width:100%;padding:10px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gowun Dodum';font-size:14px;margin-bottom:12px;appearance:none;}
-.form-input{width:100%;padding:10px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gowun Dodum';font-size:14px;margin-bottom:12px;}
-.form-input:focus,.form-select:focus{outline:none;border-color:var(--brick);}
-.form-textarea{width:100%;padding:10px 12px;background:var(--cream);border:2px solid var(--ink);font-family:'Gowun Dodum';font-size:14px;resize:none;min-height:100px;margin-bottom:12px;}
-.form-textarea:focus{outline:none;border-color:var(--brick);}
-.form-submit{
-  width:100%;padding:14px;background:var(--brick);color:var(--paper);
-  border:3px solid var(--ink);font-family:'DotGothic16';font-size:16px;
-  cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:all .1s;
-}
-.form-submit:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink);}
-.pending-notice{
-  margin:0 18px 10px;padding:10px 12px;
-  background:var(--mustard);border:2px solid var(--ink);
-  font-size:12px;font-family:'DotGothic16';
-}
-
-/* 포스트 상세 시트 */
-.post-detail-body{padding:14px;}
-.post-detail-title{font-family:'DotGothic16';font-size:20px;margin-bottom:8px;}
-.post-detail-content{font-size:14px;line-height:1.7;color:var(--ink);margin-bottom:14px;white-space:pre-wrap;}
-.post-detail-meta{font-size:12px;color:var(--ink-soft);padding-bottom:12px;border-bottom:2px solid var(--grid);display:flex;gap:10px;flex-wrap:wrap;}
-
+.modal-inner{width:100%;max-width:480px;background:#fff;border-radius:24px 24px 0 0;padding:20px 20px 32px;animation:slideUp .3s cubic-bezier(.2,.8,.3,1);max-height:90dvh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-handle{width:40px;height:4px;background:#C3C6D6;border-radius:2px;margin:0 auto 16px;}
+@keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-100%);}}
 </style>
 </head>
 <body>
-<div class="app">
 
-  <div class="header">
-    <div class="header-row">
-      <div class="logo">
-        <div class="logo-pixel"></div>
-        <div>우리동네상가<br><span style="font-size:11px;font-family:'Gaegu';font-weight:700;">아파트 상가 정보 · BETA</span></div>
+<!-- HEADER -->
+<header class="glass bg-[#F8F9FF]/85 sticky top-0 z-50 border-b border-[#C3C6D6]/30 shadow-[0_2px_24px_rgba(11,28,48,.06)]">
+  <div class="flex items-center justify-between px-5 py-3 max-w-lg mx-auto">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
+        <span class="material-symbols-outlined ms-fill text-white" style="font-size:18px;">apartment</span>
       </div>
-      <div class="bell">🔔<div class="bell-dot"></div></div>
+      <h1 class="font-display font-extrabold text-primary text-lg tracking-tight">우리동네상가</h1>
     </div>
-    <div class="loc-bar" onclick="switchTab('home')">
-      <span class="loc-pin">📍</span>
-      <span class="loc-text" id="loc-text">부산 해운대구 · 아파트 선택</span>
-      <span class="loc-arrow">▶</span>
-    </div>
-  </div>
-
-  <div class="marquee">
-    <div class="marquee-track" id="marquee-track">
-      <span>로딩 중...</span>
+    <div class="flex gap-1">
+      <button class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors">
+        <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">search</span>
+      </button>
+      <button class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors relative">
+        <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">notifications</span>
+        <div class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-[#F8F9FF]"></div>
+      </button>
     </div>
   </div>
-
-  <!-- HOME -->
-  <div class="view active" id="view-home">
-    <div class="hero">
-      <div class="hero-title">우리 아파트<br>상가 <span>한눈에</span> 🏘️</div>
-      <div class="hero-sub">주민과 사장님을 이어주는 동네 정보</div>
-    </div>
-
-    <div class="step-card">
-      <div class="step-card-head"><div class="step-num">1</div><div class="step-label">지역 선택</div></div>
-      <div class="chip-row" id="gu-chips"></div>
-      <div class="chip-row" id="dong-chips" style="margin-top:8px;"></div>
-    </div>
-
-    <div class="step-card" id="step-apt" style="display:none;">
-      <div class="step-card-head"><div class="step-num">2</div><div class="step-label">아파트 선택</div></div>
-      <select class="select" id="apt-select" onchange="selectApt(this.value)">
-        <option value="">— 아파트를 선택하세요 —</option>
-      </select>
-    </div>
-
-    <!-- 업종 필터 - 크고 직관적 -->
-    <div class="cat-filter" id="cat-filter" style="display:none;">
-      <div class="cat-btn on" data-f="all"><span class="cat-ico">🏪</span><span class="cat-lbl">전체</span></div>
-      <div class="cat-btn" data-f="food"><span class="cat-ico">🍜</span><span class="cat-lbl">음식/카페</span></div>
-      <div class="cat-btn" data-f="beauty"><span class="cat-ico">💇</span><span class="cat-lbl">미용/운동</span></div>
-      <div class="cat-btn" data-f="realestate"><span class="cat-ico">🏡</span><span class="cat-lbl">부동산</span></div>
-      <div class="cat-btn" data-f="mart"><span class="cat-ico">🥬</span><span class="cat-lbl">마트</span></div>
-      <div class="cat-btn" data-f="vacant"><span class="cat-ico">❓</span><span class="cat-lbl">공실</span></div>
-    </div>
-
-    <div id="shop-section" style="display:none;">
-      <div class="list-head">
-        <div class="list-title">상가 <em id="apt-title">목록</em></div>
+  <div class="px-5 pb-3 max-w-lg mx-auto">
+    <div class="flex items-center gap-2 bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-3 py-2">
+      <button onclick="goBack()" id="back-btn" style="opacity:.35" class="flex items-center justify-center transition-opacity">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">arrow_back_ios</span>
+      </button>
+      <div class="flex items-center gap-1 flex-1 overflow-hidden font-mono text-xs text-[#737685]">
+        <span class="material-symbols-outlined ms-fill text-primary" style="font-size:14px;">home</span>
+        <span class="text-[#737685]">/</span>
+        <span class="text-primary font-semibold cursor-pointer hover:underline truncate" id="crumb-city" style="display:none" onclick="goCity()"></span>
+        <span id="sep2" style="display:none" class="text-[#737685]">/</span>
+        <span class="text-primary font-semibold cursor-pointer hover:underline truncate" id="crumb-gu" style="display:none" onclick="goGu()"></span>
+        <span id="sep3" style="display:none" class="text-[#737685]">/</span>
+        <span class="font-semibold text-[#0B1C30] truncate" id="crumb-apt"></span>
       </div>
-      <div class="shop-list" id="shop-list"></div>
-    </div>
-
-    <div id="loading" class="loading" style="display:none;">
-      <span class="loader-pixel"></span><span class="loader-pixel"></span><span class="loader-pixel"></span>
-      <div style="margin-top:10px;">상가 정보 불러오는 중...</div>
-    </div>
-    <div id="empty" class="empty" style="display:none;">
-      <div class="empty-ico">🏚️</div><div>아파트를 선택하면<br>상가 정보가 나타나요</div>
+      <div class="font-mono text-[10px] text-[#737685] bg-[#D3E4FE] px-2 py-0.5 rounded-md whitespace-nowrap flex-shrink-0" id="item-count">로딩중...</div>
     </div>
   </div>
+  <div class="overflow-hidden border-t border-[#C3C6D6]/30 bg-[#0B1C30] py-1.5">
+    <span id="marquee-track" style="display:inline-block;animation:scroll 24s linear infinite;padding-left:100%;font-family:'IBM Plex Mono';font-size:11px;color:#F0B84A;white-space:nowrap;">
+      <span style="margin-right:40px;">★ 로딩 중...</span>
+    </span>
+  </div>
+</header>
 
-  <!-- COMMUNITY -->
-  <div class="view" id="view-community">
-    <div class="board">
-      <div class="board-header">
-        <div class="board-head">동네 사랑방 💬</div>
-        <div class="cat-tabs">
-          <div class="ctab on" data-c="all">전체</div>
-          <div class="ctab" data-c="할인/이벤트">🎟 할인/이벤트</div>
-          <div class="ctab" data-c="공지">📢 공지</div>
-          <div class="ctab" data-c="질문/추천">❓ 질문/추천</div>
+<!-- HOME VIEW -->
+<div class="view active" id="view-home">
+<main class="max-w-lg mx-auto px-5 pt-6 pb-36">
+  <!-- PANEL: 광역시 -->
+  <div class="panel active" id="panel-city">
+    <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight mb-1">지역 선택</h2>
+    <p class="text-[#434654] text-sm mb-6">광역시 또는 특별시를 선택하세요</p>
+    <div class="grid grid-cols-3 gap-3 mb-6" id="city-grid">
+      <div class="col-span-3 text-center py-8 text-[#737685]">데이터 로딩 중...</div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-white rounded-2xl p-4 border border-[#C3C6D6]/20 shadow-sm">
+        <span class="font-display font-extrabold text-3xl text-primary" id="stat-total">—</span>
+        <p class="text-[11px] font-bold text-[#737685] uppercase tracking-widest mt-1">등록 상가</p>
+      </div>
+      <div class="bg-white rounded-2xl p-4 border border-[#C3C6D6]/20 shadow-sm">
+        <span class="font-display font-extrabold text-3xl text-secondary" id="stat-vacant-all">—</span>
+        <p class="text-[11px] font-bold text-[#737685] uppercase tracking-widest mt-1">전체 공실</p>
+      </div>
+    </div>
+  </div>
+  <!-- PANEL: 구 -->
+  <div class="panel" id="panel-gu">
+    <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight mb-1">구 선택</h2>
+    <p class="text-[#434654] text-sm mb-6" id="gu-sub">지역을 선택하세요</p>
+    <div class="grid grid-cols-3 gap-3" id="gu-grid"></div>
+  </div>
+  <!-- PANEL: 아파트 -->
+  <div class="panel" id="panel-apt">
+    <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight mb-1">아파트 선택</h2>
+    <p class="text-[#434654] text-sm mb-6" id="apt-sub">1,000세대 이상 단지</p>
+    <div class="grid grid-cols-3 gap-3" id="apt-grid"></div>
+  </div>
+  <!-- PANEL: 상가 -->
+  <div class="panel" id="panel-shop">
+    <div class="relative overflow-hidden rounded-2xl mb-5 p-5 cursor-pointer" style="background:linear-gradient(135deg,#003D9B,#0066FF);" onclick="switchTab('match')">
+      <div class="relative z-10 flex items-center justify-between">
+        <div>
+          <div class="text-white/70 text-[10px] font-bold uppercase tracking-widest mb-1 font-mono">공실 현황</div>
+          <div class="font-display font-extrabold text-white text-4xl leading-none" id="vacant-count">—</div>
+          <div class="text-white/80 text-sm mt-1" id="shop-apt-name">아파트 상가</div>
+        </div>
+        <div class="bg-white/15 text-white text-sm font-bold px-4 py-2 rounded-xl">매칭 보기 →</div>
+      </div>
+      <div class="absolute right-2 top-1/2 -translate-y-1/2 opacity-10">
+        <span class="material-symbols-outlined ms-fill" style="font-size:100px;">store</span>
+      </div>
+    </div>
+    <div class="scroll-x pb-1 mb-5" id="cat-filter">
+      <button onclick="setFilter('all',this)" data-f="all" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary text-white text-xs font-bold whitespace-nowrap flex-shrink-0">
+        <span class="material-symbols-outlined ms text-white" style="font-size:14px;">apps</span>전체
+      </button>
+      <button onclick="setFilter('food',this)" data-f="food" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">🍜 음식/카페</button>
+      <button onclick="setFilter('beauty',this)" data-f="beauty" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">💇 미용/운동</button>
+      <button onclick="setFilter('realestate',this)" data-f="realestate" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">🏡 부동산</button>
+      <button onclick="setFilter('mart',this)" data-f="mart" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">🥬 마트</button>
+      <button onclick="setFilter('edu',this)" data-f="edu" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">📚 교육</button>
+      <button onclick="setFilter('vacant',this)" data-f="vacant" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">❓ 공실</button>
+    </div>
+    <div id="shop-list" class="space-y-1.5"></div>
+  </div>
+</main>
+</div>
+
+<!-- 사랑방 VIEW -->
+<div class="view" id="view-community">
+<main class="max-w-lg mx-auto px-5 pt-6 pb-36">
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight">동네 사랑방</h2>
+    <button onclick="openWriteModal()" class="flex items-center gap-1.5 bg-primary text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95">
+      <span class="material-symbols-outlined ms text-white" style="font-size:16px;">edit</span>글쓰기
+    </button>
+  </div>
+  <div class="scroll-x mb-4">
+    <button onclick="setCommunityTab('all',this)" class="ctab flex-shrink-0 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold whitespace-nowrap">전체</button>
+    <button onclick="setCommunityTab('할인/이벤트',this)" class="ctab flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap">🎟 할인/이벤트</button>
+    <button onclick="setCommunityTab('공지',this)" class="ctab flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap">📢 공지</button>
+    <button onclick="setCommunityTab('질문/추천',this)" class="ctab flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap">❓ 질문/추천</button>
+  </div>
+  <div class="font-mono text-[11px] text-[#737685] bg-[#EFF4FF] border border-[#C3C6D6]/30 rounded-xl px-3 py-2 mb-4">📋 작성한 글은 관리자 승인 후 게시됩니다</div>
+  <div id="post-list" class="space-y-3"><div class="text-center py-12 text-[#737685]">불러오는 중...</div></div>
+</main>
+</div>
+
+<!-- 매칭 VIEW -->
+<div class="view" id="view-match">
+<main class="max-w-lg mx-auto px-5 pt-6 pb-36">
+  <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight mb-5">매칭 & 공실</h2>
+  <div class="grid grid-cols-2 gap-3 mb-5">
+    <div class="bg-white rounded-2xl p-4 border border-[#C3C6D6]/20 shadow-sm border-b-4 border-b-primary">
+      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1">전체 공실</div>
+      <span class="font-display font-extrabold text-3xl text-primary" id="match-vacant-cnt">—</span>
+    </div>
+    <div class="bg-white rounded-2xl p-4 border border-[#C3C6D6]/20 shadow-sm">
+      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1">전체 상가</div>
+      <span class="font-display font-extrabold text-3xl text-[#0B1C30]" id="match-total-cnt">—</span>
+    </div>
+  </div>
+  <div id="vacant-list" class="space-y-3 mb-5"><div class="text-center py-10 text-[#737685]">데이터 로딩 중...</div></div>
+  <div class="bg-[#EFF4FF] border border-[#C3C6D6]/30 rounded-2xl p-5">
+    <div class="font-display font-bold text-lg text-[#0B1C30] mb-2">사장님이라면? 🏪</div>
+    <div class="text-sm text-[#434654] leading-relaxed mb-4">주민 수요 데이터를 보고 어떤 업종이 필요한지 확인하세요</div>
+    <div class="bg-[#0B1C30] text-[#F0B84A] font-mono text-sm py-3 rounded-xl text-center cursor-pointer">📊 주민 수요 리포트 받기</div>
+  </div>
+</main>
+</div>
+
+<!-- MY VIEW -->
+<div class="view" id="view-my">
+<main class="max-w-lg mx-auto px-5 pt-6 pb-36">
+  <div id="my-guest">
+    <div class="text-center py-10">
+      <div class="w-20 h-20 rounded-3xl bg-[#DCE9FF] flex items-center justify-center mx-auto mb-4">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:40px;">person</span>
+      </div>
+      <h2 class="font-display font-extrabold text-2xl text-[#0B1C30] mb-2">로그인이 필요해요</h2>
+      <p class="text-[#434654] text-sm mb-8">닉네임과 비밀번호로 간편 가입</p>
+      <div class="space-y-3 max-w-xs mx-auto">
+        <button onclick="openAuthModal('login')" class="w-full flex items-center justify-center gap-2 bg-primary text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95 shadow-md shadow-primary/20">
+          <span class="material-symbols-outlined ms-fill text-white" style="font-size:18px;">lock</span>로그인
+        </button>
+        <button onclick="openAuthModal('register')" class="w-full flex items-center justify-center gap-2 bg-[#DCE9FF] text-primary py-3.5 rounded-2xl font-bold text-sm hover:bg-[#D3E4FE] transition-colors active:scale-95 border border-primary/20">
+          <span class="material-symbols-outlined ms text-primary" style="font-size:18px;">person_add</span>회원가입
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="my-loggedin" style="display:none;">
+    <div class="flex items-center gap-4 mb-6 p-5 bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm">
+      <div class="w-14 h-14 rounded-2xl g-a flex items-center justify-center flex-shrink-0 shadow-md">
+        <span class="text-white font-display font-extrabold text-xl" id="my-avatar-txt">나</span>
+      </div>
+      <div>
+        <h3 class="font-display font-bold text-xl text-[#0B1C30]" id="my-nick">—</h3>
+        <p class="text-sm text-[#434654]" id="my-apt-txt">우리동네상가 회원</p>
+        <div class="flex items-center gap-1 mt-1">
+          <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+          <span class="text-xs text-green-600 font-semibold">인증 회원</span>
         </div>
       </div>
-      <div class="write-btn" onclick="openWriteModal()">✏️ 글쓰기</div>
-      <div class="pending-notice">📋 작성한 글은 관리자 승인 후 게시돼요</div>
-      <div class="post-list" id="post-list">
-        <div class="loading"><span class="loader-pixel"></span><span class="loader-pixel"></span><span class="loader-pixel"></span><div style="margin-top:10px;">사랑방 불러오는 중...</div></div>
-      </div>
     </div>
-  </div>
-
-  <!-- MATCH -->
-  <div class="view" id="view-match">
-    <div class="match-section">
-      <div class="match-head">매칭 & 공실 현황 🤝</div>
-      <div class="match-stats">
-        <div class="match-stat"><div class="match-stat-num" id="match-vacant-cnt">—</div><div class="match-stat-lbl">📍 현재 공실</div></div>
-        <div class="match-stat"><div class="match-stat-num" id="match-total-cnt">—</div><div class="match-stat-lbl">🏪 전체 상가</div></div>
-      </div>
-      <div id="vacant-list">
-        <div class="empty"><div class="empty-ico">🏚️</div><div>홈에서 아파트를<br>먼저 선택해주세요</div></div>
-      </div>
-      <div style="margin-top:16px;background:var(--mustard);border:3px solid var(--ink);padding:16px;box-shadow:4px 4px 0 var(--ink);">
-        <div style="font-family:'DotGothic16';font-size:16px;margin-bottom:8px;">사장님이라면?</div>
-        <div style="font-size:13px;color:var(--ink-soft);line-height:1.6;">주민 수요 데이터를 보고<br>어떤 업종이 필요한지 확인하세요</div>
-        <div style="margin-top:10px;background:var(--ink);color:var(--mustard);font-family:'DotGothic16';font-size:13px;padding:8px;text-align:center;cursor:pointer;">📊 주민 수요 리포트 받기</div>
-      </div>
+    <div class="space-y-2">
+      <button onclick="showMySavedShops()" class="w-full flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] transition-colors active:scale-[.98] shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-[#DCE9FF] flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined ms-fill text-primary" style="font-size:20px;">favorite</span>
+        </div>
+        <span class="font-bold text-[#0B1C30] flex-1 text-left">저장한 상가</span>
+        <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+      </button>
+      <button onclick="showMyReviews()" class="w-full flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] transition-colors active:scale-[.98] shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-[#DCE9FF] flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined ms-fill text-primary" style="font-size:20px;">rate_review</span>
+        </div>
+        <span class="font-bold text-[#0B1C30] flex-1 text-left">내가 쓴 리뷰/댓글</span>
+        <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+      </button>
+      <button onclick="showMyLikes()" class="w-full flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] transition-colors active:scale-[.98] shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-[#DCE9FF] flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined ms-fill text-red-400" style="font-size:20px;">favorite</span>
+        </div>
+        <span class="font-bold text-[#0B1C30] flex-1 text-left">좋아요한 상가/글</span>
+        <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+      </button>
+      <button onclick="openChangePwModal()" class="w-full flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] transition-colors active:scale-[.98] shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-[#DCE9FF] flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined ms-fill text-primary" style="font-size:20px;">lock</span>
+        </div>
+        <span class="font-bold text-[#0B1C30] flex-1 text-left">비밀번호 변경</span>
+        <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+      </button>
+      <button onclick="logout()" class="w-full flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#C3C6D6]/20 hover:bg-red-50 transition-colors active:scale-[.98] shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined ms text-red-400" style="font-size:20px;">logout</span>
+        </div>
+        <span class="font-bold text-red-400 flex-1 text-left">로그아웃</span>
+      </button>
     </div>
+    <div class="text-center mt-6 font-mono text-[11px] text-[#737685]">v0.3.0 · 우리동네상가</div>
   </div>
-
-  <!-- MY -->
-  <div class="view" id="view-my">
-    <!-- 비로그인 -->
-    <div id="my-guest">
-      <div class="profile">
-        <div class="avatar">🏚️</div>
-        <div class="profile-name">로그인이 필요해요</div>
-        <div class="profile-role">닉네임과 비밀번호로 간편 가입</div>
-      </div>
-      <div style="padding:0 18px;display:flex;flex-direction:column;gap:10px;margin-top:8px;">
-        <div class="cta cta-chat" style="box-shadow:4px 4px 0 var(--ink);" onclick="openAuthModal('login')">🔑 로그인</div>
-        <div class="cta cta-save" style="box-shadow:4px 4px 0 var(--ink);" onclick="openAuthModal('register')">✏️ 회원가입</div>
-      </div>
-    </div>
-    <!-- 로그인 상태 -->
-    <div id="my-loggedin" style="display:none;">
-      <div class="profile">
-        <div class="avatar" id="my-avatar">🧑‍🌾</div>
-        <div class="profile-name" id="my-nick">—</div>
-        <div class="profile-role" id="my-apt">우리동네상가 회원</div>
-      </div>
-      <div class="menu-list">
-        <div class="menu-item" onclick="showMySavedShops()"><span class="menu-ico">💾</span>저장한 상가<span class="menu-arrow">▶</span></div>
-        <div class="menu-item" onclick="showMyReviews()"><span class="menu-ico">✍️</span>내가 쓴 리뷰/댓글<span class="menu-arrow">▶</span></div>
-        <div class="menu-item" onclick="showMyLikes()"><span class="menu-ico">❤️</span>좋아요한 상가/글<span class="menu-arrow">▶</span></div>
-        <div class="menu-item" onclick="openChangePwModal()"><span class="menu-ico">🔒</span>비밀번호 변경<span class="menu-arrow">▶</span></div>
-        <div class="menu-item" onclick="logout()" style="color:var(--brick);"><span class="menu-ico">🚪</span>로그아웃<span class="menu-arrow">▶</span></div>
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:24px;font-family:'DotGothic16';font-size:12px;color:var(--ink-soft);">v0.3.0 · 우리동네상가</div>
-  </div>
-
-  <div class="tabbar">
-    <div class="tab active" data-tab="home" onclick="switchTab('home')"><div class="tab-ico">🏠</div><div>홈</div></div>
-    <div class="tab" data-tab="community" onclick="switchTab('community')"><div class="tab-ico">💬</div><div>사랑방</div></div>
-    <div class="tab" data-tab="match" onclick="switchTab('match')"><div class="tab-ico">🤝</div><div>매칭</div></div>
-    <div class="tab" data-tab="my" onclick="switchTab('my')"><div class="tab-ico">👤</div><div>MY</div></div>
-  </div>
+</main>
 </div>
 
-<!-- 로그인/회원가입 모달 -->
-<div class="modal" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
-  <div class="modal-inner">
-    <div class="modal-head">
-      <span id="auth-modal-title">로그인</span>
-      <span class="modal-close" onclick="closeAuthModal()">✕</span>
-    </div>
-    <label class="form-label">닉네임</label>
-    <input class="form-input" id="auth-nick" placeholder="닉네임 입력" maxlength="12" />
-    <div id="nick-check-msg" style="font-size:12px;margin:-8px 0 10px;display:none;"></div>
-    <label class="form-label">비밀번호</label>
-    <input class="form-input" id="auth-pw" type="password" placeholder="비밀번호 입력" maxlength="20" />
-    <div id="auth-mode-toggle" style="text-align:center;font-size:13px;color:var(--ink-soft);margin-bottom:14px;cursor:pointer;" onclick="toggleAuthMode()"></div>
-    <button class="form-submit" id="auth-submit-btn" onclick="submitAuth()">로그인</button>
+<!-- BOTTOM NAV -->
+<nav class="glass fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white/85 border-t border-[#C3C6D6]/30 z-50 rounded-t-2xl shadow-[0_-4px_24px_rgba(11,28,48,.08)]">
+  <div class="grid grid-cols-4" style="padding-bottom:env(safe-area-inset-bottom,0px);">
+    <button onclick="switchTab('home')" data-tab="home" class="nav-btn flex flex-col items-center justify-center py-3 gap-1">
+      <div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center -translate-y-1 shadow-md shadow-primary/30">
+        <span class="material-symbols-outlined ms-fill text-white" style="font-size:20px;">folder_open</span>
+      </div>
+      <span class="text-[10px] font-bold text-primary tracking-wide">탐색</span>
+    </button>
+    <button onclick="switchTab('community')" data-tab="community" class="nav-btn flex flex-col items-center justify-center py-3 gap-1 opacity-50">
+      <span class="material-symbols-outlined ms text-[#434654]" style="font-size:24px;">chat_bubble</span>
+      <span class="text-[10px] font-semibold text-[#737685]">사랑방</span>
+    </button>
+    <button onclick="switchTab('match')" data-tab="match" class="nav-btn flex flex-col items-center justify-center py-3 gap-1 opacity-50">
+      <span class="material-symbols-outlined ms text-[#434654]" style="font-size:24px;">handshake</span>
+      <span class="text-[10px] font-semibold text-[#737685]">매칭</span>
+    </button>
+    <button onclick="switchTab('my')" data-tab="my" class="nav-btn flex flex-col items-center justify-center py-3 gap-1 opacity-50">
+      <span class="material-symbols-outlined ms text-[#434654]" style="font-size:24px;">person</span>
+      <span class="text-[10px] font-semibold text-[#737685]">MY</span>
+    </button>
   </div>
-</div>
+</nav>
 
-<!-- 비밀번호 변경 모달 -->
-<div class="modal" id="changepw-modal" onclick="if(event.target===this)closeChangePwModal()">
-  <div class="modal-inner">
-    <div class="modal-head">
-      <span>비밀번호 변경</span>
-      <span class="modal-close" onclick="closeChangePwModal()">✕</span>
-    </div>
-    <label class="form-label">현재 비밀번호</label>
-    <input class="form-input" id="cur-pw" type="password" placeholder="현재 비밀번호" />
-    <label class="form-label">새 비밀번호</label>
-    <input class="form-input" id="new-pw" type="password" placeholder="새 비밀번호" />
-    <label class="form-label">새 비밀번호 확인</label>
-    <input class="form-input" id="new-pw2" type="password" placeholder="새 비밀번호 확인" />
-    <button class="form-submit" onclick="submitChangePw()">변경하기</button>
-  </div>
+<!-- MODALS -->
+<div class="modal" id="sheet" onclick="if(event.target===this)closeSheet()">
+  <div class="modal-inner" id="sheet-inner" style="padding:0;border-radius:24px 24px 0 0;overflow:hidden;"></div>
 </div>
-
-<!-- MY 서브 시트 -->
-<div class="sheet" id="my-sheet" onclick="if(event.target===this)document.getElementById('my-sheet').classList.remove('open')">
-  <div class="sheet-inner" id="my-sheet-inner"></div>
+<div class="modal" id="post-sheet" onclick="if(event.target===this)document.getElementById('post-sheet').classList.remove('open')">
+  <div class="modal-inner" id="post-sheet-inner"></div>
 </div>
-
-<!-- 글쓰기 모달 -->
 <div class="modal" id="write-modal" onclick="if(event.target===this)closeWriteModal()">
   <div class="modal-inner">
-    <div class="modal-head">
-      <span>글쓰기</span>
-      <span class="modal-close" onclick="closeWriteModal()">✕</span>
+    <div class="modal-handle"></div>
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="font-display font-extrabold text-xl text-[#0B1C30]">글쓰기</h3>
+      <button onclick="closeWriteModal()" class="w-8 h-8 rounded-xl bg-[#EFF4FF] flex items-center justify-center">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">close</span>
+      </button>
     </div>
-    <label class="form-label">카테고리</label>
-    <select class="form-select" id="write-cat">
-      <option value="할인/이벤트">🎟 할인/이벤트</option>
-      <option value="공지">📢 공지</option>
-      <option value="질문/추천">❓ 질문/추천</option>
-    </select>
-    <label class="form-label">제목</label>
-    <input class="form-input" id="write-title" placeholder="제목을 입력하세요" maxlength="60" />
-    <label class="form-label">내용</label>
-    <textarea class="form-textarea" id="write-content" placeholder="내용을 입력하세요"></textarea>
-    <label class="form-label">닉네임</label>
-    <input class="form-input" id="write-nick" placeholder="닉네임" />
-    <button class="form-submit" onclick="submitPost()">📮 승인 요청하기</button>
+    <div class="space-y-3">
+      <div><label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">카테고리</label>
+        <select id="write-cat" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+          <option value="할인/이벤트">🎟 할인/이벤트</option>
+          <option value="공지">📢 공지</option>
+          <option value="질문/추천">❓ 질문/추천</option>
+        </select></div>
+      <div><label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">제목</label>
+        <input id="write-title" maxlength="60" placeholder="제목을 입력하세요" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary"></div>
+      <div><label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">내용</label>
+        <textarea id="write-content" rows="4" placeholder="내용을 입력하세요" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary resize-none"></textarea></div>
+      <div><label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">닉네임</label>
+        <input id="write-nick" placeholder="닉네임" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary"></div>
+      <button onclick="submitPost()" id="write-submit" class="w-full bg-primary text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95 shadow-md shadow-primary/20">📮 승인 요청하기</button>
+    </div>
   </div>
 </div>
-
-<!-- 포스트 상세 시트 -->
-<div class="sheet" id="post-sheet" onclick="if(event.target===this)closePostSheet()">
-  <div class="sheet-inner" id="post-sheet-inner"></div>
+<div class="modal" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="modal-inner">
+    <div class="modal-handle"></div>
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="font-display font-extrabold text-xl text-[#0B1C30]" id="auth-title">로그인</h3>
+      <button onclick="closeAuthModal()" class="w-8 h-8 rounded-xl bg-[#EFF4FF] flex items-center justify-center">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">close</span>
+      </button>
+    </div>
+    <div class="space-y-3">
+      <div><label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">닉네임</label>
+        <input id="auth-nick" maxlength="12" placeholder="닉네임 입력" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+        <div id="nick-check-msg" class="text-xs mt-1.5 hidden font-semibold"></div></div>
+      <div><label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">비밀번호</label>
+        <input id="auth-pw" type="password" maxlength="20" placeholder="비밀번호 (4자 이상)" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary"></div>
+      <div class="text-center text-xs text-[#737685] cursor-pointer hover:text-primary transition-colors font-semibold" id="auth-toggle" onclick="toggleAuthMode()"></div>
+      <button onclick="submitAuth()" id="auth-submit" class="w-full bg-primary text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95 shadow-md shadow-primary/20">로그인</button>
+    </div>
+  </div>
 </div>
-
-<!-- SHEET -->
-<div class="sheet" id="sheet" onclick="if(event.target===this)closeSheet()">
-  <div class="sheet-inner" id="sheet-inner"></div>
+<div class="modal" id="changepw-modal" onclick="if(event.target===this)closeChangePwModal()">
+  <div class="modal-inner">
+    <div class="modal-handle"></div>
+    <h3 class="font-display font-extrabold text-xl text-[#0B1C30] mb-5">비밀번호 변경</h3>
+    <div class="space-y-3">
+      <input id="cur-pw" type="password" placeholder="현재 비밀번호" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      <input id="new-pw" type="password" placeholder="새 비밀번호" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      <input id="new-pw2" type="password" placeholder="새 비밀번호 확인" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      <button onclick="submitChangePw()" class="w-full bg-primary text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95">변경하기</button>
+    </div>
+  </div>
+</div>
+<div class="modal" id="my-sheet" onclick="if(event.target===this)document.getElementById('my-sheet').classList.remove('open')">
+  <div class="modal-inner" id="my-sheet-inner"></div>
 </div>
 
 <script>
@@ -524,132 +373,137 @@ const SHEET_URL='https://docs.google.com/spreadsheets/d/1mfP3BQ1EbVO__xZO4MA0FMt
 const GAS_URL='https://script.google.com/macros/s/AKfycbzIc4i7dtndXruXO4bs0HOosYxwhnmTSjTocBpmJPcMVnNIS8dDmMHiqxOZIDp8qRA_/exec';
 
 let allData=[],selectedGu=null,selectedDong=null,selectedApt=null,currentFilter='all';
+let currentUser=null,authMode='login',currentCat='all',allPosts=[];
+let navHistory=[];
+
 let myNickname=localStorage.getItem('sang_nick')||'익명'+Math.floor(Math.random()*1000);
 localStorage.setItem('sang_nick',myNickname);
-document.getElementById('my-nick').textContent=myNickname+' 님';
+(()=>{const s=localStorage.getItem('wdns_user');if(s)try{currentUser=JSON.parse(s);myNickname=currentUser.nickname;}catch(e){localStorage.removeItem('wdns_user');}})();
 
 const CAT_MAP={
-  '음식/카페':{icon:'🍜',cls:'icon-food',tag:'food'},'음식':{icon:'🍜',cls:'icon-food',tag:'food'},
-  '미용/뷰티/운동':{icon:'💇',cls:'icon-beauty',tag:'beauty'},'미용':{icon:'💇',cls:'icon-beauty',tag:'beauty'},
-  '부동산/인테리어':{icon:'🏡',cls:'icon-realestate',tag:'realestate'},'부동산':{icon:'🏡',cls:'icon-realestate',tag:'realestate'},
-  '마트/식료품':{icon:'🥬',cls:'icon-mart',tag:'mart'},'마트':{icon:'🥬',cls:'icon-mart',tag:'mart'},
-  '학원/교육':{icon:'📚',cls:'icon-edu',tag:'edu'},'교육':{icon:'📚',cls:'icon-edu',tag:'edu'},
-  '패션/잡화':{icon:'👗',cls:'icon-fashion',tag:'fashion'},'생활/편의':{icon:'🛠️',cls:'icon-life',tag:'life'},
-  '기타':{icon:'🏪',cls:'icon-etc',tag:'etc'}
+  '음식/카페':{icon:'🍜',bg:'bg-yellow-50',tag:'food'},'음식':{icon:'🍜',bg:'bg-yellow-50',tag:'food'},
+  '미용/뷰티/운동':{icon:'💇',bg:'bg-pink-50',tag:'beauty'},'미용':{icon:'💇',bg:'bg-pink-50',tag:'beauty'},
+  '부동산/인테리어':{icon:'🏡',bg:'bg-blue-50',tag:'realestate'},'부동산':{icon:'🏡',bg:'bg-blue-50',tag:'realestate'},
+  '마트/식료품':{icon:'🥬',bg:'bg-green-50',tag:'mart'},'마트':{icon:'🥬',bg:'bg-green-50',tag:'mart'},
+  '학원/교육':{icon:'📚',bg:'bg-purple-50',tag:'edu'},'교육':{icon:'📚',bg:'bg-purple-50',tag:'edu'},
+  '패션/잡화':{icon:'👗',bg:'bg-orange-50',tag:'fashion'},
+  '생활서비스':{icon:'🛠️',bg:'bg-gray-50',tag:'life'},
+  '의료/건강':{icon:'🏥',bg:'bg-red-50',tag:'medical'},
+  '기타':{icon:'🏪',bg:'bg-gray-50',tag:'etc'},
 };
 function getCat(n){return n?(CAT_MAP[n]||CAT_MAP['기타']):CAT_MAP['기타'];}
-
-function floorCls(f){
-  if(!f)return'';
-  const u=f.toUpperCase();
-  if(u.startsWith('B'))return'b';
-  if(u==='1F')return'f1';
-  if(u==='2F')return'f2';
-  return'';
-}
+function floorCls(f){if(!f)return'fc-etc';const u=f.toUpperCase();if(u.includes('B'))return'fc-b';if(u==='1F'||u==='1층')return'fc-1';if(u==='2F'||u==='2층')return'fc-2';if(u==='3F'||u==='3층')return'fc-3';if(u==='4F'||u==='4층')return'fc-4';return'fc-etc';}
+const APT_GRADES=['g-a','g-b','g-c','g-d','g-e','g-f','g-g','g-h'];
+const APT_ICONS=['apartment','domain','location_city','business','other_houses','villa','holiday_village','corporate_fare'];
 
 function parseCSV(text){
   const lines=text.trim().split('\n');
   const headers=lines[0].split(',').map(h=>h.replace(/"/g,'').trim());
   return lines.slice(1).map(line=>{
     const cols=[];let cur='',inQ=false;
-    for(let i=0;i<line.length;i++){
-      const ch=line[i];
-      if(ch===String.fromCharCode(34)){inQ=!inQ;}
-      else if(ch===','&&!inQ){cols.push(cur.trim());cur='';}
-      else{cur+=ch;}
-    }
+    for(let i=0;i<line.length;i++){const ch=line[i];if(ch===String.fromCharCode(34)){inQ=!inQ;}else if(ch===','&&!inQ){cols.push(cur.trim());cur='';}else{cur+=ch;}}
     cols.push(cur.trim());
-    const obj={};
-    headers.forEach((h,i)=>obj[h]=(cols[i]||'').replace(/"/g,'').trim());
-    return obj;
+    const obj={};headers.forEach((h,i)=>obj[h]=(cols[i]||'').replace(/"/g,'').trim());return obj;
   });
 }
+async function gasGet(p){try{const r=await fetch(GAS_URL+'?'+new URLSearchParams(p));return r.json();}catch(e){return null;}}
+async function gasPost(b){try{const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify(b)});return r.json();}catch(e){return null;}}
 
 async function loadData(){
   try{
-    const res=await fetch(SHEET_URL);
-    const text=await res.text();
+    const res=await fetch(SHEET_URL);const text=await res.text();
     allData=parseCSV(text).filter(r=>r['시']||r['아파트명']);
-    buildGuChips();
-  }catch(e){
-    document.getElementById('gu-chips').innerHTML='<div style="color:var(--brick);font-weight:700;">시트 로드 실패</div>';
-  }
+    buildCityGrid();updateStats();
+  }catch(e){document.getElementById('city-grid').innerHTML='<div class="col-span-3 text-center text-red-400 text-sm py-4">데이터 로드 실패</div>';}
+}
+function updateStats(){
+  const v=allData.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
+  document.getElementById('stat-total').textContent=allData.length;
+  document.getElementById('stat-vacant-all').textContent=v.length;
+}
+async function loadNotices(){
+  try{const data=await gasGet({action:'notices'});
+    const items=data&&data.length?data:['우리동네상가에 오신 것을 환영해요!'];
+    const t=document.getElementById('marquee-track');
+    if(t)t.innerHTML=[...items,...items].map(i=>'<span style="margin-right:40px;">★ '+i+'</span>').join('');
+  }catch(e){}
 }
 
-function buildGuChips(){
-  const gus=[...new Set(allData.map(d=>d['구']).filter(Boolean))];
-  document.getElementById('gu-chips').innerHTML=gus.map(g=>`<div class="chip" onclick="selectGu('${g}')">${g}</div>`).join('');
+function buildCityGrid(){
+  const cities=[...new Set(allData.map(d=>d['시']).filter(Boolean))];
+  const grid=document.getElementById('city-grid');
+  if(!cities.length){grid.innerHTML='<div class="col-span-3 text-center text-[#737685] text-sm py-4">데이터 없음</div>';return;}
+  grid.innerHTML=cities.map(c=>{
+    const cnt=[...new Set(allData.filter(d=>d['시']===c).map(d=>d['구']).filter(Boolean))].length;
+    return `<button onclick="selectCity('${c}')" class="group flex flex-col items-center p-4 rounded-2xl bg-white hover:bg-[#DCE9FF] border border-[#C3C6D6]/20 hover:border-primary/30 transition-all duration-200 active:scale-95 shadow-sm">
+      <div class="relative mb-3">
+        <span class="material-symbols-outlined ms-fill text-[#FFB800]" style="font-size:52px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.12));">folder</span>
+        <div class="absolute -bottom-1 -right-1 bg-primary text-white font-mono text-[9px] font-bold px-1.5 py-0.5 rounded-md border-2 border-white">${cnt}</div>
+      </div>
+      <span class="font-display font-bold text-[#0B1C30] text-sm group-hover:text-primary transition-colors">${c}</span>
+      <span class="text-[10px] text-[#737685] font-semibold mt-0.5">${cnt}개 구</span>
+    </button>`;
+  }).join('');
 }
-function selectGu(gu){
-  selectedGu=gu;selectedDong=null;selectedApt=null;
-  document.querySelectorAll('#gu-chips .chip').forEach(c=>c.classList.toggle('active',c.textContent===gu));
-  const dongs=[...new Set(allData.filter(d=>d['구']===gu).map(d=>d['동']).filter(Boolean))];
-  document.getElementById('dong-chips').innerHTML=dongs.map(d=>`<div class="chip" onclick="selectDong('${d}')">${d}</div>`).join('');
-  document.getElementById('step-apt').style.display='none';
-  document.getElementById('cat-filter').style.display='none';
-  document.getElementById('shop-section').style.display='none';
-  document.getElementById('empty').style.display='block';
-  updateLoc();
+
+function selectCity(city){
+  navHistory.push(0);
+  document.getElementById('crumb-city').textContent=city;
+  showCrumbs(1);
+  const gus=[...new Set(allData.filter(d=>d['시']===city).map(d=>d['구']).filter(Boolean))];
+  document.getElementById('gu-grid').innerHTML=gus.map(g=>{
+    const cnt=[...new Set(allData.filter(d=>d['시']===city&&d['구']===g).map(d=>d['아파트명']).filter(Boolean))].length;
+    return `<button onclick="selectGu('${city}','${g}')" class="group flex flex-col items-center p-4 rounded-2xl bg-white hover:bg-[#DCE9FF] border border-[#C3C6D6]/20 hover:border-primary/30 transition-all duration-200 active:scale-95 shadow-sm">
+      <div class="relative mb-3">
+        <span class="material-symbols-outlined ms-fill text-[#FF9800]" style="font-size:52px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.12));">folder_open</span>
+        <div class="absolute -bottom-1 -right-1 bg-primary text-white font-mono text-[9px] font-bold px-1.5 py-0.5 rounded-md border-2 border-white">${cnt}</div>
+      </div>
+      <span class="font-display font-bold text-[#0B1C30] text-sm group-hover:text-primary transition-colors">${g}</span>
+      <span class="text-[10px] text-[#737685] font-semibold mt-0.5">${cnt}개 단지</span>
+    </button>`;
+  }).join('');
+  document.getElementById('gu-sub').textContent=city;
+  setCount(gus.length+'개 구');showPanel('panel-gu');
 }
-function selectDong(dong){
-  selectedDong=dong;selectedApt=null;
-  document.querySelectorAll('#dong-chips .chip').forEach(c=>c.classList.toggle('active',c.textContent===dong));
-  const apts=[...new Set(allData.filter(d=>d['구']===selectedGu&&d['동']===dong).map(d=>d['아파트명']).filter(Boolean))];
-  const sel=document.getElementById('apt-select');
-  sel.innerHTML='<option value="">— 아파트를 선택하세요 —</option>'+apts.map(a=>`<option value="${a}">${a}</option>`).join('');
-  document.getElementById('step-apt').style.display='block';
-  updateLoc();
+
+function selectGu(city,gu){
+  navHistory.push(1);selectedGu=gu;selectedDong=null;selectedApt=null;
+  document.getElementById('crumb-gu').textContent=gu;showCrumbs(2);
+  const apts=[...new Set(allData.filter(d=>d['시']===city&&d['구']===gu).map(d=>d['아파트명']).filter(Boolean))];
+  document.getElementById('apt-grid').innerHTML=apts.map((a,i)=>{
+    const vCnt=allData.filter(d=>d['아파트명']===a&&((d['공실여부']||'').includes('공실')||!(d['업체명']||'').trim())).length;
+    const grade=APT_GRADES[i%APT_GRADES.length];
+    const icon=APT_ICONS[i%APT_ICONS.length];
+    const badge=vCnt>0?`<div class="absolute -top-1.5 -right-1.5 bg-red-500 text-white font-mono text-[9px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">${vCnt}</div>`:'';
+    return `<button onclick="selectApt('${a.replace(/'/g,"&#39;")}')" class="group flex flex-col items-center p-4 rounded-2xl bg-white hover:bg-[#DCE9FF] border border-[#C3C6D6]/20 hover:border-primary/30 transition-all duration-200 active:scale-95 shadow-sm">
+      <div class="relative mb-3">
+        <div class="w-14 h-14 rounded-2xl ${grade} flex items-center justify-center shadow-md">
+          <span class="material-symbols-outlined ms-fill text-white" style="font-size:28px;">${icon}</span>
+        </div>${badge}
+      </div>
+      <span class="font-display font-bold text-[#0B1C30] text-[12px] group-hover:text-primary transition-colors text-center leading-tight">${a}</span>
+    </button>`;
+  }).join('');
+  document.getElementById('apt-sub').textContent=gu+' · 1,000세대 이상';
+  setCount(apts.length+'개 단지');showPanel('panel-apt');
 }
+
 function selectApt(apt){
-  if(!apt){document.getElementById('shop-section').style.display='none';return;}
-  selectedApt=apt;updateLoc();
-  document.getElementById('loading').style.display='block';
-  document.getElementById('empty').style.display='none';
-  document.getElementById('shop-section').style.display='none';
-  setTimeout(()=>{document.getElementById('loading').style.display='none';renderShops();},450);
-}
-function updateLoc(){
-  let txt='부산 — 지역 선택';
-  if(selectedGu)txt=`부산 ${selectedGu}`;
-  if(selectedDong)txt+=` ${selectedDong}`;
-  if(selectedApt)txt+=` · ${selectedApt}`;
-  document.getElementById('loc-text').textContent=txt;
+  navHistory.push(2);selectedApt=apt;
+  document.getElementById('crumb-apt').textContent=apt;showCrumbs(3);
+  document.getElementById('shop-apt-name').textContent=apt+' 상가';
+  renderShops();showPanel('panel-shop');
 }
 
 function renderShops(){
-  const shops=allData.filter(d=>d['구']===selectedGu&&d['동']===selectedDong&&d['아파트명']===selectedApt);
+  const shops=allData.filter(d=>d['아파트명']===selectedApt);
   const vacants=shops.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
-  document.getElementById('apt-title').textContent=selectedApt;
-  document.getElementById('cat-filter').style.display='flex';
-  document.getElementById('shop-section').style.display='block';
-  updateCatBadges(shops);
-  document.getElementById('match-vacant-cnt').textContent=vacants.length;
-  document.getElementById('match-total-cnt').textContent=shops.length;
-  renderVacantList(vacants);
-  applyFilter(shops);
-}
-
-function updateCatBadges(shops){
-  const counts = {
-    all: shops.length,
-    food: shops.filter(s=>(s['업종분류']||'').includes('음식')).length,
-    beauty: shops.filter(s=>(s['업종분류']||'').includes('미용')).length,
-    realestate: shops.filter(s=>(s['업종분류']||'').includes('부동산')).length,
-    mart: shops.filter(s=>(s['업종분류']||'').includes('마트')).length,
-    vacant: shops.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim()).length,
-  };
-  document.querySelectorAll('.cat-btn').forEach(btn => {
-    const f = btn.dataset.f;
-    const cnt = counts[f] || 0;
-    let badge = btn.querySelector('.cat-badge');
-    if(cnt > 0){
-      if(!badge){ badge = document.createElement('div'); badge.className='cat-badge'; btn.appendChild(badge); }
-      badge.textContent = cnt;
-    } else {
-      if(badge) badge.remove();
-    }
-  });
+  document.getElementById('vacant-count').textContent=vacants.length;
+  setCount(shops.length+'개 상가');
+  const allV=allData.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
+  document.getElementById('match-total-cnt').textContent=allData.length;
+  document.getElementById('match-vacant-cnt').textContent=allV.length;
+  renderVacantList(allV);applyFilter(shops);
 }
 
 function applyFilter(shops){
@@ -658,800 +512,483 @@ function applyFilter(shops){
   else if(currentFilter==='beauty')f=shops.filter(s=>(s['업종분류']||'').includes('미용'));
   else if(currentFilter==='realestate')f=shops.filter(s=>(s['업종분류']||'').includes('부동산'));
   else if(currentFilter==='mart')f=shops.filter(s=>(s['업종분류']||'').includes('마트'));
+  else if(currentFilter==='edu')f=shops.filter(s=>(s['업종분류']||'').includes('교육'));
   else if(currentFilter==='vacant')f=shops.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
-
+  const grouped={};
+  f.forEach(s=>{const k=s['층']||'?';if(!grouped[k])grouped[k]=[];grouped[k].push(s);});
   const list=document.getElementById('shop-list');
-  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-ico">🔎</div>조건에 맞는 상가가 없어요</div>';return;}
-  list.innerHTML=f.map(s=>{
-    const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
-    const cat=getCat(s['업종분류']);
-    const icon=isV?'❓':cat.icon;
-    const icls=isV?'icon-vacant':cat.cls;
-    const name=isV?'공실':s['업체명'];
-    const floor=s['층']||'';
-    const fc=floorCls(floor)+(isV?' vac':'');
-    return `
-      <div class="shop${isV?' vacant':''}" onclick='openDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
-        ${isV?'<div class="vacancy-badge">공실</div>':''}
-        <div class="floor-badge ${fc}">${floor||'?'}</div>
-        <div class="shop-body">
-          <div class="shop-icon ${icls}">${icon}</div>
-          <div class="shop-info">
-            <div class="shop-name">${name}</div>
-            <div class="shop-meta">
-              <span class="shop-tag room">${s['호수']||'-'}</span>
-              ${s['업종분류']?`<span>${s['업종분류']}</span>`:''}
-            </div>
-          </div>
-          <div class="shop-arrow">▶</div>
-        </div>
-      </div>`;
-  }).join('');
+  if(!f.length){list.innerHTML='<div class="text-center py-12 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">search_off</span>조건에 맞는 상가가 없어요</div>';return;}
+  list.innerHTML=Object.entries(grouped).map(([floor,items])=>`
+    <div class="mb-4">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="font-mono text-[10px] font-bold text-white px-2 py-0.5 rounded-md ${floorCls(floor)}">${floor}</span>
+        <div class="flex-1 h-px bg-[#C3C6D6]/40"></div>
+        <span class="font-mono text-[10px] text-[#737685]">${items.length}개</span>
+      </div>
+      <div class="space-y-1.5">${items.map(s=>{
+        const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
+        const cat=getCat(s['업종분류']);
+        if(isV)return `<div class="flex items-center gap-3 p-3 rounded-xl border border-dashed border-red-200 bg-red-50/50 cursor-pointer active:scale-[.98] transition-all" onclick='openShopDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
+          <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined ms text-red-400" style="font-size:18px;">do_not_disturb_on</span></div>
+          <div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-red-400">공실</div>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="font-mono text-[9px] text-white px-1.5 py-px rounded ${floorCls(floor)}">${floor}</span>
+            <span class="font-mono text-[9px] text-[#737685] bg-[#D3E4FE] px-1.5 py-px rounded">${s['호수']||''}</span>
+            <span class="text-[10px] bg-red-100 text-red-500 font-bold px-2 py-px rounded-full">입점 문의</span>
+          </div></div>
+          <span class="material-symbols-outlined ms text-red-300" style="font-size:18px;">chevron_right</span>
+        </div>`;
+        return `<div class="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] hover:border-primary/20 transition-all cursor-pointer shadow-sm active:scale-[.98]" onclick='openShopDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
+          <div class="w-10 h-10 rounded-xl ${cat.bg} flex items-center justify-center flex-shrink-0 text-xl">${cat.icon}</div>
+          <div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-[#0B1C30] truncate">${s['업체명']}</div>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="font-mono text-[9px] text-white px-1.5 py-px rounded ${floorCls(floor)}">${floor}</span>
+            <span class="font-mono text-[9px] text-[#737685] bg-[#D3E4FE] px-1.5 py-px rounded">${s['호수']||''}</span>
+            <span class="text-[11px] text-[#737685]">${s['업종분류']||''}</span>
+          </div></div>
+          <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+        </div>`;
+      }).join('')}</div>
+    </div>`).join('');
+}
+
+function setFilter(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.cat-btn').forEach(b=>{b.classList.remove('bg-primary','text-white');b.classList.add('bg-white','border-[#C3C6D6]/50','text-[#434654]');});
+  el.classList.add('bg-primary','text-white');el.classList.remove('bg-white','border-[#C3C6D6]/50','text-[#434654]');
+  if(selectedApt){applyFilter(allData.filter(d=>d['아파트명']===selectedApt));}
 }
 
 function renderVacantList(vacants){
-  const el=document.getElementById('vacant-list');
-  if(!el) return;
-  if(!vacants.length){el.innerHTML='<div class="empty"><div class="empty-ico">🎉</div><div>현재 공실이 없어요!</div></div>';return;}
-  el.innerHTML=vacants.map(s=>`
-    <div class="vacant-card">
-      <div class="vacant-card-top">
-        <div class="vacant-card-floor">${s['층']||'?'}</div>
-        <div class="vacant-card-room">${s['호수']||''} · ${s['상가명']||''}</div>
-      </div>
-      <div class="vacant-card-body">
-        <div class="vacant-card-name">${s['아파트명']} <span style="font-size:12px;color:var(--ink-soft);">${s['동']||''}</span></div>
-        <div class="interest-row">
-          <span>주민관심</span>
-          <div class="ibar"><div class="ifill" style="width:${Math.floor(Math.random()*60+20)}%"></div></div>
-          <span style="font-weight:700;color:var(--brick);">높음</span>
+  const el=document.getElementById('vacant-list');if(!el)return;
+  if(!vacants.length){el.innerHTML='<div class="text-center py-8 text-[#737685]">전체 공실이 없어요!</div>';return;}
+  const grouped={};
+  vacants.forEach(s=>{const k=s['아파트명']||'기타';if(!grouped[k])grouped[k]=[];grouped[k].push(s);});
+  el.innerHTML=Object.entries(grouped).map(([apt,list])=>`
+    <div class="mb-2">
+      <div class="font-mono text-[11px] text-[#737685] mb-2">${apt} · 공실 ${list.length}곳</div>
+      ${list.map(s=>`<div class="bg-white rounded-2xl border border-[#C3C6D6]/20 overflow-hidden mb-2 shadow-sm">
+        <div class="px-4 py-3" style="background:linear-gradient(135deg,#D9543A,#FF6B6B);">
+          <div class="flex items-center justify-between">
+            <span class="font-display font-extrabold text-white text-xl">${s['층']||'?'}</span>
+            <span class="font-mono text-white/80 text-sm">${s['호수']||''} · ${s['상가명']||''}</span>
+          </div>
         </div>
-        <div class="want-tags">
-          <span class="want-tag">☕ 카페</span>
-          <span class="want-tag">📚 학원</span>
-          <span class="want-tag">🍱 도시락</span>
+        <div class="p-4">
+          <div class="font-bold text-sm text-[#0B1C30] mb-2">${apt} 공실</div>
+          <div class="flex gap-2 flex-wrap">
+            <span class="text-[11px] bg-[#F0B84A]/20 text-[#D99A28] font-bold px-2 py-1 rounded-lg">☕ 카페</span>
+            <span class="text-[11px] bg-[#F0B84A]/20 text-[#D99A28] font-bold px-2 py-1 rounded-lg">📚 학원</span>
+            <span class="text-[11px] bg-[#F0B84A]/20 text-[#D99A28] font-bold px-2 py-1 rounded-lg">🍱 도시락</span>
+          </div>
         </div>
-      </div>
+      </div>`).join('')}
     </div>`).join('');
 }
 
-/* 매칭 탭 - 전체 공실 로드 */
-function loadAllVacants(){
-  const el = document.getElementById('vacant-list');
-  if(!el) return;
-
-  // allData가 아직 로드 안 됐으면 잠시 후 재시도
-  if(!allData.length){
-    el.innerHTML='<div class="loading"><span class="loader-pixel"></span><span class="loader-pixel"></span><span class="loader-pixel"></span><div style="margin-top:10px;">데이터 로드 중...</div></div>';
-    setTimeout(loadAllVacants, 800);
-    return;
-  }
-
-  // 전체 데이터에서 공실 추출
-  const allVacants = allData.filter(s =>
-    (s['공실여부']||'').includes('공실') || !(s['업체명']||'').trim()
-  );
-
-  // 통계 업데이트
-  document.getElementById('match-vacant-cnt').textContent = allVacants.length;
-  document.getElementById('match-total-cnt').textContent = allData.length;
-
-  // 아파트별로 그룹핑해서 보여주기
-  if(!allVacants.length){
-    el.innerHTML='<div class="empty"><div class="empty-ico">🎉</div><div>전체 공실이 없어요!</div></div>';
-    return;
-  }
-
-  // 아파트별 그룹
-  const grouped = {};
-  allVacants.forEach(s => {
-    const key = s['아파트명'] || '기타';
-    if(!grouped[key]) grouped[key] = [];
-    grouped[key].push(s);
-  });
-
-  el.innerHTML = Object.entries(grouped).map(([apt, list]) => `
-    <div style="margin-bottom:6px;">
-      <div style="font-family:'DotGothic16';font-size:13px;color:var(--ink-soft);padding:6px 0 4px;">${apt} · 공실 ${list.length}곳</div>
-      ${list.map(s => `
-        <div class="vacant-card" style="margin-bottom:8px;">
-          <div class="vacant-card-top">
-            <div class="vacant-card-floor">${s['층']||'?'}</div>
-            <div class="vacant-card-room">${s['호수']||''} · ${s['상가명']||''}</div>
-          </div>
-          <div class="vacant-card-body">
-            <div class="vacant-card-name">${apt} <span style="font-size:12px;color:var(--ink-soft);">${s['동']||''}</span></div>
-            <div class="interest-row">
-              <span>주민관심</span>
-              <div class="ibar"><div class="ifill" style="width:${Math.floor(Math.random()*60+20)}%"></div></div>
-              <span style="font-weight:700;color:var(--brick);">높음</span>
-            </div>
-            <div class="want-tags">
-              <span class="want-tag">☕ 카페</span>
-              <span class="want-tag">📚 학원</span>
-              <span class="want-tag">🍱 도시락</span>
-            </div>
-          </div>
-        </div>`).join('')}
-    </div>`).join('');
-}
-
-document.getElementById('cat-filter').addEventListener('click',e=>{
-  const btn=e.target.closest('.cat-btn');if(!btn)return;
-  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');currentFilter=btn.dataset.f;
-  if(selectedApt){
-    const shops=allData.filter(d=>d['구']===selectedGu&&d['동']===selectedDong&&d['아파트명']===selectedApt);
-    applyFilter(shops);
-  }
-});
-
-function makeKey(s){return`${s['아파트명']}_${s['상가명']}_${s['층']}_${s['호수']}`.replace(/\s/g,'');}
-
-async function gasGet(params){
-  const url=GAS_URL+'?'+new URLSearchParams(params);
-  try{const r=await fetch(url);return r.json();}catch(e){return null;}
-}
-async function gasPost(body){
-  try{
-    const res = await fetch(GAS_URL,{method:'POST',body:JSON.stringify(body)});
-    return res.json();
-  }catch(e){ return null; }
-}
-
-async function openDetail(s){
+/* SHOP DETAIL */
+async function openShopDetail(s){
   const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
   const cat=getCat(s['업종분류']);
-  const icon=isV?'❓':cat.icon;
-  const icls=isV?'icon-vacant':cat.cls;
-  const name=isV?'공실':s['업체명'];
   const floor=s['층']||'';
-  const key=makeKey(s);
-
-  if(isV){
-    document.getElementById('sheet-inner').innerHTML=`
-      <div class="sheet-handle"></div>
-      <div class="sheet-title-row">
-        <div class="sheet-icon ${icls}">${icon}</div>
-        <div><div class="sheet-name">공실</div><div class="sheet-cat">입점 문의 가능</div><div class="sheet-floor-tag">${floor} · ${s['호수']||''}</div></div>
-      </div>
-      <div class="sheet-grid">
-        <div class="sg-cell"><div class="sg-lbl">아파트</div><div class="sg-val">${s['아파트명']||'-'}</div></div>
-        <div class="sg-cell"><div class="sg-lbl">상가동</div><div class="sg-val">${s['상가명']||'-'}</div></div>
-        <div class="sg-cell"><div class="sg-lbl">층</div><div class="sg-val">${floor||'-'}</div></div>
-        <div class="sg-cell"><div class="sg-lbl">호수</div><div class="sg-val">${s['호수']||'-'}</div></div>
-      </div>
-      <div class="vacant-hero"><h3>이 자리에 관심있어요!</h3><p>사장님이라면 주민 수요 데이터를<br>받아볼 수 있어요</p></div>
-      <div class="cta-row">
-        <div class="cta cta-save" onclick="alert('관심 공실에 저장했어요!')">💾 관심</div>
-        <div class="cta cta-chat" onclick="alert('관리사무소 연결!')">💬 문의</div>
-      </div>`;
-    document.getElementById('sheet').classList.add('open');
-    return;
-  }
+  const key=(s['아파트명']+'_'+s['상가명']+'_'+floor+'_'+s['호수']).replace(/\s/g,'');
+  const liked=localStorage.getItem('liked_'+key)==='1';
+  const heroStyle=isV?'background:linear-gradient(135deg,#EFF4FF,#DCE9FF)':'background:linear-gradient(135deg,'+(['#EFF4FF,#DCE9FF','#FFF0F3,#FFE0E6','#F0FFF4,#E0FFE8','#FFFBEB,#FFF3CD'][Math.floor(Math.random()*4)])+')';
 
   document.getElementById('sheet-inner').innerHTML=`
-    <div class="sheet-handle"></div>
-    <div class="sheet-title-row">
-      <div class="sheet-icon ${icls}">${icon}</div>
-      <div>
-        <div class="sheet-name">${name}</div>
-        <div class="sheet-cat">${s['업종분류']||'기타'}</div>
-        <div class="sheet-floor-tag">${floor} · ${s['호수']||''}</div>
+    <div class="relative overflow-hidden h-52" style="${heroStyle}">
+      <div class="absolute inset-0 flex items-center justify-center">
+        <span class="material-symbols-outlined ms-fill text-primary/15" style="font-size:130px;">storefront</span>
       </div>
-    </div>
-    <div class="sheet-grid">
-      <div class="sg-cell"><div class="sg-lbl">아파트</div><div class="sg-val">${s['아파트명']||'-'}</div></div>
-      <div class="sg-cell"><div class="sg-lbl">상가동</div><div class="sg-val">${s['상가명']||'-'}</div></div>
-      <div class="sg-cell"><div class="sg-lbl">층</div><div class="sg-val">${floor||'-'}</div></div>
-      <div class="sg-cell"><div class="sg-lbl">호수</div><div class="sg-val">${s['호수']||'-'}</div></div>
-    </div>
-    <div class="cta-row">
-      <div class="cta cta-save" onclick="alert('저장!')">💾 저장</div>
-      <div class="cta cta-call" onclick="alert('전화!')">📞 전화</div>
-    </div>
-    <div class="like-section">
-      <button class="like-btn" id="like-btn-${key}" onclick="toggleLike('${key}')">
-        <span class="like-heart">🤍</span>
-        <span class="like-count" id="like-count-${key}">...</span>
+      <div class="absolute top-4 left-4">
+        <span style="backdrop-filter:blur(16px)" class="bg-[#6CF8BB]/90 text-[#00714D] px-3 py-1 rounded-full text-xs font-bold">${isV?'공실':s['업종분류']||'기타'}</span>
+      </div>
+      <div class="absolute top-4 right-4">
+        <div style="backdrop-filter:blur(16px)" class="bg-white/80 rounded-xl px-3 py-1.5 flex items-center gap-1.5">
+          <div class="w-2 h-2 rounded-full bg-blue-600"></div>
+          <span class="font-mono text-xs font-bold text-[#0B1C30]">${floor} · ${s['호수']||''}</span>
+        </div>
+      </div>
+      <button onclick="closeSheet()" class="absolute bottom-4 left-4 w-8 h-8 rounded-xl bg-white/80 flex items-center justify-center" style="backdrop-filter:blur(16px)">
+        <span class="material-symbols-outlined ms text-[#0B1C30]" style="font-size:18px;">close</span>
       </button>
-      <span style="font-size:13px;color:var(--ink-soft);">주민들이 좋아해요</span>
+      <button onclick="toggleShopLike('${key}')" class="absolute bottom-4 right-4 w-8 h-8 rounded-xl bg-white/80 flex items-center justify-center" style="backdrop-filter:blur(16px)">
+        <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} ${liked?'text-red-400':'text-[#737685]'} heart-ico-${key}" style="font-size:18px;">favorite</span>
+      </button>
     </div>
-    <div class="review-section">
-      <div class="review-title">리뷰 <em id="review-cnt-${key}"></em></div>
-      <div class="review-list" id="review-list-${key}">
-        <div style="padding:16px 0;text-align:center;color:var(--ink-soft);font-size:13px;">불러오는 중...</div>
+    <div class="px-5 pt-4 pb-36">
+      <div class="flex items-start justify-between gap-3 mb-4 pb-4 border-b border-[#C3C6D6]/30">
+        <div>
+          <h2 class="font-display font-extrabold text-2xl text-[#0B1C30] tracking-tight">${isV?'공실':s['업체명']}</h2>
+          <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+            <div class="flex items-center gap-1 bg-[#EFF4FF] px-2 py-1 rounded-full">
+              <span class="material-symbols-outlined ms-fill text-primary" style="font-size:12px;">apartment</span>
+              <span class="text-xs font-semibold text-[#434654]">${s['아파트명']||''}</span>
+            </div>
+            ${!isV?'<div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-green-500"></div><span class="text-xs text-[#434654] font-semibold">영업중</span></div>':''}
+          </div>
+        </div>
+        <div class="flex flex-col items-center gap-0.5 flex-shrink-0">
+          <span class="material-symbols-outlined ${liked?'ms-fill':'ms-fill'} ${liked?'text-red-400':'text-[#C3C6D6]'} text-[28px] like-ico-main-${key}">favorite</span>
+          <span class="font-mono text-xs font-bold text-[#737685] like-cnt-${key}">...</span>
+        </div>
       </div>
-      <div class="review-input-row">
-        <div class="review-avatar-me">${myNickname.slice(0,2)}</div>
-        <textarea class="review-input" id="review-input-${key}" placeholder="리뷰를 남겨보세요..." rows="1"
-          oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-        <button class="review-send" onclick="submitReview('${key}')">게시</button>
+      <h3 class="font-display font-extrabold text-lg text-[#0B1C30] mb-3">상가 정보</h3>
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-[#C3C6D6]/20 border-b-4 border-b-primary">
+          <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1 block">층 / 호수</span>
+          <span class="font-display font-extrabold text-2xl text-primary">${floor}</span>
+          <span class="font-display font-bold text-lg text-[#434654]"> · ${s['호수']||'-'}</span>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-[#C3C6D6]/20">
+          <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1 block">업종</span>
+          <span class="text-2xl">${isV?'❓':cat.icon}</span>
+          <p class="font-semibold text-sm text-[#434654] mt-0.5">${s['업종분류']||'공실'}</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-[#C3C6D6]/20">
+          <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1 block">상가동</span>
+          <p class="font-display font-bold text-base text-[#0B1C30]">${s['상가명']||'-'}</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-[#C3C6D6]/20">
+          <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1 block">좋아요</span>
+          <span class="font-display font-extrabold text-2xl text-[#0B1C30] like-cnt-${key}">...</span>
+        </div>
       </div>
-    </div>`;
+      ${isV?`<div class="rounded-2xl p-5 mb-5" style="background:linear-gradient(135deg,#003D9B,#0066FF);">
+        <h3 class="font-display font-bold text-lg text-white mb-2">이 자리에 관심있어요!</h3>
+        <p class="text-white/70 text-sm mb-4">사장님이라면 주민 수요 데이터를 받아볼 수 있어요</p>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="alert('관심 저장!')" class="bg-white/15 text-white py-2.5 rounded-xl font-bold text-sm">💾 관심 저장</button>
+          <button onclick="alert('관리사무소 연결!')" class="bg-white text-primary py-2.5 rounded-xl font-bold text-sm">💬 입점 문의</button>
+        </div>
+      </div>`:`
+      <div class="bg-[#EFF4FF] rounded-2xl p-4 mb-5">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-2xl g-a flex items-center justify-center flex-shrink-0 shadow-md">
+            <span class="material-symbols-outlined ms-fill text-white" style="font-size:22px;">person</span>
+          </div>
+          <div>
+            <h4 class="font-display font-bold text-base text-[#0B1C30]">사장님</h4>
+            <p class="text-xs text-[#737685] font-semibold">${s['업체명']} 운영자</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="alert('전화 연결!')" class="flex items-center justify-center gap-1.5 bg-primary text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95">
+            <span class="material-symbols-outlined ms-fill text-white" style="font-size:16px;">call</span>전화하기
+          </button>
+          <button onclick="alert('채팅 연결!')" class="flex items-center justify-center gap-1.5 bg-white text-[#434654] py-2.5 rounded-xl font-bold text-sm hover:bg-[#DCE9FF] transition-colors active:scale-95 border border-[#C3C6D6]/40">
+            <span class="material-symbols-outlined ms text-[#434654]" style="font-size:16px;">chat_bubble</span>채팅
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-display font-extrabold text-lg text-[#0B1C30]">리뷰 <span class="text-primary font-mono text-base" id="rcnt-${key}"></span></h3>
+      </div>
+      <div id="rlist-${key}" class="space-y-0 border-t border-[#C3C6D6]/30">
+        <div class="text-center py-6 text-[#737685] text-sm">불러오는 중...</div>
+      </div>
+      <div class="flex items-center gap-3 mt-4 pt-4 border-t border-[#C3C6D6]/30">
+        <div class="w-8 h-8 rounded-xl g-a flex items-center justify-center flex-shrink-0">
+          <span class="text-white text-[10px] font-bold">${myNickname.slice(0,2)}</span>
+        </div>
+        <div class="flex-1 bg-[#EFF4FF] rounded-2xl px-4 py-2.5 flex items-center gap-2">
+          <input type="text" placeholder="리뷰를 남겨보세요..." class="flex-1 bg-transparent text-[13px] text-[#0B1C30] placeholder-[#737685] outline-none" id="rinput-${key}">
+          <button onclick="submitShopReview('${key}')" class="text-primary font-bold text-[13px] hover:text-[#0052CC] transition-colors flex-shrink-0">게시</button>
+        </div>
+      </div>`}
+    </div>
+    ${!isV?`<div class="sticky bottom-0 bg-white/90 border-t border-[#C3C6D6]/30 px-5 py-4 grid grid-cols-3 gap-2" style="backdrop-filter:blur(16px)">
+      <button onclick="alert('전화!')" class="col-span-2 flex items-center justify-center gap-1.5 bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95 shadow-md shadow-primary/20">
+        <span class="material-symbols-outlined ms-fill text-white" style="font-size:16px;">call</span>전화하기
+      </button>
+      <button onclick="toggleShopLike('${key}')" class="flex items-center justify-center gap-1.5 bg-[#EFF4FF] text-primary py-3 rounded-2xl font-bold text-sm hover:bg-[#DCE9FF] transition-colors active:scale-95 border border-primary/20">
+        <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} ${liked?'text-red-400':'text-primary'} heart-btn-${key}" style="font-size:16px;">favorite</span>
+        <span class="save-txt-${key}">${liked?'찜됨':'찜'}</span>
+      </button>
+    </div>`:''}`;
 
   document.getElementById('sheet').classList.add('open');
-  loadDetail(key);
+  if(!isV){loadShopLike(key);loadShopReviews(key);}
 }
 
-async function loadDetail(key){
-  const [likeData,reviewData]=await Promise.all([gasGet({action:'likes',key}),gasGet({action:'reviews',key})]);
-  // 좋아요
-  const count=(likeData&&likeData.count)||0;
-  const liked=localStorage.getItem('liked_'+key)==='1';
-  const btn=document.getElementById('like-btn-'+key);
-  const cntEl=document.getElementById('like-count-'+key);
-  if(btn&&cntEl){
-    cntEl.textContent=count;
-    btn.querySelector('.like-heart').textContent=liked?'❤️':'🤍';
-    if(liked)btn.classList.add('liked');
+async function loadShopLike(key){
+  const data=await gasGet({action:'likes',key});
+  const count=(data&&data.count)||0;
+  document.querySelectorAll('.like-cnt-'+key).forEach(el=>el.textContent=count);
+  if(localStorage.getItem('liked_'+key)==='1'){
+    document.querySelectorAll('.like-ico-main-'+key).forEach(el=>el.style.color='#EF4444');
   }
-  renderReviews(key,reviewData||[]);
 }
-
-async function toggleLike(key){
-  const btn=document.getElementById('like-btn-'+key);
-  const cntEl=document.getElementById('like-count-'+key);
-  if(!btn)return;
+async function toggleShopLike(key){
   const liked=localStorage.getItem('liked_'+key)==='1';
-  const cur=parseInt(cntEl.textContent)||0;
+  const allCnts=document.querySelectorAll('.like-cnt-'+key);
+  const cur=parseInt(allCnts[0]?.textContent)||0;
   if(liked){
     localStorage.removeItem('liked_'+key);
-    btn.classList.remove('liked');
-    btn.querySelector('.like-heart').textContent='🤍';
-    cntEl.textContent=Math.max(0,cur-1);
+    document.querySelectorAll('.like-ico-main-'+key+',.heart-ico-'+key+',.heart-btn-'+key).forEach(el=>{el.style.color='';el.classList.remove('ms-fill');el.classList.add('ms');});
+    document.querySelectorAll('.save-txt-'+key).forEach(el=>el.textContent='찜');
+    allCnts.forEach(el=>el.textContent=Math.max(0,cur-1));
     await gasPost({action:'like',key,delta:-1});
   }else{
     localStorage.setItem('liked_'+key,'1');
-    btn.classList.add('liked');
-    btn.querySelector('.like-heart').textContent='❤️';
-    cntEl.textContent=cur+1;
+    document.querySelectorAll('.like-ico-main-'+key+',.heart-ico-'+key+',.heart-btn-'+key).forEach(el=>{el.style.color='#EF4444';el.classList.add('ms-fill');el.classList.remove('ms');el.classList.add('heart-pop');setTimeout(()=>el.classList.remove('heart-pop'),400);});
+    document.querySelectorAll('.save-txt-'+key).forEach(el=>el.textContent='찜됨');
+    allCnts.forEach(el=>el.textContent=cur+1);
     await gasPost({action:'like',key,delta:1});
   }
 }
-
-function renderReviews(key,reviews){
-  const list=document.getElementById('review-list-'+key);
-  const cntEl=document.getElementById('review-cnt-'+key);
-  if(!list)return;
-  if(cntEl)cntEl.textContent=reviews.length?`(${reviews.length})`:'';
-  if(!reviews.length){
-    list.innerHTML='<div style="padding:16px 0;text-align:center;color:var(--ink-soft);font-size:13px;">첫 번째 리뷰를 남겨보세요 👋</div>';
-    return;
-  }
-  list.innerHTML=reviews.map(r=>{
+async function loadShopReviews(key){const data=await gasGet({action:'reviews',key});renderShopReviews(key,data||[]);}
+function reviewAvatar(nick){
+  const colors=['g-a','g-b','g-c','g-d'];
+  const cl=colors[nick.charCodeAt(0)%colors.length];
+  return `<div class="w-8 h-8 rounded-xl ${cl} flex items-center justify-center flex-shrink-0"><span class="text-white text-[10px] font-bold">${nick.slice(0,2)}</span></div>`;
+}
+function renderShopReviews(key,reviews){
+  const el=document.getElementById('rlist-'+key);const cntEl=document.getElementById('rcnt-'+key);
+  if(!el)return;
+  if(cntEl)cntEl.textContent=reviews.length?'('+reviews.length+')':'';
+  if(!reviews.length){el.innerHTML='<div class="text-center py-6 text-[#737685] text-sm">첫 번째 리뷰를 남겨보세요 👋</div>';return;}
+  el.innerHTML=reviews.map(r=>{
     const nick=r.nickname||'익명';
     const dateStr=r.date?new Date(r.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}):'';
-    return `
-      <div class="review-item">
-        <div class="review-avatar">${nick.slice(0,2)}</div>
-        <div class="review-content">
-          <div class="review-nick">${nick}</div>
-          <div class="review-text">${r.text||''}</div>
-          <div class="review-date">${dateStr}</div>
-        </div>
-      </div>`;
+    return `<div class="flex gap-3 py-3 border-b border-[#C3C6D6]/20">${reviewAvatar(nick)}<div class="flex-1"><div class="flex items-baseline gap-2"><span class="font-bold text-[13px] text-[#0B1C30]">${nick}</span><span class="font-mono text-[10px] text-[#737685]">${dateStr}</span></div><p class="text-[13px] text-[#434654] mt-0.5 leading-relaxed">${r.text||''}</p></div></div>`;
   }).join('');
 }
-
-async function submitReview(key){
-  const input=document.getElementById('review-input-'+key);
-  if(!input)return;
-  const text=input.value.trim();
-  if(!text)return;
-  input.value='';input.style.height='auto';
-
-  const list=document.getElementById('review-list-'+key);
-  const cntEl=document.getElementById('review-cnt-'+key);
-  const noMsg=list.querySelector('div[style]');
-  if(noMsg)list.innerHTML='';
-
-  const item=document.createElement('div');
-  item.className='review-item';
-  item.innerHTML=`
-    <div class="review-avatar">${myNickname.slice(0,2)}</div>
-    <div class="review-content">
-      <div class="review-nick">${myNickname}</div>
-      <div class="review-text">${text}</div>
-      <div class="review-date">방금</div>
-    </div>`;
-  list.appendChild(item);
-  item.scrollIntoView({behavior:'smooth',block:'nearest'});
-
-  if(cntEl){
-    const cur=parseInt((cntEl.textContent||'0').replace(/[()]/g,''))||0;
-    cntEl.textContent=`(${cur+1})`;
-  }
+async function submitShopReview(key){
+  const input=document.getElementById('rinput-'+key);if(!input)return;
+  const text=input.value.trim();if(!text)return;input.value='';
+  const el=document.getElementById('rlist-'+key);const cntEl=document.getElementById('rcnt-'+key);
+  const noMsg=el?.querySelector('.text-center');if(noMsg)el.innerHTML='';
+  const item=document.createElement('div');item.className='flex gap-3 py-3 border-b border-[#C3C6D6]/20';
+  item.innerHTML=reviewAvatar(myNickname)+`<div class="flex-1"><div class="flex items-baseline gap-2"><span class="font-bold text-[13px] text-[#0B1C30]">${myNickname}</span><span class="font-mono text-[10px] text-[#737685]">방금</span></div><p class="text-[13px] text-[#434654] mt-0.5">${text}</p></div>`;
+  el?.appendChild(item);item.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(cntEl){const cur=parseInt((cntEl.textContent||'0').replace(/[()]/g,''))||0;cntEl.textContent='('+(cur+1)+')';}
   await gasPost({action:'review',key,nickname:myNickname,text});
 }
-
 function closeSheet(){document.getElementById('sheet').classList.remove('open');}
 
+/* COMMUNITY */
+async function loadPosts(){
+  try{const data=await gasGet({action:'posts',apt:selectedApt||''});allPosts=data||[];}catch(e){allPosts=[];}renderPosts();
+}
+function renderPosts(){
+  const list=document.getElementById('post-list');
+  let filtered=currentCat==='all'?allPosts:allPosts.filter(p=>p.category===currentCat);
+  if(!filtered.length){list.innerHTML='<div class="text-center py-12 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">forum</span>아직 게시글이 없어요</div>';return;}
+  const tagCls={'할인/이벤트':'background:#EF4444;color:#fff','공지':'background:#7FB8D9;color:#0B1C30','질문/추천':'background:#006C49;color:#fff'};
+  list.innerHTML=filtered.map(p=>{
+    const dateStr=p.date?new Date(p.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}):'';
+    const tStyle=tagCls[p.category]||'background:#737685;color:#fff';
+    const postLiked=localStorage.getItem('post_liked_'+p.id)==='1';
+    return `<div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden cursor-pointer active:scale-[.98] transition-all" onclick="openPostDetail('${p.id}')">
+      <div class="p-4 border-b border-[#C3C6D6]/20">
+        <span class="inline-block text-[10px] font-bold px-2.5 py-1 rounded-full mb-2" style="${tStyle}">${p.category}</span>
+        <div class="font-display font-bold text-[15px] text-[#0B1C30]">${p.title}</div>
+        <div class="text-[12px] text-[#737685] mt-1 overflow-hidden text-ellipsis whitespace-nowrap">${p.content}</div>
+      </div>
+      <div class="px-4 py-2.5 flex items-center gap-2 text-[11px] text-[#737685]">
+        <span class="font-semibold text-[#434654]">${p.nickname}</span>
+        ${p.apt?`<span class="bg-[#EFF4FF] px-2 py-0.5 rounded-full font-mono">${p.apt}</span>`:''}
+        <span>${dateStr}</span>
+        <div class="ml-auto flex items-center gap-3">
+          <button onclick="event.stopPropagation();togglePostLike('${p.id}',this)" class="flex items-center gap-1 ${postLiked?'text-red-400':'text-[#737685]'}">
+            <span class="material-symbols-outlined ${postLiked?'ms-fill':'ms'}" style="font-size:14px;">favorite</span>
+            <span class="plc-${p.id} font-mono">...</span>
+          </button>
+          <button onclick="event.stopPropagation();reportPost('${p.id}')" class="text-[10px] hover:text-red-400 transition-colors">🚨</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  filtered.forEach(p=>gasGet({action:'likes',key:'post_'+p.id}).then(d=>document.querySelectorAll('.plc-'+p.id).forEach(el=>el.textContent=(d&&d.count)||0)));
+}
+async function togglePostLike(id,el){
+  const key='post_'+id;const liked=localStorage.getItem('post_liked_'+id)==='1';
+  const cntEl=document.querySelector('.plc-'+id);const cur=parseInt(cntEl?.textContent)||0;
+  if(liked){localStorage.removeItem('post_liked_'+id);el.style.color='';el.querySelector('.material-symbols-outlined').className='material-symbols-outlined ms';if(cntEl)cntEl.textContent=Math.max(0,cur-1);await gasPost({action:'like',key,delta:-1});}
+  else{localStorage.setItem('post_liked_'+id,'1');el.style.color='#EF4444';el.querySelector('.material-symbols-outlined').className='material-symbols-outlined ms-fill';if(cntEl)cntEl.textContent=cur+1;await gasPost({action:'like',key,delta:1});}
+}
+async function openPostDetail(postId){
+  const post=allPosts.find(p=>p.id===postId);if(!post)return;
+  const tagCls={'할인/이벤트':'background:#EF4444;color:#fff','공지':'background:#7FB8D9;color:#0B1C30','질문/추천':'background:#006C49;color:#fff'};
+  const tStyle=tagCls[post.category]||'background:#737685;color:#fff';
+  const dateStr=post.date?new Date(post.date).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}):'';
+  const liked=localStorage.getItem('post_liked_'+postId)==='1';
+  document.getElementById('post-sheet-inner').innerHTML=`
+    <div class="modal-handle"></div>
+    <span class="inline-block text-[10px] font-bold px-2.5 py-1 rounded-full mb-3" style="${tStyle}">${post.category}</span>
+    <h3 class="font-display font-extrabold text-xl text-[#0B1C30] mb-3">${post.title}</h3>
+    <div class="flex items-center gap-2 text-[11px] text-[#737685] mb-4 pb-4 border-b border-[#C3C6D6]/30">
+      <span class="font-semibold text-[#434654]">${post.nickname}</span>
+      ${post.apt?`<span class="bg-[#EFF4FF] px-2 py-0.5 rounded-full font-mono">${post.apt}</span>`:''}
+      <span>${dateStr}</span>
+    </div>
+    <p class="text-[14px] text-[#434654] leading-relaxed mb-5 whitespace-pre-wrap">${post.content}</p>
+    <div class="flex items-center gap-3 mb-5">
+      <button onclick="togglePostLikeDetail('${postId}')" class="flex items-center gap-2 bg-[#EFF4FF] px-4 py-2.5 rounded-xl font-bold text-sm ${liked?'text-red-400':'text-[#737685]'}" id="pdlike-${postId}">
+        <span class="material-symbols-outlined ${liked?'ms-fill':'ms'}" style="font-size:18px;">favorite</span>
+        <span id="pdlc-${postId}">...</span>
+      </button>
+      <button onclick="reportPost('${postId}')" class="text-[12px] text-[#737685] hover:text-red-400 transition-colors ml-auto">🚨 신고</button>
+    </div>
+    <div class="border-t border-[#C3C6D6]/30 pt-4">
+      <div class="font-display font-bold text-base text-[#0B1C30] mb-3">댓글 <span class="text-primary font-mono text-sm" id="ccnt-${postId}"></span></div>
+      <div id="clist-${postId}" class="space-y-0"><div class="text-center py-4 text-[#737685] text-sm">불러오는 중...</div></div>
+      <div class="flex gap-3 mt-4 pt-4 border-t border-[#C3C6D6]/30">
+        ${reviewAvatar(myNickname)}
+        <div class="flex-1 bg-[#EFF4FF] rounded-2xl px-4 py-2.5 flex items-center gap-2">
+          <input type="text" placeholder="댓글을 남겨보세요..." class="flex-1 bg-transparent text-[13px] text-[#0B1C30] placeholder-[#737685] outline-none" id="cinput-${postId}">
+          <button onclick="submitComment('${postId}')" class="text-primary font-bold text-[13px]">게시</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('post-sheet').classList.add('open');
+  gasGet({action:'likes',key:'post_'+postId}).then(d=>{const el=document.getElementById('pdlc-'+postId);if(el)el.textContent=(d&&d.count)||0;});
+  loadComments(postId);
+}
+async function togglePostLikeDetail(id){
+  const key='post_'+id;const liked=localStorage.getItem('post_liked_'+id)==='1';
+  const btn=document.getElementById('pdlike-'+id);const cntEl=document.getElementById('pdlc-'+id);
+  const cur=parseInt(cntEl?.textContent)||0;
+  if(liked){localStorage.removeItem('post_liked_'+id);btn?.classList.remove('text-red-400');btn?.classList.add('text-[#737685]');const ico=btn?.querySelector('.material-symbols-outlined');if(ico){ico.classList.remove('ms-fill');ico.classList.add('ms');}if(cntEl)cntEl.textContent=Math.max(0,cur-1);await gasPost({action:'like',key,delta:-1});}
+  else{localStorage.setItem('post_liked_'+id,'1');btn?.classList.add('text-red-400');btn?.classList.remove('text-[#737685]');const ico=btn?.querySelector('.material-symbols-outlined');if(ico){ico.classList.add('ms-fill');ico.classList.remove('ms');}if(cntEl)cntEl.textContent=cur+1;await gasPost({action:'like',key,delta:1});}
+}
+async function loadComments(postId){
+  const data=await gasGet({action:'comments',key:postId});const comments=data||[];
+  const list=document.getElementById('clist-'+postId);const cntEl=document.getElementById('ccnt-'+postId);
+  if(cntEl)cntEl.textContent=comments.length?'('+comments.length+')':'';
+  if(!list)return;
+  if(!comments.length){list.innerHTML='<div class="text-center py-4 text-[#737685] text-sm">첫 댓글을 남겨보세요 💬</div>';return;}
+  list.innerHTML=comments.map(c=>{
+    const nick=c.nickname||'익명';const dateStr=c.date?new Date(c.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}):'';
+    return `<div class="flex gap-3 py-3 border-b border-[#C3C6D6]/20">${reviewAvatar(nick)}<div class="flex-1"><div class="flex items-baseline gap-2"><span class="font-bold text-[13px] text-[#0B1C30]">${nick}</span><span class="font-mono text-[10px] text-[#737685]">${dateStr}</span></div><p class="text-[13px] text-[#434654] mt-0.5">${c.text||''}</p></div></div>`;
+  }).join('');
+}
+async function submitComment(postId){
+  const input=document.getElementById('cinput-'+postId);if(!input)return;
+  const text=input.value.trim();if(!text)return;input.value='';
+  const list=document.getElementById('clist-'+postId);const cntEl=document.getElementById('ccnt-'+postId);
+  const noMsg=list?.querySelector('.text-center');if(noMsg)list.innerHTML='';
+  const item=document.createElement('div');item.className='flex gap-3 py-3 border-b border-[#C3C6D6]/20';
+  item.innerHTML=reviewAvatar(myNickname)+`<div class="flex-1"><div class="flex items-baseline gap-2"><span class="font-bold text-[13px] text-[#0B1C30]">${myNickname}</span><span class="font-mono text-[10px] text-[#737685]">방금</span></div><p class="text-[13px] text-[#434654] mt-0.5">${text}</p></div>`;
+  list?.appendChild(item);item.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(cntEl){const cur=parseInt((cntEl.textContent||'0').replace(/[()]/g,''))||0;cntEl.textContent='('+(cur+1)+')';}
+  await gasPost({action:'comment',postId,nickname:myNickname,text});
+}
+
+function setCommunityTab(cat,el){
+  currentCat=cat;
+  document.querySelectorAll('.ctab').forEach(b=>{b.classList.remove('bg-primary','text-white');b.classList.add('bg-white','border-[#C3C6D6]/50','text-[#434654]');});
+  el.classList.add('bg-primary','text-white');el.classList.remove('bg-white','border-[#C3C6D6]/50','text-[#434654]');
+  renderPosts();
+}
+function openWriteModal(){document.getElementById('write-nick').value=myNickname;document.getElementById('write-modal').classList.add('open');}
+function closeWriteModal(){document.getElementById('write-modal').classList.remove('open');}
+async function submitPost(){
+  const cat=document.getElementById('write-cat').value;
+  const title=document.getElementById('write-title').value.trim();
+  const content=document.getElementById('write-content').value.trim();
+  const nick=document.getElementById('write-nick').value.trim()||myNickname;
+  if(!title){alert('제목을 입력해주세요');return;}if(!content){alert('내용을 입력해주세요');return;}
+  const btn=document.getElementById('write-submit');btn.textContent='전송 중...';btn.style.opacity='.6';
+  await gasPost({action:'post',category:cat,title,content,nickname:nick,apt:selectedApt||''});
+  btn.textContent='📮 승인 요청하기';btn.style.opacity='1';
+  closeWriteModal();document.getElementById('write-title').value='';document.getElementById('write-content').value='';
+  alert('✅ 글이 접수됐어요!\n관리자 승인 후 게시돼요.');
+}
+function reportPost(postId){const reason=prompt('신고 사유를 입력해주세요:');if(!reason)return;gasPost({action:'report',targetId:postId,targetType:'post',nickname:myNickname,reason});alert('신고가 접수됐어요.');}
+
+/* AUTH */
+function renderMyTab(){
+  const g=document.getElementById('my-guest');const l=document.getElementById('my-loggedin');
+  if(!g||!l)return;
+  if(currentUser){g.style.display='none';l.style.display='block';document.getElementById('my-nick').textContent=currentUser.nickname+' 님';document.getElementById('my-apt-txt').textContent=currentUser.apt?'📍 '+currentUser.apt:'우리동네상가 회원';document.getElementById('my-avatar-txt').textContent=currentUser.nickname.slice(0,1);}
+  else{g.style.display='block';l.style.display='none';}
+}
+function openAuthModal(mode){authMode=mode;document.getElementById('auth-nick').value='';document.getElementById('auth-pw').value='';document.getElementById('nick-check-msg').classList.add('hidden');updateAuthModal();document.getElementById('auth-modal').classList.add('open');}
+function closeAuthModal(){document.getElementById('auth-modal').classList.remove('open');}
+function updateAuthModal(){document.getElementById('auth-title').textContent=authMode==='login'?'🔑 로그인':'✏️ 회원가입';document.getElementById('auth-submit').textContent=authMode==='login'?'로그인':'가입하기';document.getElementById('auth-toggle').textContent=authMode==='login'?'계정이 없으신가요? → 회원가입':'이미 계정이 있으신가요? → 로그인';}
+function toggleAuthMode(){authMode=authMode==='login'?'register':'login';updateAuthModal();}
+async function submitAuth(){
+  const nick=document.getElementById('auth-nick').value.trim();const pw=document.getElementById('auth-pw').value.trim();
+  if(!nick){alert('닉네임을 입력해주세요');return;}if(!pw||pw.length<4){alert('비밀번호는 4자 이상이어야 해요');return;}
+  const btn=document.getElementById('auth-submit');btn.textContent='처리 중...';btn.style.opacity='.6';
+  if(authMode==='register'){
+    const check=await gasGet({action:'checkNick',nickname:nick});
+    if(check&&check.exists){btn.textContent='가입하기';btn.style.opacity='1';const msg=document.getElementById('nick-check-msg');msg.textContent='이미 사용 중인 닉네임이에요 ❌';msg.style.color='#EF4444';msg.classList.remove('hidden');return;}
+    const res=await gasPost({action:'register',nickname:nick,password:pw,apt:selectedApt||''});
+    btn.textContent='가입하기';btn.style.opacity='1';
+    if(res&&res.ok){currentUser={nickname:nick,apt:selectedApt||''};myNickname=nick;localStorage.setItem('wdns_user',JSON.stringify(currentUser));localStorage.setItem('sang_nick',nick);closeAuthModal();renderMyTab();alert('🎉 가입 완료! 환영해요 '+nick+' 님!');}
+    else{alert((res&&res.msg)||'가입에 실패했어요.');}
+  }else{
+    const res=await gasPost({action:'login',nickname:nick,password:pw});
+    btn.textContent='로그인';btn.style.opacity='1';
+    if(res&&res.ok){currentUser={nickname:nick,apt:res.apt||''};myNickname=nick;localStorage.setItem('wdns_user',JSON.stringify(currentUser));localStorage.setItem('sang_nick',nick);closeAuthModal();renderMyTab();alert('👋 반가워요 '+nick+' 님!');}
+    else{alert((res&&res.msg)||'로그인에 실패했어요.');}
+  }
+}
+function logout(){if(!confirm('로그아웃 할까요?'))return;currentUser=null;localStorage.removeItem('wdns_user');renderMyTab();}
+function openChangePwModal(){document.getElementById('cur-pw').value='';document.getElementById('new-pw').value='';document.getElementById('new-pw2').value='';document.getElementById('changepw-modal').classList.add('open');}
+function closeChangePwModal(){document.getElementById('changepw-modal').classList.remove('open');}
+async function submitChangePw(){
+  const curPw=document.getElementById('cur-pw').value.trim();const newPw=document.getElementById('new-pw').value.trim();const newPw2=document.getElementById('new-pw2').value.trim();
+  if(!curPw||!newPw){alert('비밀번호를 입력해주세요');return;}if(newPw!==newPw2){alert('새 비밀번호가 일치하지 않아요');return;}if(newPw.length<4){alert('비밀번호는 4자 이상이어야 해요');return;}if(!currentUser){alert('로그인이 필요해요');return;}
+  const res=await gasPost({action:'updateUser',nickname:currentUser.nickname,currentPw:curPw,newPw});
+  if(res&&res.ok){closeChangePwModal();alert('✅ 비밀번호가 변경됐어요!');}else{alert((res&&res.msg)||'변경에 실패했어요.');}
+}
+function showMySavedShops(){
+  const saved=Object.keys(localStorage).filter(k=>k.startsWith('liked_')&&!k.startsWith('liked_post_'));
+  document.getElementById('my-sheet-inner').innerHTML=`<div class="modal-handle"></div><h3 class="font-display font-extrabold text-xl text-[#0B1C30] mb-4">💾 저장한 상가</h3>${!saved.length?'<div class="text-center py-8 text-[#737685]">저장한 상가가 없어요</div>':saved.map(k=>{const p=k.replace('liked_','').split('_');return `<div class="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#C3C6D6]/20 mb-2"><span class="material-symbols-outlined ms-fill text-primary" style="font-size:20px;">favorite</span><span class="font-bold text-[#0B1C30]">${p[0]||'상가'} ${p[2]||''} ${p[3]||''}</span></div>`;}).join('')}`;
+  document.getElementById('my-sheet').classList.add('open');
+}
+function showMyReviews(){document.getElementById('my-sheet-inner').innerHTML=`<div class="modal-handle"></div><h3 class="font-display font-extrabold text-xl text-[#0B1C30] mb-4">✍️ 내가 쓴 리뷰</h3><div class="text-center py-8 text-[#737685] text-sm">상가 상세에서 직접 확인할 수 있어요</div>`;document.getElementById('my-sheet').classList.add('open');}
+function showMyLikes(){
+  const ls=Object.keys(localStorage).filter(k=>k.startsWith('liked_')&&!k.startsWith('post_liked_'));
+  const lp=Object.keys(localStorage).filter(k=>k.startsWith('post_liked_'));
+  document.getElementById('my-sheet-inner').innerHTML=`<div class="modal-handle"></div><h3 class="font-display font-extrabold text-xl text-[#0B1C30] mb-4">❤️ 좋아요 목록</h3><div class="font-mono text-[11px] text-[#737685] mb-2 uppercase tracking-widest">상가 (${ls.length})</div>${!ls.length?'<div class="text-sm text-[#737685] mb-4">좋아요한 상가가 없어요</div>':ls.map(k=>{const p=k.replace('liked_','').split('_');return `<div class="p-3 bg-white rounded-xl border border-[#C3C6D6]/20 mb-2 text-sm">🏪 ${p[0]||'상가'} ${p[2]||''} ${p[3]||''}</div>`;}).join('')}<div class="font-mono text-[11px] text-[#737685] mb-2 mt-4 uppercase tracking-widest">사랑방 글 (${lp.length})</div>${!lp.length?'<div class="text-sm text-[#737685]">좋아요한 글이 없어요</div>':`<div class="p-3 bg-white rounded-xl border border-[#C3C6D6]/20 text-sm">💬 ${lp.length}개의 글</div>`}`;
+  document.getElementById('my-sheet').classList.add('open');
+}
+
+/* NAV */
 function switchTab(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelector(`.tab[data-tab="${name}"]`).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.style.opacity=b.dataset.tab===name?'1':'0.5');
   window.scrollTo(0,0);
-  if(name==='community') loadPosts();
-  if(name==='match') loadAllVacants();
-  if(name==='my') renderMyTab();
+  if(name==='community')loadPosts();
+  if(name==='match')loadAllVacants();
+  if(name==='my')renderMyTab();
 }
-
-
-/* ========== AUTH (로그인/회원가입) ========== */
-let currentUser = null; // {nickname, apt}
-let authMode = 'login'; // 'login' | 'register'
-
-function initAuth(){
-  const saved = localStorage.getItem('wdns_user');
-  if(saved){
-    try{
-      currentUser = JSON.parse(saved);
-      myNickname = currentUser.nickname;
-      renderMyTab();
-    }catch(e){ localStorage.removeItem('wdns_user'); }
-  } else {
-    renderMyTab();
-  }
+function loadAllVacants(){
+  if(!allData.length){setTimeout(loadAllVacants,800);return;}
+  const allV=allData.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
+  document.getElementById('match-vacant-cnt').textContent=allV.length;
+  document.getElementById('match-total-cnt').textContent=allData.length;
+  renderVacantList(allV);
 }
-
-function renderMyTab(){
-  const guest = document.getElementById('my-guest');
-  const loggedin = document.getElementById('my-loggedin');
-  if(!guest || !loggedin) return;
-  if(currentUser){
-    guest.style.display = 'none';
-    loggedin.style.display = 'block';
-    document.getElementById('my-nick').textContent = currentUser.nickname + ' 님';
-    document.getElementById('my-apt').textContent = currentUser.apt ? `📍 ${currentUser.apt}` : '우리동네상가 회원';
-    // 아바타 이니셜
-    document.getElementById('my-avatar').textContent = currentUser.nickname.slice(0,1) + '🏘️';
-  } else {
-    guest.style.display = 'block';
-    loggedin.style.display = 'none';
-  }
+function showPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function goBack(){
+  if(!navHistory.length)return;
+  const prev=navHistory.pop();
+  const panels=['panel-city','panel-gu','panel-apt','panel-shop'];
+  showPanel(panels[prev]);showCrumbs(prev);
 }
-
-function openAuthModal(mode){
-  authMode = mode;
-  document.getElementById('auth-nick').value = '';
-  document.getElementById('auth-pw').value = '';
-  document.getElementById('nick-check-msg').style.display = 'none';
-  updateAuthModal();
-  document.getElementById('auth-modal').classList.add('open');
+function showCrumbs(lv){
+  document.getElementById('crumb-city').style.display=lv>=1?'':'none';
+  document.getElementById('sep2').style.display=lv>=2?'':'none';
+  document.getElementById('crumb-gu').style.display=lv>=2?'':'none';
+  document.getElementById('sep3').style.display=lv>=3?'':'none';
+  if(lv<3)document.getElementById('crumb-apt').textContent='';
+  document.getElementById('back-btn').style.opacity=lv>0?'1':'0.35';
 }
-function closeAuthModal(){ document.getElementById('auth-modal').classList.remove('open'); }
+function goCity(){while(navHistory.length>1)navHistory.pop();goBack();}
+function goGu(){while(navHistory.length>2)navHistory.pop();goBack();}
+function setCount(txt){document.getElementById('item-count').textContent=txt;}
 
-function updateAuthModal(){
-  document.getElementById('auth-modal-title').textContent = authMode==='login' ? '🔑 로그인' : '✏️ 회원가입';
-  document.getElementById('auth-submit-btn').textContent = authMode==='login' ? '로그인' : '가입하기';
-  document.getElementById('auth-mode-toggle').textContent = authMode==='login' ? '계정이 없으신가요? → 회원가입' : '이미 계정이 있으신가요? → 로그인';
-}
-
-function toggleAuthMode(){
-  authMode = authMode==='login' ? 'register' : 'login';
-  updateAuthModal();
-}
-
-async function submitAuth(){
-  const nick = document.getElementById('auth-nick').value.trim();
-  const pw = document.getElementById('auth-pw').value.trim();
-  if(!nick){ alert('닉네임을 입력해주세요'); return; }
-  if(!pw){ alert('비밀번호를 입력해주세요'); return; }
-  if(pw.length < 4){ alert('비밀번호는 4자 이상이어야 해요'); return; }
-
-  const btn = document.getElementById('auth-submit-btn');
-  btn.textContent = '처리 중...'; btn.style.opacity='.6';
-
-  if(authMode === 'register'){
-    // 닉네임 중복 체크
-    const check = await gasGet({action:'checkNick', nickname:nick});
-    if(check && check.exists){
-      btn.textContent='가입하기'; btn.style.opacity='1';
-      showNickMsg('이미 사용 중인 닉네임이에요 ❌', false);
-      return;
-    }
-    const res = await gasPost({action:'register', nickname:nick, password:pw, apt: selectedApt||''});
-    btn.textContent='가입하기'; btn.style.opacity='1';
-    if(res && res.ok){
-      currentUser = {nickname:nick, apt:selectedApt||''};
-      myNickname = nick;
-      localStorage.setItem('wdns_user', JSON.stringify(currentUser));
-      closeAuthModal();
-      renderMyTab();
-      alert('🎉 가입 완료! 환영해요 ' + nick + ' 님!');
-    } else {
-      alert((res&&res.msg)||'가입에 실패했어요. 다시 시도해주세요.');
-    }
-  } else {
-    const res = await gasPost({action:'login', nickname:nick, password:pw});
-    btn.textContent='로그인'; btn.style.opacity='1';
-    if(res && res.ok){
-      currentUser = {nickname:nick, apt:res.apt||''};
-      myNickname = nick;
-      localStorage.setItem('wdns_user', JSON.stringify(currentUser));
-      closeAuthModal();
-      renderMyTab();
-      alert('👋 반가워요 ' + nick + ' 님!');
-    } else {
-      alert((res&&res.msg)||'로그인에 실패했어요.');
-    }
-  }
-}
-
-function showNickMsg(msg, ok){
-  const el = document.getElementById('nick-check-msg');
-  el.textContent = msg;
-  el.style.color = ok ? 'var(--moss)' : 'var(--brick)';
-  el.style.display = 'block';
-}
-
-function logout(){
-  if(!confirm('로그아웃 할까요?')) return;
-  currentUser = null;
-  localStorage.removeItem('wdns_user');
-  renderMyTab();
-}
-
-/* 비밀번호 변경 */
-function openChangePwModal(){
-  document.getElementById('cur-pw').value='';
-  document.getElementById('new-pw').value='';
-  document.getElementById('new-pw2').value='';
-  document.getElementById('changepw-modal').classList.add('open');
-}
-function closeChangePwModal(){ document.getElementById('changepw-modal').classList.remove('open'); }
-
-async function submitChangePw(){
-  const curPw = document.getElementById('cur-pw').value.trim();
-  const newPw = document.getElementById('new-pw').value.trim();
-  const newPw2 = document.getElementById('new-pw2').value.trim();
-  if(!curPw||!newPw){ alert('비밀번호를 입력해주세요'); return; }
-  if(newPw !== newPw2){ alert('새 비밀번호가 일치하지 않아요'); return; }
-  if(newPw.length < 4){ alert('비밀번호는 4자 이상이어야 해요'); return; }
-  if(!currentUser){ alert('로그인이 필요해요'); return; }
-
-  const res = await gasPost({action:'updateUser', nickname:currentUser.nickname, currentPw:curPw, newPw});
-  if(res && res.ok){
-    closeChangePwModal();
-    alert('✅ 비밀번호가 변경됐어요!');
-  } else {
-    alert((res&&res.msg)||'변경에 실패했어요.');
-  }
-}
-
-/* MY 서브 메뉴 */
-function showMySavedShops(){
-  const saved = Object.keys(localStorage).filter(k=>k.startsWith('liked_')&&!k.startsWith('liked_post'));
-  const inner = document.getElementById('my-sheet-inner');
-  inner.innerHTML = `
-    <div class="sheet-handle"></div>
-    <div style="font-family:'DotGothic16';font-size:18px;margin-bottom:14px;">💾 저장한 상가</div>
-    ${!saved.length
-      ? '<div class="empty"><div class="empty-ico">💔</div><div>저장한 상가가 없어요</div></div>'
-      : saved.map(k=>{
-          const key = k.replace('liked_','');
-          const parts = key.split('_');
-          return `<div class="menu-item" style="margin-bottom:8px;border:2px solid var(--ink);padding:12px;">
-            <span class="menu-ico">🏪</span>
-            <span style="flex:1;">${parts[0]||'상가'} ${parts[2]||''} ${parts[3]||''}</span>
-          </div>`;
-        }).join('')
-    }`;
-  document.getElementById('my-sheet').classList.add('open');
-}
-
-function showMyReviews(){
-  const inner = document.getElementById('my-sheet-inner');
-  inner.innerHTML = `
-    <div class="sheet-handle"></div>
-    <div style="font-family:'DotGothic16';font-size:18px;margin-bottom:14px;">✍️ 내가 쓴 리뷰/댓글</div>
-    <div class="empty"><div class="empty-ico">📝</div><div>기록된 리뷰는 상가 상세에서<br>직접 확인할 수 있어요</div></div>`;
-  document.getElementById('my-sheet').classList.add('open');
-}
-
-function showMyLikes(){
-  const likedShops = Object.keys(localStorage).filter(k=>k.startsWith('liked_')&&!k.startsWith('liked_post_'));
-  const likedPosts = Object.keys(localStorage).filter(k=>k.startsWith('post_liked_'));
-  const inner = document.getElementById('my-sheet-inner');
-  inner.innerHTML = `
-    <div class="sheet-handle"></div>
-    <div style="font-family:'DotGothic16';font-size:18px;margin-bottom:14px;">❤️ 좋아요 목록</div>
-    <div style="font-family:'DotGothic16';font-size:13px;color:var(--ink-soft);margin-bottom:8px;">상가 (${likedShops.length})</div>
-    ${!likedShops.length
-      ? '<div style="color:var(--ink-soft);font-size:13px;margin-bottom:14px;">좋아요한 상가가 없어요</div>'
-      : likedShops.map(k=>{
-          const parts = k.replace('liked_','').split('_');
-          return `<div style="padding:10px;background:var(--cream);border:2px solid var(--ink);margin-bottom:6px;">🏪 ${parts[0]||'상가'} ${parts[2]||''} ${parts[3]||''}</div>`;
-        }).join('')
-    }
-    <div style="font-family:'DotGothic16';font-size:13px;color:var(--ink-soft);margin:8px 0;">사랑방 글 (${likedPosts.length})</div>
-    ${!likedPosts.length
-      ? '<div style="color:var(--ink-soft);font-size:13px;">좋아요한 글이 없어요</div>'
-      : `<div style="padding:10px;background:var(--cream);border:2px solid var(--ink);">💬 ${likedPosts.length}개의 글에 좋아요했어요</div>`
-    }`;
-  document.getElementById('my-sheet').classList.add('open');
-}
-
-function changeNick(){} // deprecated - 로그인 기반으로 변경됨
-
-
-
-/* ========== COMMUNITY ========== */
-let currentCat = 'all';
-let allPosts = [];
-
-async function loadPosts(){
-  const apt = selectedApt || '';
-  try{
-    const data = await gasGet({action:'posts', apt});
-    allPosts = data || [];
-  }catch(e){ allPosts=[]; }
-  renderPosts();
-}
-
-function renderPosts(){
-  const list = document.getElementById('post-list');
-  if(!list) return;
-  let filtered = allPosts;
-  if(currentCat !== 'all') filtered = allPosts.filter(p => p.category === currentCat);
-  if(!filtered.length){
-    list.innerHTML = '<div class="empty"><div class="empty-ico">📭</div><div>아직 게시글이 없어요<br>첫 글을 올려보세요!</div></div>';
-    return;
-  }
-  list.innerHTML = filtered.map(p => {
-    const tagCls = p.category==='할인/이벤트'?'sale': p.category==='공지'?'notice':'qna';
-    const dateStr = p.date ? new Date(p.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}) : '';
-    const postLiked = localStorage.getItem('post_liked_'+p.id)==='1';
-    return `
-      <div class="post" onclick="openPostDetail('${p.id}')">
-        <div class="post-top">
-          <div class="post-tag ${tagCls}">${p.category}</div>
-          <div class="post-title">${p.title}</div>
-          <div class="post-content-preview">${p.content}</div>
-        </div>
-        <div class="post-bottom">
-          <span class="post-nick">${p.nickname}</span>
-          ${p.apt ? `<span class="post-apt">${p.apt}</span>` : ''}
-          <span>${dateStr}</span>
-          <div class="post-actions">
-            <span class="post-like${postLiked?' liked':''}" onclick="event.stopPropagation();togglePostLike('${p.id}',this)">
-              ${postLiked?'❤️':'🤍'} <span class="post-like-cnt" id="plc-${p.id}">...</span>
-            </span>
-            <span class="post-report" onclick="event.stopPropagation();reportPost('${p.id}')">🚨</span>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
-  // 좋아요 수 로드
-  filtered.forEach(p => loadPostLike(p.id));
-}
-
-async function loadPostLike(postId){
-  const data = await gasGet({action:'likes', key:'post_'+postId});
-  const el = document.getElementById('plc-'+postId);
-  if(el) el.textContent = (data&&data.count)||0;
-}
-
-async function togglePostLike(postId, el){
-  const key = 'post_'+postId;
-  const liked = localStorage.getItem('post_liked_'+postId)==='1';
-  const cntEl = document.getElementById('plc-'+postId);
-  const cur = parseInt(cntEl?.textContent)||0;
-  if(liked){
-    localStorage.removeItem('post_liked_'+postId);
-    el.classList.remove('liked');
-    el.innerHTML = '🤍 <span class="post-like-cnt" id="plc-'+postId+'">'+(Math.max(0,cur-1))+'</span>';
-    await gasPost({action:'like',key,delta:-1});
-  } else {
-    localStorage.setItem('post_liked_'+postId,'1');
-    el.classList.add('liked');
-    el.innerHTML = '❤️ <span class="post-like-cnt" id="plc-'+postId+'">'+(cur+1)+'</span>';
-    await gasPost({action:'like',key,delta:1});
-  }
-}
-
-async function openPostDetail(postId){
-  const post = allPosts.find(p=>p.id===postId);
-  if(!post) return;
-  const tagCls = post.category==='할인/이벤트'?'sale': post.category==='공지'?'notice':'qna';
-  const dateStr = post.date ? new Date(post.date).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}) : '';
-
-  document.getElementById('post-sheet-inner').innerHTML = `
-    <div class="sheet-handle"></div>
-    <div class="post-detail-body">
-      <div style="margin-bottom:8px;"><span class="post-tag ${tagCls}">${post.category}</span></div>
-      <div class="post-detail-title">${post.title}</div>
-      <div class="post-detail-meta">
-        <span>${post.nickname}</span>
-        ${post.apt?`<span class="post-apt">${post.apt}</span>`:''}
-        <span>${dateStr}</span>
-      </div>
-      <div class="post-detail-content">${post.content}</div>
-      <div class="like-section" style="margin-bottom:14px;">
-        <button class="like-btn" id="pdlike-${postId}" onclick="togglePostLikeDetail('${postId}')">
-          <span class="like-heart">${localStorage.getItem('post_liked_'+postId)==='1'?'❤️':'🤍'}</span>
-          <span class="like-count" id="pdlc-${postId}">...</span>
-        </button>
-        <span style="font-size:13px;color:var(--ink-soft);">좋아요</span>
-        <span style="margin-left:auto;cursor:pointer;font-size:13px;color:var(--ink-soft);" onclick="reportPost('${postId}')">🚨 신고</span>
-      </div>
-      <!-- 댓글 -->
-      <div class="review-section">
-        <div class="review-title">댓글 <em id="ccnt-${postId}"></em></div>
-        <div class="review-list" id="clist-${postId}">
-          <div style="padding:12px 0;text-align:center;color:var(--ink-soft);font-size:13px;">불러오는 중...</div>
-        </div>
-        <div class="review-input-row">
-          <div class="review-avatar-me">${myNickname.slice(0,2)}</div>
-          <textarea class="review-input" id="cinput-${postId}" placeholder="댓글을 남겨보세요..." rows="1"
-            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-          <button class="review-send" onclick="submitComment('${postId}')">게시</button>
-        </div>
-      </div>
-    </div>`;
-
-  document.getElementById('post-sheet').classList.add('open');
-  loadPostLikeDetail(postId);
-  loadComments(postId);
-}
-
-async function loadPostLikeDetail(postId){
-  const data = await gasGet({action:'likes', key:'post_'+postId});
-  const count = (data&&data.count)||0;
-  const el = document.getElementById('pdlc-'+postId);
-  if(el) el.textContent = count;
-  const liked = localStorage.getItem('post_liked_'+postId)==='1';
-  const btn = document.getElementById('pdlike-'+postId);
-  if(btn){
-    btn.querySelector('.like-heart').textContent = liked?'❤️':'🤍';
-    if(liked) btn.classList.add('liked');
-  }
-}
-
-async function togglePostLikeDetail(postId){
-  const key='post_'+postId;
-  const liked=localStorage.getItem('post_liked_'+postId)==='1';
-  const btn=document.getElementById('pdlike-'+postId);
-  const cntEl=document.getElementById('pdlc-'+postId);
-  const cur=parseInt(cntEl?.textContent)||0;
-  if(liked){
-    localStorage.removeItem('post_liked_'+postId);
-    btn?.classList.remove('liked');
-    if(btn) btn.querySelector('.like-heart').textContent='🤍';
-    if(cntEl) cntEl.textContent=Math.max(0,cur-1);
-    await gasPost({action:'like',key,delta:-1});
-  } else {
-    localStorage.setItem('post_liked_'+postId,'1');
-    btn?.classList.add('liked');
-    if(btn) btn.querySelector('.like-heart').textContent='❤️';
-    if(cntEl) cntEl.textContent=cur+1;
-    await gasPost({action:'like',key,delta:1});
-  }
-}
-
-async function loadComments(postId){
-  const data = await gasGet({action:'comments', key:postId});
-  const comments = data||[];
-  const list = document.getElementById('clist-'+postId);
-  const cntEl = document.getElementById('ccnt-'+postId);
-  if(cntEl) cntEl.textContent = comments.length?`(${comments.length})`:'';
-  if(!list) return;
-  if(!comments.length){
-    list.innerHTML='<div style="padding:12px 0;text-align:center;color:var(--ink-soft);font-size:13px;">첫 댓글을 남겨보세요 💬</div>';
-    return;
-  }
-  list.innerHTML = comments.map(c=>{
-    const dateStr = c.date?new Date(c.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}):'';
-    return `
-      <div class="review-item">
-        <div class="review-avatar">${(c.nickname||'익명').slice(0,2)}</div>
-        <div class="review-content">
-          <div class="review-nick">${c.nickname||'익명'}</div>
-          <div class="review-text">${c.text||''}</div>
-          <div class="review-date">${dateStr}</div>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-async function submitComment(postId){
-  const input = document.getElementById('cinput-'+postId);
-  if(!input) return;
-  const text = input.value.trim();
-  if(!text) return;
-  input.value=''; input.style.height='auto';
-
-  const list = document.getElementById('clist-'+postId);
-  const cntEl = document.getElementById('ccnt-'+postId);
-  const noMsg = list?.querySelector('div[style]');
-  if(noMsg) list.innerHTML='';
-
-  const item = document.createElement('div');
-  item.className='review-item';
-  item.innerHTML=`
-    <div class="review-avatar">${myNickname.slice(0,2)}</div>
-    <div class="review-content">
-      <div class="review-nick">${myNickname}</div>
-      <div class="review-text">${text}</div>
-      <div class="review-date">방금</div>
-    </div>`;
-  list?.appendChild(item);
-  item.scrollIntoView({behavior:'smooth',block:'nearest'});
-  if(cntEl){
-    const cur=parseInt((cntEl.textContent||'0').replace(/[()]/g,''))||0;
-    cntEl.textContent=`(${cur+1})`;
-  }
-  await gasPost({action:'comment', postId, nickname:myNickname, text});
-}
-
-function closePostSheet(){ document.getElementById('post-sheet').classList.remove('open'); }
-
-/* 글쓰기 모달 */
-function openWriteModal(){
-  document.getElementById('write-nick').value = myNickname;
-  document.getElementById('write-modal').classList.add('open');
-}
-function closeWriteModal(){ document.getElementById('write-modal').classList.remove('open'); }
-
-async function submitPost(){
-  const cat = document.getElementById('write-cat').value;
-  const title = document.getElementById('write-title').value.trim();
-  const content_text = document.getElementById('write-content').value.trim();
-  const nick = document.getElementById('write-nick').value.trim() || myNickname;
-  if(!title){ alert('제목을 입력해주세요'); return; }
-  if(!content_text){ alert('내용을 입력해주세요'); return; }
-
-  const btn = document.querySelector('.form-submit');
-  btn.textContent = '전송 중...';
-  btn.style.opacity = '.6';
-
-  await gasPost({action:'post', category:cat, title, content:content_text, nickname:nick, apt:selectedApt||''});
-
-  btn.textContent = '📮 승인 요청하기';
-  btn.style.opacity = '1';
-  closeWriteModal();
-  document.getElementById('write-title').value='';
-  document.getElementById('write-content').value='';
-  alert('✅ 글이 접수됐어요!\n관리자 승인 후 게시돼요.');
-}
-
-function reportPost(postId){
-  const reason = prompt('신고 사유를 입력해주세요:');
-  if(!reason) return;
-  gasPost({action:'report', targetId:postId, targetType:'post', nickname:myNickname, reason});
-  alert('신고가 접수됐어요. 검토 후 조치할게요.');
-}
-
-/* 카테고리 탭 */
-document.getElementById('view-community').addEventListener('click', e=>{
-  const tab = e.target.closest('.ctab');
-  if(!tab) return;
-  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('on'));
-  tab.classList.add('on');
-  currentCat = tab.dataset.c;
-  renderPosts();
-});
-
-
-/* ========== NOTICES (마퀴 광고판) ========== */
-async function loadNotices(){
-  try{
-    const data = await gasGet({action:'notices'});
-    const items = data && data.length ? data : ['우리상가에 오신 것을 환영해요!'];
-    const track = document.getElementById('marquee-track');
-    if(!track) return;
-    // 두 번 반복해서 끊김 없이 흐르게
-    track.innerHTML = [...items, ...items].map(t => `<span>${t}</span>`).join('');
-  }catch(e){
-    console.error('공지 로드 실패', e);
-  }
-}
-
+/* INIT */
 loadData();
 loadNotices();
-initAuth();
+renderMyTab();
 </script>
 </body>
 </html>
