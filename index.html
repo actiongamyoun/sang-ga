@@ -81,6 +81,8 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
         <span id="sep2" style="display:none" class="text-[#737685]">/</span>
         <span class="text-primary font-semibold cursor-pointer hover:underline truncate" id="crumb-gu" style="display:none" onclick="goGu()"></span>
         <span id="sep3" style="display:none" class="text-[#737685]">/</span>
+        <span class="text-primary font-semibold cursor-pointer hover:underline truncate" id="crumb-dong" style="display:none" onclick="goDong()"></span>
+        <span id="sep4" style="display:none" class="text-[#737685]">/</span>
         <span class="font-semibold text-[#0B1C30] truncate" id="crumb-apt"></span>
       </div>
       <div class="font-mono text-[10px] text-[#737685] bg-[#D3E4FE] px-2 py-0.5 rounded-md whitespace-nowrap flex-shrink-0" id="item-count">로딩중...</div>
@@ -119,6 +121,12 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
     <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight mb-1">구 선택</h2>
     <p class="text-[#434654] text-sm mb-6" id="gu-sub">지역을 선택하세요</p>
     <div class="grid grid-cols-3 gap-3" id="gu-grid"></div>
+  </div>
+  <!-- PANEL: 동 -->
+  <div class="panel" id="panel-dong">
+    <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight mb-1">동 선택</h2>
+    <p class="text-[#434654] text-sm mb-6" id="dong-sub">동을 선택하세요</p>
+    <div class="grid grid-cols-3 gap-3" id="dong-grid"></div>
   </div>
   <!-- PANEL: 아파트 -->
   <div class="panel" id="panel-apt">
@@ -469,7 +477,26 @@ function selectCity(city){
 function selectGu(city,gu){
   navHistory.push(1);selectedGu=gu;selectedDong=null;selectedApt=null;
   document.getElementById('crumb-gu').textContent=gu;showCrumbs(2);
-  const apts=[...new Set(allData.filter(d=>d['시']===city&&d['구']===gu).map(d=>d['아파트명']).filter(Boolean))];
+  const dongs=[...new Set(allData.filter(d=>d['시']===city&&d['구']===gu).map(d=>d['동']).filter(Boolean))];
+  document.getElementById('dong-grid').innerHTML=dongs.map(dong=>{
+    const cnt=[...new Set(allData.filter(d=>d['구']===gu&&d['동']===dong).map(d=>d['아파트명']).filter(Boolean))].length;
+    return `<button onclick="selectDong('${city}','${gu}','${dong.replace(/'/g,"&#39;")}')" class="group flex flex-col items-center p-4 rounded-2xl bg-white hover:bg-[#DCE9FF] border border-[#C3C6D6]/20 hover:border-primary/30 transition-all duration-200 active:scale-95 shadow-sm">
+      <div class="relative mb-3">
+        <span class="material-symbols-outlined ms-fill text-[#5C9BD4]" style="font-size:52px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.12));">folder_special</span>
+        <div class="absolute -bottom-1 -right-1 bg-primary text-white font-mono text-[9px] font-bold px-1.5 py-0.5 rounded-md border-2 border-white">${cnt}</div>
+      </div>
+      <span class="font-display font-bold text-[#0B1C30] text-sm group-hover:text-primary transition-colors">${dong}</span>
+      <span class="text-[10px] text-[#737685] font-semibold mt-0.5">${cnt}개 단지</span>
+    </button>`;
+  }).join('');
+  document.getElementById('dong-sub').textContent=gu+' · 동을 선택하세요';
+  setCount(dongs.length+'개 동');showPanel('panel-dong');
+}
+
+function selectDong(city,gu,dong){
+  navHistory.push(2);selectedDong=dong;selectedApt=null;
+  document.getElementById('crumb-dong').textContent=dong;showCrumbs(3);
+  const apts=[...new Set(allData.filter(d=>d['시']===city&&d['구']===gu&&d['동']===dong).map(d=>d['아파트명']).filter(Boolean))];
   document.getElementById('apt-grid').innerHTML=apts.map((a,i)=>{
     const vCnt=allData.filter(d=>d['아파트명']===a&&((d['공실여부']||'').includes('공실')||!(d['업체명']||'').trim())).length;
     const grade=APT_GRADES[i%APT_GRADES.length];
@@ -484,13 +511,13 @@ function selectGu(city,gu){
       <span class="font-display font-bold text-[#0B1C30] text-[12px] group-hover:text-primary transition-colors text-center leading-tight">${a}</span>
     </button>`;
   }).join('');
-  document.getElementById('apt-sub').textContent=gu+' · 1,000세대 이상';
+  document.getElementById('apt-sub').textContent=dong+' · 1,000세대 이상';
   setCount(apts.length+'개 단지');showPanel('panel-apt');
 }
 
 function selectApt(apt){
-  navHistory.push(2);selectedApt=apt;
-  document.getElementById('crumb-apt').textContent=apt;showCrumbs(3);
+  navHistory.push(3);selectedApt=apt;
+  document.getElementById('crumb-apt').textContent=apt;showCrumbs(4);
   document.getElementById('shop-apt-name').textContent=apt+' 상가';
   renderShops();showPanel('panel-shop');
 }
@@ -970,7 +997,7 @@ function showPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classLis
 function goBack(){
   if(!navHistory.length)return;
   const prev=navHistory.pop();
-  const panels=['panel-city','panel-gu','panel-apt','panel-shop'];
+  const panels=['panel-city','panel-gu','panel-dong','panel-apt','panel-shop'];
   showPanel(panels[prev]);showCrumbs(prev);
 }
 function showCrumbs(lv){
@@ -978,9 +1005,12 @@ function showCrumbs(lv){
   document.getElementById('sep2').style.display=lv>=2?'':'none';
   document.getElementById('crumb-gu').style.display=lv>=2?'':'none';
   document.getElementById('sep3').style.display=lv>=3?'':'none';
-  if(lv<3)document.getElementById('crumb-apt').textContent='';
+  document.getElementById('crumb-dong').style.display=lv>=3?'':'none';
+  document.getElementById('sep4').style.display=lv>=4?'':'none';
+  if(lv<4)document.getElementById('crumb-apt').textContent='';
   document.getElementById('back-btn').style.opacity=lv>0?'1':'0.35';
 }
+function goDong(){while(navHistory.length>3)navHistory.pop();goBack();}
 function goCity(){while(navHistory.length>1)navHistory.pop();goBack();}
 function goGu(){while(navHistory.length>2)navHistory.pop();goBack();}
 function setCount(txt){document.getElementById('item-count').textContent=txt;}
