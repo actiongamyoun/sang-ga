@@ -179,6 +179,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
     <button onclick="setCommunityTab('할인/이벤트',this)" class="ctab flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap">🎟 할인/이벤트</button>
     <button onclick="setCommunityTab('공지',this)" class="ctab flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap">📢 공지</button>
     <button onclick="setCommunityTab('질문/추천',this)" class="ctab flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap">❓ 질문/추천</button>
+    <button onclick="setCommunityTab('사장님추천',this)" class="ctab flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap">⭐ 사장님 추천</button>
   </div>
   <div class="font-mono text-[11px] text-[#737685] bg-[#EFF4FF] border border-[#C3C6D6]/30 rounded-xl px-3 py-2 mb-4">📋 작성한 글은 관리자 승인 후 게시됩니다</div>
   <div id="post-list" class="space-y-3"><div class="text-center py-12 text-[#737685]">불러오는 중...</div></div>
@@ -187,23 +188,154 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
 
 <!-- 매칭 VIEW -->
 <div class="view" id="view-match">
-<main class="max-w-lg mx-auto px-5 pt-6 pb-36">
-  <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight mb-5">매칭 & 공실</h2>
-  <div class="grid grid-cols-2 gap-3 mb-5">
-    <div class="bg-white rounded-2xl p-4 border border-[#C3C6D6]/20 shadow-sm border-b-4 border-b-primary">
-      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1">전체 공실</div>
-      <span class="font-display font-extrabold text-3xl text-primary" id="match-vacant-cnt">—</span>
-    </div>
-    <div class="bg-white rounded-2xl p-4 border border-[#C3C6D6]/20 shadow-sm">
-      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1">전체 상가</div>
-      <span class="font-display font-extrabold text-3xl text-[#0B1C30]" id="match-total-cnt">—</span>
+<main class="max-w-lg mx-auto pt-4 pb-36">
+  <div class="px-5 mb-4 flex items-center justify-between">
+    <h2 class="font-display font-extrabold text-2xl text-[#0B1C30] tracking-tight">동네 매칭</h2>
+    <button onclick="openMatchWriteModal()" class="flex items-center gap-1 bg-primary text-white px-3 py-2 rounded-xl font-bold text-xs hover:bg-[#0052CC] transition-colors active:scale-95">
+      <span class="material-symbols-outlined ms text-white" style="font-size:14px;">add</span>모집 글쓰기
+    </button>
+  </div>
+
+  <!-- 세그먼트 3개 -->
+  <div class="px-5 mb-4">
+    <div class="bg-[#EFF4FF] rounded-2xl p-1 grid grid-cols-3 gap-1">
+      <button onclick="setMatchSeg('group',this)" class="seg-btn flex flex-col items-center justify-center py-2 rounded-xl bg-white shadow-sm transition-all">
+        <span class="material-symbols-outlined ms-fill text-primary" style="font-size:18px;">groups</span>
+        <span class="text-[10px] font-bold text-primary mt-0.5">공동구매</span>
+      </button>
+      <button onclick="setMatchSeg('owner',this)" class="seg-btn flex flex-col items-center justify-center py-2 rounded-xl transition-all">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">campaign</span>
+        <span class="text-[10px] font-bold text-[#737685] mt-0.5">사장님 소식</span>
+      </button>
+      <button onclick="setMatchSeg('delivery',this)" class="seg-btn flex flex-col items-center justify-center py-2 rounded-xl transition-all">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">delivery_dining</span>
+        <span class="text-[10px] font-bold text-[#737685] mt-0.5">동네배달</span>
+      </button>
     </div>
   </div>
-  <div id="vacant-list" class="space-y-3 mb-5"><div class="text-center py-10 text-[#737685]">데이터 로딩 중...</div></div>
-  <div class="bg-[#EFF4FF] border border-[#C3C6D6]/30 rounded-2xl p-5">
-    <div class="font-display font-bold text-lg text-[#0B1C30] mb-2">사장님이라면? 🏪</div>
-    <div class="text-sm text-[#434654] leading-relaxed mb-4">주민 수요 데이터를 보고 어떤 업종이 필요한지 확인하세요</div>
-    <div class="bg-[#0B1C30] text-[#F0B84A] font-mono text-sm py-3 rounded-xl text-center cursor-pointer">📊 주민 수요 리포트 받기</div>
+
+  <!-- 공동구매 세그먼트 -->
+  <div class="match-seg active" id="seg-group">
+    <!-- 통계 / 안내 배너 -->
+    <div class="px-5 mb-4">
+      <div class="rounded-2xl p-5 relative overflow-hidden" style="background:linear-gradient(135deg,#FF6B35,#FFA552);">
+        <div class="relative z-10">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="material-symbols-outlined ms-fill text-white" style="font-size:18px;">groups</span>
+            <span class="text-white/90 text-[11px] font-bold uppercase tracking-widest">동네 공동구매</span>
+          </div>
+          <div class="font-display font-extrabold text-white text-xl leading-tight mt-1">함께 주문하고<br>최대 30% 할인받기</div>
+          <div class="text-white/70 text-xs mt-2">진행 중인 모집 <span class="font-bold text-white" id="grp-count">—</span>건</div>
+        </div>
+        <div class="absolute right-4 bottom-2 opacity-25">
+          <span class="material-symbols-outlined ms-fill text-white" style="font-size:80px;">local_offer</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 필터칩 -->
+    <div class="px-5 scroll-x mb-4">
+      <button onclick="setGroupFilter('all',this)" class="grp-fbtn flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary text-white text-[11px] font-bold whitespace-nowrap flex-shrink-0">
+        <span class="material-symbols-outlined ms text-white" style="font-size:13px;">apps</span>전체
+      </button>
+      <button onclick="setGroupFilter('food',this)" class="grp-fbtn flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-[11px] font-bold whitespace-nowrap flex-shrink-0">🍱 음식</button>
+      <button onclick="setGroupFilter('grocery',this)" class="grp-fbtn flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-[11px] font-bold whitespace-nowrap flex-shrink-0">🥬 식료품</button>
+      <button onclick="setGroupFilter('living',this)" class="grp-fbtn flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-[11px] font-bold whitespace-nowrap flex-shrink-0">🏠 생활용품</button>
+      <button onclick="setGroupFilter('hot',this)" class="grp-fbtn flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-[11px] font-bold whitespace-nowrap flex-shrink-0">🔥 마감임박</button>
+    </div>
+
+    <!-- 카드 그리드 (당근마켓 스타일) -->
+    <div class="px-5 grid grid-cols-2 gap-3" id="group-grid">
+      <div class="col-span-2 text-center py-10 text-[#737685]">불러오는 중...</div>
+    </div>
+  </div>
+
+  <!-- 사장님 소식 세그먼트 -->
+  <div class="match-seg" id="seg-owner" style="display:none;">
+    <div class="px-5 mb-4">
+      <div class="rounded-2xl p-5 relative overflow-hidden" style="background:linear-gradient(135deg,#003D9B,#0066FF);">
+        <div class="relative z-10">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="material-symbols-outlined ms-fill text-white" style="font-size:18px;">campaign</span>
+            <span class="text-white/90 text-[11px] font-bold uppercase tracking-widest">사장님 소식</span>
+          </div>
+          <div class="font-display font-extrabold text-white text-xl leading-tight mt-1">우리 동네 상가의<br>새소식과 할인</div>
+          <div class="text-white/70 text-xs mt-2">진행 중인 이벤트 <span class="font-bold text-white" id="owner-count">—</span>건</div>
+        </div>
+        <div class="absolute right-4 bottom-2 opacity-25">
+          <span class="material-symbols-outlined ms-fill text-white" style="font-size:80px;">campaign</span>
+        </div>
+      </div>
+    </div>
+    <div class="px-5 scroll-x mb-4">
+      <button onclick="setOwnerFilter('all',this)" class="own-fbtn flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary text-white text-[11px] font-bold whitespace-nowrap flex-shrink-0">전체</button>
+      <button onclick="setOwnerFilter('discount',this)" class="own-fbtn flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-[11px] font-bold whitespace-nowrap flex-shrink-0">🎟 할인</button>
+      <button onclick="setOwnerFilter('new',this)" class="own-fbtn flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-[11px] font-bold whitespace-nowrap flex-shrink-0">✨ 신메뉴</button>
+      <button onclick="setOwnerFilter('event',this)" class="own-fbtn flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-[11px] font-bold whitespace-nowrap flex-shrink-0">🎉 이벤트</button>
+    </div>
+    <div class="px-5 grid grid-cols-2 gap-3" id="owner-grid">
+      <div class="col-span-2 text-center py-10 text-[#737685]">불러오는 중...</div>
+    </div>
+  </div>
+
+  <!-- 동네배달 세그먼트 -->
+  <div class="match-seg" id="seg-delivery" style="display:none;">
+    <div class="px-5 mb-4">
+      <div class="rounded-2xl p-5 relative overflow-hidden" style="background:linear-gradient(135deg,#00A86B,#3CB371);">
+        <div class="relative z-10">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="material-symbols-outlined ms-fill text-white" style="font-size:18px;">delivery_dining</span>
+            <span class="text-white/90 text-[11px] font-bold uppercase tracking-widest">동네 배달</span>
+          </div>
+          <div class="font-display font-extrabold text-white text-xl leading-tight mt-1">배달비 절반으로<br>주민이 직접 또는 묶음배달</div>
+          <div class="text-white/70 text-xs mt-2">대기 중인 요청 <span class="font-bold text-white" id="del-count">—</span>건</div>
+        </div>
+        <div class="absolute right-4 bottom-2 opacity-25">
+          <span class="material-symbols-outlined ms-fill text-white" style="font-size:80px;">delivery_dining</span>
+        </div>
+      </div>
+    </div>
+    <!-- 배달 타입 -->
+    <div class="px-5 grid grid-cols-2 gap-3 mb-4">
+      <button onclick="alert('주민 배달 요청 등록!')" class="bg-white border border-[#C3C6D6]/30 rounded-2xl p-4 text-left hover:bg-[#EFF4FF] hover:border-primary/30 transition-all active:scale-[.98] shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-[#E8F5E9] flex items-center justify-center mb-2">
+          <span class="material-symbols-outlined ms-fill text-[#00A86B]" style="font-size:20px;">person</span>
+        </div>
+        <div class="font-bold text-[13px] text-[#0B1C30]">주민 배달</div>
+        <div class="text-[11px] text-[#737685] mt-0.5">주민이 직접 배달<br>2,000원 절약</div>
+      </button>
+      <button onclick="alert('묶음배달 신청!')" class="bg-white border border-[#C3C6D6]/30 rounded-2xl p-4 text-left hover:bg-[#EFF4FF] hover:border-primary/30 transition-all active:scale-[.98] shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-[#FFF3E0] flex items-center justify-center mb-2">
+          <span class="material-symbols-outlined ms-fill text-[#FF9800]" style="font-size:20px;">inventory_2</span>
+        </div>
+        <div class="font-bold text-[13px] text-[#0B1C30]">묶음 배달</div>
+        <div class="text-[11px] text-[#737685] mt-0.5">단지 내 모아서<br>최대 50% 절약</div>
+      </button>
+    </div>
+    <div class="px-5">
+      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2">진행 중인 배달 요청</div>
+      <div id="delivery-list" class="space-y-2">
+        <div class="text-center py-10 text-[#737685] text-sm">아직 배달 요청이 없어요<br>첫 번째 요청을 등록해보세요!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 매칭 통계 (하단 고정 안내) -->
+  <div class="px-5 mt-6">
+    <div class="bg-[#EFF4FF] rounded-2xl p-4 grid grid-cols-3 gap-2 text-center">
+      <div>
+        <div class="font-display font-extrabold text-xl text-primary" id="match-vacant-cnt">—</div>
+        <div class="text-[10px] text-[#737685] font-semibold mt-0.5">공실</div>
+      </div>
+      <div class="border-x border-[#C3C6D6]/30">
+        <div class="font-display font-extrabold text-xl text-[#0B1C30]" id="match-total-cnt">—</div>
+        <div class="text-[10px] text-[#737685] font-semibold mt-0.5">전체 상가</div>
+      </div>
+      <div>
+        <div class="font-display font-extrabold text-xl text-[#00A86B]">0</div>
+        <div class="text-[10px] text-[#737685] font-semibold mt-0.5">활동 주민</div>
+      </div>
+    </div>
   </div>
 </main>
 </div>
@@ -329,6 +461,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
           <option value="할인/이벤트">🎟 할인/이벤트</option>
           <option value="공지">📢 공지</option>
           <option value="질문/추천">❓ 질문/추천</option>
+          <option value="사장님추천">⭐ 사장님 추천 (홍보)</option>
         </select></div>
       <div><label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">제목</label>
         <input id="write-title" maxlength="60" placeholder="제목을 입력하세요" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary"></div>
@@ -374,6 +507,59 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
 </div>
 <div class="modal" id="my-sheet" onclick="if(event.target===this)document.getElementById('my-sheet').classList.remove('open')">
   <div class="modal-inner" id="my-sheet-inner"></div>
+</div>
+
+<!-- 매칭 글쓰기 모달 -->
+<div class="modal" id="match-write-modal" onclick="if(event.target===this)closeMatchWriteModal()">
+  <div class="modal-inner">
+    <div class="modal-handle"></div>
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-display font-extrabold text-xl text-[#0B1C30]" id="match-write-title">공동구매 모집</h3>
+      <button onclick="closeMatchWriteModal()" class="w-8 h-8 rounded-xl bg-[#EFF4FF] flex items-center justify-center">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">close</span>
+      </button>
+    </div>
+    <!-- 매칭 타입 선택 -->
+    <div class="grid grid-cols-3 gap-2 mb-4">
+      <button onclick="setMatchType('group',this)" class="mw-type-btn p-3 rounded-2xl bg-primary text-white border-2 border-primary">
+        <span class="material-symbols-outlined ms-fill block mx-auto" style="font-size:22px;">groups</span>
+        <span class="text-[11px] font-bold mt-1 block">공동구매</span>
+      </button>
+      <button onclick="setMatchType('owner',this)" class="mw-type-btn p-3 rounded-2xl bg-white text-[#737685] border-2 border-[#C3C6D6]/30">
+        <span class="material-symbols-outlined ms block mx-auto" style="font-size:22px;">campaign</span>
+        <span class="text-[11px] font-bold mt-1 block">사장님 소식</span>
+      </button>
+      <button onclick="setMatchType('delivery',this)" class="mw-type-btn p-3 rounded-2xl bg-white text-[#737685] border-2 border-[#C3C6D6]/30">
+        <span class="material-symbols-outlined ms block mx-auto" style="font-size:22px;">delivery_dining</span>
+        <span class="text-[11px] font-bold mt-1 block">동네배달</span>
+      </button>
+    </div>
+    <div class="space-y-3">
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">제목</label>
+        <input id="mw-title" maxlength="40" placeholder="예: 치킨 5마리 같이 시키실 분!" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      </div>
+      <div class="grid grid-cols-2 gap-3" id="mw-extra-fields">
+        <div>
+          <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">목표 인원</label>
+          <input id="mw-target" type="number" min="2" max="50" placeholder="5" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+        </div>
+        <div>
+          <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">할인율(%)</label>
+          <input id="mw-discount" type="number" min="0" max="100" placeholder="20" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+        </div>
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">상세 내용</label>
+        <textarea id="mw-content" rows="4" placeholder="자세한 내용을 입력하세요" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary resize-none"></textarea>
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">닉네임</label>
+        <input id="mw-nick" placeholder="닉네임" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      </div>
+      <button onclick="submitMatchPost()" id="mw-submit" class="w-full bg-primary text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95 shadow-md shadow-primary/20">📮 모집 시작하기</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -616,126 +802,223 @@ function renderVacantList(vacants){
 /* SHOP DETAIL */
 async function openShopDetail(s){
   const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
-  const cat=getCat(s['업종분류']);
   const floor=s['층']||'';
   const key=(s['아파트명']+'_'+s['상가명']+'_'+floor+'_'+s['호수']).replace(/\s/g,'');
   const liked=localStorage.getItem('liked_'+key)==='1';
-  const heroStyle=isV?'background:linear-gradient(135deg,#EFF4FF,#DCE9FF)':'background:linear-gradient(135deg,'+(['#EFF4FF,#DCE9FF','#FFF0F3,#FFE0E6','#F0FFF4,#E0FFE8','#FFFBEB,#FFF3CD'][Math.floor(Math.random()*4)])+')';
+
+  // 업종별 아이콘 (머티리얼 아이콘)
+  const CAT_ICON_MAP={
+    '음식/카페':'restaurant','음식':'restaurant','카페':'coffee',
+    '미용/뷰티/운동':'content_cut','미용':'content_cut','운동':'fitness_center',
+    '부동산/인테리어':'house','부동산':'house','인테리어':'design_services',
+    '마트/식료품':'local_grocery_store','마트':'local_grocery_store',
+    '학원/교육':'school','교육':'school',
+    '패션/잡화':'checkroom','생활서비스':'home_repair_service',
+    '의료/건강':'local_hospital','기타':'storefront',
+  };
+  const catIcon=isV?'do_not_disturb_on':(CAT_ICON_MAP[s['업종분류']]||'storefront');
+  const catName=s['업종분류']||'기타';
+
+  // 층별 색상
+  const floorColors={'B1':'#2E7D32','B2':'#1B5E20','1F':'#1565C0','2F':'#6A1B9A','3F':'#E65100','4F':'#AD1457'};
+  const floorColor=floorColors[floor]||'#37474F';
+
+  // 주민 추천 태그 (업종별 기본 세트)
+  const tagSets={
+    '음식/카페':['맛있어요','친절해요','가성비 좋아요','자주 가요','아이랑 가기 좋아요'],
+    '미용/뷰티/운동':['실력 좋아요','예약 빠르게 돼요','위생적이에요','선생님이 친절해요'],
+    '부동산/인테리어':['믿을 수 있어요','빠르게 처리해요','정보가 많아요'],
+    '마트/식료품':['신선해요','가격 합리적','다양한 상품','배달도 돼요'],
+    '학원/교육':['선생님이 좋아요','성적 올랐어요','숙제 적절해요','위치 좋아요'],
+  };
+  const tags=tagSets[catName]||['친절해요','가성비 좋아요','추천해요'];
 
   document.getElementById('sheet-inner').innerHTML=`
-    <div class="relative overflow-hidden h-52" style="${heroStyle}">
-      <div class="absolute inset-0 flex items-center justify-center">
-        <span class="material-symbols-outlined ms-fill text-primary/15" style="font-size:130px;">storefront</span>
-      </div>
-      <div class="absolute top-4 left-4">
-        <span style="backdrop-filter:blur(16px)" class="bg-[#6CF8BB]/90 text-[#00714D] px-3 py-1 rounded-full text-xs font-bold">${isV?'공실':s['업종분류']||'기타'}</span>
-      </div>
-      <div class="absolute top-4 right-4">
-        <div style="backdrop-filter:blur(16px)" class="bg-white/80 rounded-xl px-3 py-1.5 flex items-center gap-1.5">
-          <div class="w-2 h-2 rounded-full bg-blue-600"></div>
-          <span class="font-mono text-xs font-bold text-[#0B1C30]">${floor} · ${s['호수']||''}</span>
-        </div>
-      </div>
-      <button onclick="closeSheet()" class="absolute bottom-4 left-4 w-8 h-8 rounded-xl bg-white/80 flex items-center justify-center" style="backdrop-filter:blur(16px)">
-        <span class="material-symbols-outlined ms text-[#0B1C30]" style="font-size:18px;">close</span>
+    <!-- 헤더: 폴더창 스타일 -->
+    <div class="flex items-center justify-between px-5 py-4 border-b border-[#C3C6D6]/30 bg-[#F8F9FF]">
+      <button onclick="closeSheet()" class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors">
+        <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">arrow_back</span>
       </button>
-      <button onclick="toggleShopLike('${key}')" class="absolute bottom-4 right-4 w-8 h-8 rounded-xl bg-white/80 flex items-center justify-center" style="backdrop-filter:blur(16px)">
-        <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} ${liked?'text-red-400':'text-[#737685]'} heart-ico-${key}" style="font-size:18px;">favorite</span>
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full" style="background:${floorColor}"></div>
+        <span class="font-mono text-xs font-bold text-[#0B1C30]">${floor} · ${s['호수']||''}</span>
+      </div>
+      <button onclick="toggleShopLike('${key}')" class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors">
+        <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} ${liked?'text-red-400':'text-[#737685]'} heart-ico-${key}" style="font-size:20px;">favorite</span>
       </button>
     </div>
-    <div class="px-5 pt-4 pb-36">
-      <div class="flex items-start justify-between gap-3 mb-4 pb-4 border-b border-[#C3C6D6]/30">
-        <div>
-          <h2 class="font-display font-extrabold text-2xl text-[#0B1C30] tracking-tight">${isV?'공실':s['업체명']}</h2>
-          <div class="flex items-center gap-2 mt-1.5 flex-wrap">
-            <div class="flex items-center gap-1 bg-[#EFF4FF] px-2 py-1 rounded-full">
-              <span class="material-symbols-outlined ms-fill text-primary" style="font-size:12px;">apartment</span>
-              <span class="text-xs font-semibold text-[#434654]">${s['아파트명']||''}</span>
-            </div>
-            ${!isV?'<div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-green-500"></div><span class="text-xs text-[#434654] font-semibold">영업중</span></div>':''}
+
+    <!-- 상호명 히어로 (컴팩트) -->
+    <div class="px-5 py-5 border-b border-[#C3C6D6]/30">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md" style="background:linear-gradient(135deg,${floorColor},${floorColor}99)">
+          <span class="material-symbols-outlined ms-fill text-white" style="font-size:30px;">${catIcon}</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h2 class="font-display font-extrabold text-xl text-[#0B1C30] tracking-tight leading-tight">${isV?'공실':s['업체명']}</h2>
+          <div class="flex items-center gap-2 mt-1 flex-wrap">
+            <span class="font-mono text-[10px] text-white px-1.5 py-0.5 rounded font-bold" style="background:${floorColor}">${floor}</span>
+            <span class="font-mono text-[10px] text-[#737685] bg-[#D3E4FE] px-1.5 py-0.5 rounded">${s['호수']||''}</span>
+            <span class="text-[11px] text-[#434654]">${s['상가명']||''}</span>
           </div>
+          ${!isV?`<div class="flex items-center gap-1.5 mt-1.5">
+            <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+            <span class="text-[11px] text-green-600 font-semibold">영업중</span>
+            <span class="text-[#C3C6D6] text-[11px]">·</span>
+            <span class="text-[11px] text-[#737685]">${catName}</span>
+          </div>`:'<div class="flex items-center gap-1.5 mt-1.5"><div class="w-1.5 h-1.5 rounded-full bg-red-400"></div><span class="text-[11px] text-red-400 font-semibold">공실</span></div>'}
         </div>
         <div class="flex flex-col items-center gap-0.5 flex-shrink-0">
-          <span class="material-symbols-outlined ${liked?'ms-fill':'ms-fill'} ${liked?'text-red-400':'text-[#C3C6D6]'} text-[28px] like-ico-main-${key}">favorite</span>
-          <span class="font-mono text-xs font-bold text-[#737685] like-cnt-${key}">...</span>
+          <span class="material-symbols-outlined ms-fill ${liked?'text-red-400':'text-[#D3E4FE]'} like-ico-main-${key}" style="font-size:28px;">favorite</span>
+          <span class="font-mono text-[11px] font-bold text-[#737685] like-cnt-${key}">—</span>
         </div>
       </div>
-      <h3 class="font-display font-extrabold text-lg text-[#0B1C30] mb-3">상가 정보</h3>
-      <div class="grid grid-cols-2 gap-3 mb-5">
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-[#C3C6D6]/20 border-b-4 border-b-primary">
-          <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1 block">층 / 호수</span>
-          <span class="font-display font-extrabold text-2xl text-primary">${floor}</span>
-          <span class="font-display font-bold text-lg text-[#434654]"> · ${s['호수']||'-'}</span>
-        </div>
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-[#C3C6D6]/20">
-          <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1 block">업종</span>
-          <span class="text-2xl">${isV?'❓':cat.icon}</span>
-          <p class="font-semibold text-sm text-[#434654] mt-0.5">${s['업종분류']||'공실'}</p>
-        </div>
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-[#C3C6D6]/20">
-          <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1 block">상가동</span>
-          <p class="font-display font-bold text-base text-[#0B1C30]">${s['상가명']||'-'}</p>
-        </div>
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-[#C3C6D6]/20">
-          <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1 block">좋아요</span>
-          <span class="font-display font-extrabold text-2xl text-[#0B1C30] like-cnt-${key}">...</span>
-        </div>
-      </div>
-      ${isV?`<div class="rounded-2xl p-5 mb-5" style="background:linear-gradient(135deg,#003D9B,#0066FF);">
-        <h3 class="font-display font-bold text-lg text-white mb-2">이 자리에 관심있어요!</h3>
-        <p class="text-white/70 text-sm mb-4">사장님이라면 주민 수요 데이터를 받아볼 수 있어요</p>
-        <div class="grid grid-cols-2 gap-2">
-          <button onclick="alert('관심 저장!')" class="bg-white/15 text-white py-2.5 rounded-xl font-bold text-sm">💾 관심 저장</button>
-          <button onclick="alert('관리사무소 연결!')" class="bg-white text-primary py-2.5 rounded-xl font-bold text-sm">💬 입점 문의</button>
-        </div>
-      </div>`:`
-      <div class="bg-[#EFF4FF] rounded-2xl p-4 mb-5">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-12 h-12 rounded-2xl g-a flex items-center justify-center flex-shrink-0 shadow-md">
-            <span class="material-symbols-outlined ms-fill text-white" style="font-size:22px;">person</span>
-          </div>
+    </div>
+
+    <div class="px-5 pt-4 pb-36">
+
+    ${isV?`
+      <!-- 공실 안내 -->
+      <div class="rounded-2xl p-5 mb-4" style="background:linear-gradient(135deg,#003D9B,#0066FF);">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="material-symbols-outlined ms-fill text-white" style="font-size:28px;">store</span>
           <div>
-            <h4 class="font-display font-bold text-base text-[#0B1C30]">사장님</h4>
-            <p class="text-xs text-[#737685] font-semibold">${s['업체명']} 운영자</p>
+            <div class="font-display font-bold text-white text-base">입점 가능한 공실이에요</div>
+            <div class="text-white/70 text-xs mt-0.5">${s['아파트명']} · ${floor} · ${s['호수']||''}</div>
           </div>
         </div>
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="alert('전화 연결!')" class="flex items-center justify-center gap-1.5 bg-primary text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95">
-            <span class="material-symbols-outlined ms-fill text-white" style="font-size:16px;">call</span>전화하기
+          <button onclick="toggleShopLike('${key}')" class="flex items-center justify-center gap-1.5 bg-white/15 text-white py-2.5 rounded-xl font-bold text-sm">
+            <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} text-white heart-btn-${key}" style="font-size:16px;">favorite</span>
+            <span class="save-txt-${key}">${liked?'관심 저장됨':'관심 저장'}</span>
           </button>
-          <button onclick="alert('채팅 연결!')" class="flex items-center justify-center gap-1.5 bg-white text-[#434654] py-2.5 rounded-xl font-bold text-sm hover:bg-[#DCE9FF] transition-colors active:scale-95 border border-[#C3C6D6]/40">
-            <span class="material-symbols-outlined ms text-[#434654]" style="font-size:16px;">chat_bubble</span>채팅
+          <button onclick="alert('관리사무소에 문의해주세요!')" class="flex items-center justify-center gap-1.5 bg-white text-primary py-2.5 rounded-xl font-bold text-sm">
+            <span class="material-symbols-outlined ms text-primary" style="font-size:16px;">phone_in_talk</span>입점 문의
           </button>
         </div>
       </div>
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="font-display font-extrabold text-lg text-[#0B1C30]">리뷰 <span class="text-primary font-mono text-base" id="rcnt-${key}"></span></h3>
+      <!-- 주민 수요 태그 -->
+      <div class="bg-[#EFF4FF] rounded-2xl p-4">
+        <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-3">주민들이 원하는 업종</div>
+        <div class="flex flex-wrap gap-2">
+          <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-[#C3C6D6]/30 text-xs font-semibold text-[#434654]">
+            <span class="material-symbols-outlined ms text-primary" style="font-size:14px;">restaurant</span>음식/카페
+          </div>
+          <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-[#C3C6D6]/30 text-xs font-semibold text-[#434654]">
+            <span class="material-symbols-outlined ms text-primary" style="font-size:14px;">school</span>학원/교육
+          </div>
+          <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-[#C3C6D6]/30 text-xs font-semibold text-[#434654]">
+            <span class="material-symbols-outlined ms text-primary" style="font-size:14px;">local_grocery_store</span>마트
+          </div>
+        </div>
       </div>
-      <div id="rlist-${key}" class="space-y-0 border-t border-[#C3C6D6]/30">
+    `:`
+      <!-- 주민 Quick Action (폴더창 리스트 스타일) -->
+      <div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-4">
+        <button onclick="alert('전화 연결!')" class="w-full flex items-center gap-4 px-4 py-3.5 hover:bg-[#EFF4FF] transition-colors active:bg-[#DCE9FF] border-b border-[#C3C6D6]/20">
+          <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined ms-fill text-white" style="font-size:18px;">call</span>
+          </div>
+          <div class="flex-1 text-left">
+            <div class="font-bold text-[14px] text-[#0B1C30]">전화하기</div>
+            <div class="text-[11px] text-[#737685]">사장님에게 직접 문의</div>
+          </div>
+          <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+        </button>
+        <button onclick="alert('채팅 연결!')" class="w-full flex items-center gap-4 px-4 py-3.5 hover:bg-[#EFF4FF] transition-colors active:bg-[#DCE9FF] border-b border-[#C3C6D6]/20">
+          <div class="w-9 h-9 rounded-xl bg-[#006C49] flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined ms-fill text-white" style="font-size:18px;">chat_bubble</span>
+          </div>
+          <div class="flex-1 text-left">
+            <div class="font-bold text-[14px] text-[#0B1C30]">채팅</div>
+            <div class="text-[11px] text-[#737685]">메시지로 문의하기</div>
+          </div>
+          <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+        </button>
+        <button onclick="toggleShopLike('${key}')" class="w-full flex items-center gap-4 px-4 py-3.5 hover:bg-[#EFF4FF] transition-colors active:bg-[#DCE9FF]">
+          <div class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} text-red-400 heart-btn-${key}" style="font-size:18px;">favorite</span>
+          </div>
+          <div class="flex-1 text-left">
+            <div class="font-bold text-[14px] text-[#0B1C30] save-txt-${key}">${liked?'찜 취소하기':'이 상가 찜하기'}</div>
+            <div class="text-[11px] text-[#737685]">MY탭에서 확인 가능</div>
+          </div>
+          <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+        </button>
+      </div>
+
+      <!-- 상가 정보 리스트 (폴더창 스타일) -->
+      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2">상가 정보</div>
+      <div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-4">
+        <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
+          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">layers</span>
+          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">층 / 호수</span>
+          <span class="font-bold text-[13px] text-[#0B1C30] flex-1">${floor} · ${s['호수']||'-'}</span>
+          <span class="font-mono text-[10px] text-white px-1.5 py-0.5 rounded font-bold" style="background:${floorColor}">${floor}</span>
+        </div>
+        <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
+          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">${catIcon}</span>
+          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">업종</span>
+          <span class="font-bold text-[13px] text-[#0B1C30] flex-1">${catName}</span>
+        </div>
+        <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
+          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">domain</span>
+          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">상가동</span>
+          <span class="font-bold text-[13px] text-[#0B1C30] flex-1">${s['상가명']||'-'}</span>
+        </div>
+        <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
+          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">schedule</span>
+          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">영업시간</span>
+          <span class="text-[13px] text-[#737685] flex-1">사장님 등록 전</span>
+        </div>
+        <div class="flex items-center gap-4 px-4 py-3">
+          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">favorite</span>
+          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">주민 찜</span>
+          <span class="font-bold text-[13px] text-[#0B1C30] flex-1 like-cnt-${key}">—</span>
+        </div>
+      </div>
+
+      <!-- 주민 추천 태그 -->
+      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2">주민 추천 태그</div>
+      <div class="flex flex-wrap gap-2 mb-4">
+        ${tags.map((t,i)=>`<button onclick="submitTag('${key}','${t}',this)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#C3C6D6]/50 bg-white text-[12px] font-semibold text-[#434654] hover:border-primary hover:text-primary hover:bg-[#EFF4FF] transition-all active:scale-95">
+          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:13px;">${['thumb_up','star','favorite','local_fire_department','child_care'][i%5]}</span>${t}
+        </button>`).join('')}
+      </div>
+
+      <!-- 리뷰 -->
+      <div class="flex items-center justify-between mb-2">
+        <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest">주민 리뷰 <span class="text-primary" id="rcnt-${key}"></span></div>
+      </div>
+      <div id="rlist-${key}" class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-4">
         <div class="text-center py-6 text-[#737685] text-sm">불러오는 중...</div>
       </div>
-      <div class="flex items-center gap-3 mt-4 pt-4 border-t border-[#C3C6D6]/30">
-        <div class="w-8 h-8 rounded-xl g-a flex items-center justify-center flex-shrink-0">
-          <span class="text-white text-[10px] font-bold">${myNickname.slice(0,2)}</span>
+
+      <!-- 댓글 입력 (폴더창 스타일) -->
+      <div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden">
+        <div class="flex items-center gap-3 px-4 py-3">
+          <div class="w-8 h-8 rounded-xl g-a flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-[10px] font-bold">${myNickname.slice(0,2)}</span>
+          </div>
+          <input type="text" placeholder="이 상가에 대한 리뷰를 남겨주세요..." class="flex-1 bg-transparent text-[13px] text-[#0B1C30] placeholder-[#737685] outline-none" id="rinput-${key}">
+          <button onclick="submitShopReview('${key}')" class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 active:scale-95">
+            <span class="material-symbols-outlined ms-fill text-white" style="font-size:16px;">send</span>
+          </button>
         </div>
-        <div class="flex-1 bg-[#EFF4FF] rounded-2xl px-4 py-2.5 flex items-center gap-2">
-          <input type="text" placeholder="리뷰를 남겨보세요..." class="flex-1 bg-transparent text-[13px] text-[#0B1C30] placeholder-[#737685] outline-none" id="rinput-${key}">
-          <button onclick="submitShopReview('${key}')" class="text-primary font-bold text-[13px] hover:text-[#0052CC] transition-colors flex-shrink-0">게시</button>
-        </div>
-      </div>`}
-    </div>
-    ${!isV?`<div class="sticky bottom-0 bg-white/90 border-t border-[#C3C6D6]/30 px-5 py-4 grid grid-cols-3 gap-2" style="backdrop-filter:blur(16px)">
-      <button onclick="alert('전화!')" class="col-span-2 flex items-center justify-center gap-1.5 bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95 shadow-md shadow-primary/20">
-        <span class="material-symbols-outlined ms-fill text-white" style="font-size:16px;">call</span>전화하기
-      </button>
-      <button onclick="toggleShopLike('${key}')" class="flex items-center justify-center gap-1.5 bg-[#EFF4FF] text-primary py-3 rounded-2xl font-bold text-sm hover:bg-[#DCE9FF] transition-colors active:scale-95 border border-primary/20">
-        <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} ${liked?'text-red-400':'text-primary'} heart-btn-${key}" style="font-size:16px;">favorite</span>
-        <span class="save-txt-${key}">${liked?'찜됨':'찜'}</span>
-      </button>
-    </div>`:''}`;
+      </div>
+    `}
+    </div>`;
 
   document.getElementById('sheet').classList.add('open');
   if(!isV){loadShopLike(key);loadShopReviews(key);}
+}
+
+function submitTag(key,tag,el){
+  el.classList.add('border-primary','text-primary','bg-[#EFF4FF]');
+  el.classList.remove('border-[#C3C6D6]/50','text-[#434654]','bg-white');
+  const ico=el.querySelector('.material-symbols-outlined');
+  if(ico){ico.classList.add('ms-fill','text-primary');ico.classList.remove('ms','text-[#737685]');}
+  el.disabled=true;
 }
 
 async function loadShopLike(key){
@@ -774,11 +1057,12 @@ function renderShopReviews(key,reviews){
   const el=document.getElementById('rlist-'+key);const cntEl=document.getElementById('rcnt-'+key);
   if(!el)return;
   if(cntEl)cntEl.textContent=reviews.length?'('+reviews.length+')':'';
-  if(!reviews.length){el.innerHTML='<div class="text-center py-6 text-[#737685] text-sm">첫 번째 리뷰를 남겨보세요 👋</div>';return;}
-  el.innerHTML=reviews.map(r=>{
+  if(!reviews.length){el.innerHTML='<div class="flex flex-col items-center justify-center py-8 text-center"><span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:36px;">rate_review</span><p class="text-[#737685] text-sm mt-2">아직 리뷰가 없어요<br>첫 번째 리뷰를 남겨보세요!</p></div>';return;}
+  el.innerHTML=reviews.map((r,i)=>{
     const nick=r.nickname||'익명';
     const dateStr=r.date?new Date(r.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}):'';
-    return `<div class="flex gap-3 py-3 border-b border-[#C3C6D6]/20">${reviewAvatar(nick)}<div class="flex-1"><div class="flex items-baseline gap-2"><span class="font-bold text-[13px] text-[#0B1C30]">${nick}</span><span class="font-mono text-[10px] text-[#737685]">${dateStr}</span></div><p class="text-[13px] text-[#434654] mt-0.5 leading-relaxed">${r.text||''}</p></div></div>`;
+    const isLast=i===reviews.length-1;
+    return `<div class="flex gap-3 px-4 py-3 ${isLast?'':'border-b border-[#C3C6D6]/20'}">${reviewAvatar(nick)}<div class="flex-1"><div class="flex items-baseline gap-2"><span class="font-bold text-[13px] text-[#0B1C30]">${nick}</span><span class="font-mono text-[10px] text-[#737685]">${dateStr}</span></div><p class="text-[13px] text-[#434654] mt-0.5 leading-relaxed">${r.text||''}</p></div></div>`;
   }).join('');
 }
 async function submitShopReview(key){
@@ -802,7 +1086,7 @@ function renderPosts(){
   const list=document.getElementById('post-list');
   let filtered=currentCat==='all'?allPosts:allPosts.filter(p=>p.category===currentCat);
   if(!filtered.length){list.innerHTML='<div class="text-center py-12 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">forum</span>아직 게시글이 없어요</div>';return;}
-  const tagCls={'할인/이벤트':'background:#EF4444;color:#fff','공지':'background:#7FB8D9;color:#0B1C30','질문/추천':'background:#006C49;color:#fff'};
+  const tagCls={'할인/이벤트':'background:#EF4444;color:#fff','공지':'background:#7FB8D9;color:#0B1C30','질문/추천':'background:#006C49;color:#fff','사장님추천':'background:#FFB800;color:#fff'};
   list.innerHTML=filtered.map(p=>{
     const dateStr=p.date?new Date(p.date).toLocaleDateString('ko-KR',{month:'short',day:'numeric'}):'';
     const tStyle=tagCls[p.category]||'background:#737685;color:#fff';
@@ -837,7 +1121,7 @@ async function togglePostLike(id,el){
 }
 async function openPostDetail(postId){
   const post=allPosts.find(p=>p.id===postId);if(!post)return;
-  const tagCls={'할인/이벤트':'background:#EF4444;color:#fff','공지':'background:#7FB8D9;color:#0B1C30','질문/추천':'background:#006C49;color:#fff'};
+  const tagCls={'할인/이벤트':'background:#EF4444;color:#fff','공지':'background:#7FB8D9;color:#0B1C30','질문/추천':'background:#006C49;color:#fff','사장님추천':'background:#FFB800;color:#fff'};
   const tStyle=tagCls[post.category]||'background:#737685;color:#fff';
   const dateStr=post.date?new Date(post.date).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}):'';
   const liked=localStorage.getItem('post_liked_'+postId)==='1';
@@ -991,8 +1275,215 @@ function loadAllVacants(){
   const allV=allData.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
   document.getElementById('match-vacant-cnt').textContent=allV.length;
   document.getElementById('match-total-cnt').textContent=allData.length;
-  renderVacantList(allV);
+  loadMatchPosts();
 }
+
+/* ===== MATCH TAB ===== */
+let currentSeg='group',currentMatchType='group';
+let currentGroupFilter='all',currentOwnerFilter='all';
+let allMatchPosts=[];
+
+function setMatchSeg(seg,el){
+  currentSeg=seg;
+  document.querySelectorAll('.match-seg').forEach(s=>s.style.display='none');
+  document.getElementById('seg-'+seg).style.display='block';
+  // 세그먼트 버튼 스타일
+  document.querySelectorAll('.seg-btn').forEach(b=>{
+    b.classList.remove('bg-white','shadow-sm');
+    const ico=b.querySelector('.material-symbols-outlined');
+    const txt=b.querySelector('span:last-child');
+    if(ico){ico.classList.remove('ms-fill','text-primary');ico.classList.add('ms','text-[#737685]');}
+    if(txt){txt.classList.remove('text-primary');txt.classList.add('text-[#737685]');}
+  });
+  el.classList.add('bg-white','shadow-sm');
+  const ico=el.querySelector('.material-symbols-outlined');
+  const txt=el.querySelector('span:last-child');
+  if(ico){ico.classList.add('ms-fill','text-primary');ico.classList.remove('ms','text-[#737685]');}
+  if(txt){txt.classList.add('text-primary');txt.classList.remove('text-[#737685]');}
+}
+
+async function loadMatchPosts(){
+  try{
+    const data=await gasGet({action:'matchPosts'});
+    allMatchPosts=Array.isArray(data)?data:[];
+  }catch(e){allMatchPosts=[];}
+  // 데이터 없으면 샘플 보여주기
+  if(!allMatchPosts.length)allMatchPosts=getSampleMatchPosts();
+  renderGroupGrid();
+  renderOwnerGrid();
+  renderDeliveryList();
+}
+
+function getSampleMatchPosts(){
+  const apt=selectedApt||'대림1차';
+  return [
+    {id:'g1',type:'group',category:'food',title:'BHC 치킨 5마리 공구 모집!',content:'배달비 절약 위해 5마리 동시 주문, 동마다 1마리씩',target:5,current:3,discount:25,nickname:'좌동러너',apt,date:Date.now()-3600000,deadline:Date.now()+7200000,emoji:'🍗',color:'#FF6B35'},
+    {id:'g2',type:'group',category:'grocery',title:'스타벅스 원두 공동구매',content:'코스트코 단가로 원두 같이 사실 분',target:10,current:7,discount:30,nickname:'카페러버',apt,date:Date.now()-7200000,deadline:Date.now()+86400000,emoji:'☕',color:'#8B4513'},
+    {id:'g3',type:'group',category:'living',title:'생수 2L 24병 공구',content:'마트보다 30% 저렴',target:8,current:4,discount:30,nickname:'알뜰주부',apt,date:Date.now()-1800000,deadline:Date.now()+10800000,emoji:'💧',color:'#4FACFE'},
+    {id:'g4',type:'group',category:'food',title:'마라탕 단체 주문',content:'점심시간 배달비 1/N',target:6,current:2,discount:15,nickname:'직장인A',apt,date:Date.now()-900000,deadline:Date.now()+3600000,emoji:'🌶️',color:'#E63946'},
+    {id:'o1',type:'owner',category:'discount',title:'블루삭 커피 - 평일 오전 30% 할인',content:'주민 인증 시 모든 음료 30% 할인',discount:30,nickname:'블루삭사장',shopName:'블루삭 커피',apt,date:Date.now()-3600000,emoji:'☕',color:'#1565C0'},
+    {id:'o2',type:'owner',category:'new',title:'이삭토스트 - 신메뉴 출시!',content:'시그니처 BLT 토스트 등장. 주민 첫 주문 1+1',nickname:'이삭사장',shopName:'이삭토스트',apt,date:Date.now()-7200000,emoji:'🥪',color:'#FF9800'},
+    {id:'o3',type:'owner',category:'event',title:'골프아카데미 - 단체 레슨 모집',content:'10명 모이면 1인 5만원 할인',nickname:'탑스크린',shopName:'탑스크린 골프',apt,date:Date.now()-10800000,emoji:'⛳',color:'#2E7D32'},
+    {id:'d1',type:'delivery',category:'resident',title:'대림1차 → 좌동시장 픽업 갈 분',content:'편의점 들렀다 가는 길에 같이 픽업',fee:1500,nickname:'산책중',apt,date:Date.now()-600000},
+    {id:'d2',type:'delivery',category:'bundle',title:'스타벅스 묶음배달 모집',content:'4명 모이면 배달비 0원',target:4,current:2,nickname:'커피러',apt,date:Date.now()-1200000},
+  ];
+}
+
+/* === 공동구매 그리드 === */
+function setGroupFilter(f,el){
+  currentGroupFilter=f;
+  document.querySelectorAll('.grp-fbtn').forEach(b=>{b.classList.remove('bg-primary','text-white');b.classList.add('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');});
+  el.classList.add('bg-primary','text-white');el.classList.remove('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');
+  renderGroupGrid();
+}
+
+function renderGroupGrid(){
+  let groups=allMatchPosts.filter(p=>p.type==='group');
+  if(currentGroupFilter==='hot')groups=groups.filter(p=>(p.deadline-Date.now())<14400000);
+  else if(currentGroupFilter!=='all')groups=groups.filter(p=>p.category===currentGroupFilter);
+  document.getElementById('grp-count').textContent=allMatchPosts.filter(p=>p.type==='group').length;
+  const grid=document.getElementById('group-grid');
+  if(!groups.length){grid.innerHTML='<div class="col-span-2 text-center py-10 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">groups</span>해당 카테고리에 모집글이 없어요</div>';return;}
+  grid.innerHTML=groups.map(p=>{
+    const remaining=p.deadline-Date.now();
+    const hours=Math.floor(remaining/3600000);
+    const mins=Math.floor((remaining%3600000)/60000);
+    const isUrgent=remaining<14400000;
+    const progress=Math.round((p.current/p.target)*100);
+    const timeStr=remaining<0?'마감':(hours>0?hours+'시간 '+mins+'분':mins+'분')+' 남음';
+    return `<button onclick="openMatchDetail('${p.id}')" class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden text-left hover:border-primary/30 active:scale-[.98] transition-all">
+      <div class="relative aspect-square flex items-center justify-center" style="background:linear-gradient(135deg,${p.color}22,${p.color}11)">
+        <span style="font-size:64px;">${p.emoji}</span>
+        <div class="absolute top-2 left-2 ${isUrgent?'bg-red-500':'bg-[#0B1C30]/80'} text-white text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">${isUrgent?'🔥 ':''}${timeStr}</div>
+        <div class="absolute top-2 right-2 bg-white text-[#FF6B35] text-[10px] font-extrabold px-2 py-0.5 rounded-full">${p.discount}% OFF</div>
+      </div>
+      <div class="p-3">
+        <div class="font-bold text-[12px] text-[#0B1C30] leading-tight line-clamp-2 mb-2" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title}</div>
+        <div class="flex items-center justify-between mb-1.5">
+          <div class="flex items-center gap-1">
+            <span class="material-symbols-outlined ms-fill text-primary" style="font-size:13px;">groups</span>
+            <span class="text-[11px] font-bold text-primary">${p.current}/${p.target}명</span>
+          </div>
+          <span class="font-mono text-[10px] text-[#737685]">${progress}%</span>
+        </div>
+        <div class="h-1.5 bg-[#EFF4FF] rounded-full overflow-hidden">
+          <div class="h-full bg-primary transition-all" style="width:${progress}%"></div>
+        </div>
+      </div>
+    </button>`;
+  }).join('');
+}
+
+/* === 사장님 소식 그리드 === */
+function setOwnerFilter(f,el){
+  currentOwnerFilter=f;
+  document.querySelectorAll('.own-fbtn').forEach(b=>{b.classList.remove('bg-primary','text-white');b.classList.add('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');});
+  el.classList.add('bg-primary','text-white');el.classList.remove('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');
+  renderOwnerGrid();
+}
+
+function renderOwnerGrid(){
+  let owners=allMatchPosts.filter(p=>p.type==='owner');
+  if(currentOwnerFilter!=='all')owners=owners.filter(p=>p.category===currentOwnerFilter);
+  document.getElementById('owner-count').textContent=allMatchPosts.filter(p=>p.type==='owner').length;
+  const grid=document.getElementById('owner-grid');
+  if(!owners.length){grid.innerHTML='<div class="col-span-2 text-center py-10 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">campaign</span>해당 소식이 없어요</div>';return;}
+  const catBadge={discount:'🎟 할인',new:'✨ 신메뉴',event:'🎉 이벤트'};
+  grid.innerHTML=owners.map(p=>{
+    return `<button onclick="openMatchDetail('${p.id}')" class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden text-left hover:border-primary/30 active:scale-[.98] transition-all">
+      <div class="relative aspect-square flex items-center justify-center" style="background:linear-gradient(135deg,${p.color}22,${p.color}11)">
+        <span style="font-size:64px;">${p.emoji}</span>
+        <div class="absolute top-2 left-2 bg-white text-[#0B1C30] text-[10px] font-bold px-2 py-0.5 rounded-full">${catBadge[p.category]||''}</div>
+        ${p.discount?`<div class="absolute top-2 right-2 bg-[#FF6B35] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">-${p.discount}%</div>`:''}
+      </div>
+      <div class="p-3">
+        <div class="font-bold text-[12px] text-[#0B1C30] leading-tight mb-1.5" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title}</div>
+        <div class="flex items-center gap-1 text-[10px] text-[#737685]">
+          <span class="material-symbols-outlined ms-fill text-primary" style="font-size:11px;">store</span>
+          <span class="font-semibold truncate">${p.shopName||p.nickname}</span>
+        </div>
+      </div>
+    </button>`;
+  }).join('');
+}
+
+/* === 동네배달 리스트 === */
+function renderDeliveryList(){
+  const dels=allMatchPosts.filter(p=>p.type==='delivery');
+  document.getElementById('del-count').textContent=dels.length;
+  const list=document.getElementById('delivery-list');
+  if(!dels.length){list.innerHTML='<div class="text-center py-10 text-[#737685] text-sm">아직 배달 요청이 없어요<br>첫 번째 요청을 등록해보세요!</div>';return;}
+  list.innerHTML=dels.map(p=>{
+    const isBundle=p.category==='bundle';
+    const minAgo=Math.floor((Date.now()-p.date)/60000);
+    return `<button onclick="openMatchDetail('${p.id}')" class="w-full bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm p-3.5 text-left hover:border-primary/30 active:scale-[.98] transition-all flex items-start gap-3">
+      <div class="w-10 h-10 rounded-xl ${isBundle?'bg-[#FFF3E0]':'bg-[#E8F5E9]'} flex items-center justify-center flex-shrink-0">
+        <span class="material-symbols-outlined ms-fill ${isBundle?'text-[#FF9800]':'text-[#00A86B]'}" style="font-size:20px;">${isBundle?'inventory_2':'person'}</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-1.5 mb-0.5">
+          <span class="text-[10px] font-bold text-white px-1.5 py-px rounded ${isBundle?'bg-[#FF9800]':'bg-[#00A86B]'}">${isBundle?'묶음':'주민'}</span>
+          <span class="font-mono text-[10px] text-[#737685]">${minAgo<60?minAgo+'분 전':Math.floor(minAgo/60)+'시간 전'}</span>
+        </div>
+        <div class="font-bold text-[13px] text-[#0B1C30] mb-1">${p.title}</div>
+        <div class="text-[11px] text-[#737685] line-clamp-1">${p.content}</div>
+        <div class="flex items-center gap-2 mt-1.5">
+          ${p.fee?`<span class="text-[11px] font-bold text-[#FF6B35]">+${p.fee.toLocaleString()}원</span>`:''}
+          ${p.target?`<span class="flex items-center gap-1 text-[11px] font-bold text-primary"><span class="material-symbols-outlined ms-fill" style="font-size:12px;">groups</span>${p.current}/${p.target}명</span>`:''}
+        </div>
+      </div>
+      <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+    </button>`;
+  }).join('');
+}
+
+function openMatchDetail(id){
+  const p=allMatchPosts.find(x=>x.id===id);if(!p)return;
+  alert(`[${p.title}]\n\n${p.content}\n\n작성: ${p.nickname}\n${p.apt||''}\n\n(상세 페이지는 추후 연동 예정)`);
+}
+
+/* === 모집 글쓰기 === */
+function openMatchWriteModal(){
+  document.getElementById('mw-nick').value=myNickname;
+  setMatchType(currentSeg,document.querySelectorAll('.mw-type-btn')[currentSeg==='group'?0:currentSeg==='owner'?1:2]);
+  document.getElementById('match-write-modal').classList.add('open');
+}
+function closeMatchWriteModal(){document.getElementById('match-write-modal').classList.remove('open');}
+
+function setMatchType(t,el){
+  currentMatchType=t;
+  document.querySelectorAll('.mw-type-btn').forEach(b=>{b.classList.remove('bg-primary','text-white','border-primary');b.classList.add('bg-white','text-[#737685]','border-[#C3C6D6]/30');const ico=b.querySelector('.material-symbols-outlined');if(ico){ico.classList.remove('ms-fill');ico.classList.add('ms');}});
+  el.classList.add('bg-primary','text-white','border-primary');el.classList.remove('bg-white','text-[#737685]','border-[#C3C6D6]/30');
+  const ico=el.querySelector('.material-symbols-outlined');if(ico){ico.classList.add('ms-fill');ico.classList.remove('ms');}
+  // 타입에 따라 라벨 변경
+  const titles={group:'공동구매 모집',owner:'사장님 소식 등록',delivery:'배달 요청 등록'};
+  document.getElementById('match-write-title').textContent=titles[t];
+  // 인원/할인율 필드 표시 토글
+  const extraFields=document.getElementById('mw-extra-fields');
+  if(t==='owner')extraFields.style.display='none';
+  else extraFields.style.display='grid';
+}
+
+async function submitMatchPost(){
+  const title=document.getElementById('mw-title').value.trim();
+  const content=document.getElementById('mw-content').value.trim();
+  const target=document.getElementById('mw-target').value;
+  const discount=document.getElementById('mw-discount').value;
+  const nick=document.getElementById('mw-nick').value.trim()||myNickname;
+  if(!title){alert('제목을 입력해주세요');return;}
+  if(!content){alert('상세 내용을 입력해주세요');return;}
+  const btn=document.getElementById('mw-submit');btn.textContent='전송 중...';btn.style.opacity='.6';
+  await gasPost({action:'matchPost',type:currentMatchType,title,content,target,discount,nickname:nick,apt:selectedApt||''});
+  btn.textContent='📮 모집 시작하기';btn.style.opacity='1';
+  closeMatchWriteModal();
+  document.getElementById('mw-title').value='';
+  document.getElementById('mw-content').value='';
+  document.getElementById('mw-target').value='';
+  document.getElementById('mw-discount').value='';
+  alert('✅ 모집 글이 등록됐어요!');
+  loadMatchPosts();
+}
+
 function showPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
 function goBack(){
   if(!navHistory.length)return;
