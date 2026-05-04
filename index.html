@@ -136,20 +136,32 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
   </div>
   <!-- PANEL: 상가 -->
   <div class="panel" id="panel-shop">
-    <!-- 층별 필터 -->
-    <div class="flex items-center gap-2 mb-2">
-      <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">layers</span>
-      <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest font-semibold">층별 보기</span>
+    <!-- 뷰 모드 토글 -->
+    <div class="bg-[#EFF4FF] rounded-2xl p-1 grid grid-cols-2 gap-1 mb-4">
+      <button onclick="setViewMode('list',this)" id="vm-list" class="vm-btn flex items-center justify-center gap-1.5 py-2 rounded-xl bg-white shadow-sm transition-all">
+        <span class="material-symbols-outlined ms-fill text-primary" style="font-size:16px;">view_list</span>
+        <span class="text-[12px] font-bold text-primary">전체 보기</span>
+      </button>
+      <button onclick="setViewMode('floor',this)" id="vm-floor" class="vm-btn flex items-center justify-center gap-1.5 py-2 rounded-xl transition-all">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">layers</span>
+        <span class="text-[12px] font-bold text-[#737685]">층별 보기</span>
+      </button>
     </div>
-    <div class="scroll-x pb-1 mb-3" id="floor-filter">
-      <!-- JS 동적 렌더 -->
-    </div>
-    <!-- 업종별 필터 -->
-    <div class="flex items-center gap-2 mb-2">
-      <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">category</span>
-      <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest font-semibold">업종별 보기</span>
-    </div>
-    <div class="scroll-x pb-1 mb-5" id="cat-filter">
+
+    <!-- 전체 보기 모드 -->
+    <div id="view-all">
+      <!-- 층별 필터 -->
+      <div class="flex items-center gap-2 mb-2">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">layers</span>
+        <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest font-semibold">층별 필터</span>
+      </div>
+      <div class="scroll-x pb-1 mb-3" id="floor-filter"></div>
+      <!-- 업종별 필터 -->
+      <div class="flex items-center gap-2 mb-2">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">category</span>
+        <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest font-semibold">업종별 보기</span>
+      </div>
+      <div class="scroll-x pb-1 mb-5" id="cat-filter">
       <button onclick="setFilter('all',this)" data-f="all" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary text-white text-xs font-bold whitespace-nowrap flex-shrink-0">
         <span class="material-symbols-outlined ms text-white" style="font-size:14px;">apps</span>전체
       </button>
@@ -171,8 +183,32 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
       <button onclick="setFilter('vacant',this)" data-f="vacant" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
         <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">do_not_disturb_on</span>공실
       </button>
+      </div>
+      <div id="shop-list" class="space-y-1.5"></div>
     </div>
-    <div id="shop-list" class="space-y-1.5"></div>
+
+    <!-- 층별 보기 모드 (좌우 스와이프) -->
+    <div id="view-floor" style="display:none;">
+      <!-- 현재 층 표시 (상단 고정) -->
+      <div class="flex items-center justify-between mb-3 px-1">
+        <button onclick="prevFloor()" id="floor-prev" class="w-9 h-9 rounded-xl bg-white border border-[#C3C6D6]/30 flex items-center justify-center hover:bg-[#EFF4FF] transition-colors active:scale-95 disabled:opacity-30">
+          <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">chevron_left</span>
+        </button>
+        <div class="flex flex-col items-center">
+          <div id="floor-label" class="font-display font-extrabold text-2xl text-[#0B1C30] tracking-tight leading-none">—</div>
+          <div id="floor-sub" class="font-mono text-[10px] text-[#737685] mt-1">— / —</div>
+        </div>
+        <button onclick="nextFloor()" id="floor-next" class="w-9 h-9 rounded-xl bg-white border border-[#C3C6D6]/30 flex items-center justify-center hover:bg-[#EFF4FF] transition-colors active:scale-95 disabled:opacity-30">
+          <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">chevron_right</span>
+        </button>
+      </div>
+      <!-- 인디케이터 점 -->
+      <div id="floor-dots" class="flex items-center justify-center gap-1.5 mb-4"></div>
+      <!-- 좌우 스와이프 영역 -->
+      <div id="floor-swipe-wrap" style="overflow:hidden;margin:0 -20px;padding:0 20px;">
+        <div id="floor-swipe-track" style="display:flex;transition:transform .35s cubic-bezier(.2,.8,.3,1);will-change:transform;"></div>
+      </div>
+    </div>
   </div>
 </main>
 </div>
@@ -574,11 +610,78 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
   </div>
 </div>
 
+<!-- 사장님 PIN 인증 모달 -->
+<div class="modal" id="pin-modal" onclick="if(event.target===this)closePinModal()">
+  <div class="modal-inner">
+    <div class="modal-handle"></div>
+    <div class="text-center mb-5">
+      <div class="w-14 h-14 rounded-2xl bg-[#EFF4FF] flex items-center justify-center mx-auto mb-3">
+        <span class="material-symbols-outlined ms-fill text-primary" style="font-size:28px;">key</span>
+      </div>
+      <h3 class="font-display font-extrabold text-xl text-[#0B1C30]">사장님 인증</h3>
+      <p class="text-[12px] text-[#737685] mt-1">관리자에게 받은 PIN을 입력하세요</p>
+    </div>
+    <input id="pin-input" type="tel" maxlength="6" inputmode="numeric" placeholder="• • • •" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-4 text-2xl text-center text-[#0B1C30] outline-none focus:border-primary tracking-[8px] font-mono">
+    <div id="pin-msg" class="text-xs text-center mt-2 hidden"></div>
+    <div class="grid grid-cols-2 gap-2 mt-4">
+      <button onclick="closePinModal()" class="bg-white border border-[#C3C6D6]/50 text-[#434654] py-3 rounded-2xl font-bold text-sm">취소</button>
+      <button onclick="submitPin()" id="pin-submit" class="bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:bg-[#0052CC] active:scale-95 transition-all">인증하기</button>
+    </div>
+    <div class="text-center mt-4 text-[11px] text-[#737685]">PIN을 모르시나요? <span class="text-primary font-bold cursor-pointer">관리사무소 문의</span></div>
+  </div>
+</div>
+
+<!-- 사장님 정보 수정 모달 -->
+<div class="modal" id="shop-edit-modal" onclick="if(event.target===this)closeShopEditModal()">
+  <div class="modal-inner">
+    <div class="modal-handle"></div>
+    <div class="flex items-center justify-between mb-5">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined ms-fill text-primary" style="font-size:22px;">edit_note</span>
+        <h3 class="font-display font-extrabold text-xl text-[#0B1C30]">상가 정보 수정</h3>
+      </div>
+      <button onclick="closeShopEditModal()" class="w-8 h-8 rounded-xl bg-[#EFF4FF] flex items-center justify-center">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">close</span>
+      </button>
+    </div>
+    <div class="bg-green-50 border border-green-200 rounded-xl px-3 py-2 mb-4 flex items-center gap-2">
+      <span class="material-symbols-outlined ms-fill text-green-600" style="font-size:16px;">verified</span>
+      <span class="text-[12px] text-green-700 font-semibold">사장님 인증 완료 - <span id="se-shopname">—</span></span>
+    </div>
+    <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms" style="font-size:14px;">call</span>전화번호</label>
+        <input id="se-phone" type="tel" placeholder="010-1234-5678" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms" style="font-size:14px;">schedule</span>영업시간</label>
+        <input id="se-hours" placeholder="평일 10:00 - 22:00 / 일요일 휴무" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms" style="font-size:14px;">info</span>가게 소개</label>
+        <textarea id="se-intro" rows="3" placeholder="우리 가게를 한마디로 소개해주세요" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary resize-none"></textarea>
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms" style="font-size:14px;">restaurant_menu</span>대표 메뉴/가격</label>
+        <textarea id="se-menu" rows="4" placeholder="아메리카노 4,500원&#10;카페라떼 5,000원&#10;케이크 6,500원" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary resize-none"></textarea>
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms" style="font-size:14px;">image</span>대표 사진 URL</label>
+        <input id="se-photo" placeholder="https://..." class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+        <div class="text-[10px] text-[#737685] mt-1">📌 이미지 업로드는 imgbb.com 등 무료 호스팅 후 URL 붙여넣기</div>
+      </div>
+    </div>
+    <button onclick="submitShopEdit()" id="se-submit" class="w-full bg-primary text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95 shadow-md shadow-primary/20 mt-4">💾 저장하기</button>
+  </div>
+</div>
+
 <script>
 const SHEET_URL='https://docs.google.com/spreadsheets/d/1mfP3BQ1EbVO__xZO4MA0FMtUC3OqMf8Kp30hyuj9ymE/export?format=csv&gid=39887238';
 const GAS_URL='https://script.google.com/macros/s/AKfycbzM7DCS5COztk8AZJtopDkJIuhLlnM3uJOJTG_xt2HA9dg0syNeOP6qZdGe9cleAGw6/exec';
 
 let allData=[],selectedGu=null,selectedDong=null,selectedApt=null,currentFilter='all',currentFloor='all';
+let currentViewMode='list',currentFloorIndex=0,floorList=[];
+let touchStartX=0,touchEndX=0,trackOffsetX=0,isSwiping=false;
 let currentUser=null,authMode='login',currentCat='all',allPosts=[];
 let navHistory=[];
 
@@ -770,6 +873,194 @@ function setFloorFilter(f,el){
   if(selectedApt){applyFilter(allData.filter(d=>d['아파트명']===selectedApt));}
 }
 
+/* ===== 뷰 모드 토글 ===== */
+function setViewMode(mode,el){
+  currentViewMode=mode;
+  document.querySelectorAll('.vm-btn').forEach(b=>{
+    b.classList.remove('bg-white','shadow-sm');
+    const ico=b.querySelector('.material-symbols-outlined');
+    const txt=b.querySelector('span:last-child');
+    if(ico){ico.classList.remove('ms-fill','text-primary');ico.classList.add('ms','text-[#737685]');}
+    if(txt){txt.classList.remove('text-primary');txt.classList.add('text-[#737685]');}
+  });
+  el.classList.add('bg-white','shadow-sm');
+  const ico=el.querySelector('.material-symbols-outlined');
+  const txt=el.querySelector('span:last-child');
+  if(ico){ico.classList.add('ms-fill','text-primary');ico.classList.remove('ms','text-[#737685]');}
+  if(txt){txt.classList.add('text-primary');txt.classList.remove('text-[#737685]');}
+
+  document.getElementById('view-all').style.display=mode==='list'?'block':'none';
+  document.getElementById('view-floor').style.display=mode==='floor'?'block':'none';
+  if(mode==='floor')renderFloorSwipe();
+}
+
+/* ===== 층별 스와이프 렌더 ===== */
+function renderFloorSwipe(){
+  const shops=allData.filter(d=>d['아파트명']===selectedApt);
+  // 층 정렬
+  const floors=[...new Set(shops.map(s=>s['층']).filter(Boolean))];
+  floors.sort((a,b)=>{
+    const order=v=>{const u=(v||'').toUpperCase();if(u.startsWith('B'))return -parseInt(u.replace('B','')||0);return parseInt(u.replace(/[^0-9]/g,''))||99;};
+    return order(a)-order(b);
+  });
+  floorList=floors;
+  if(currentFloorIndex>=floors.length)currentFloorIndex=0;
+  if(!floors.length){
+    document.getElementById('floor-swipe-track').innerHTML='<div style="width:100%;text-align:center;padding:60px 0;color:#737685;">상가가 없어요</div>';
+    return;
+  }
+
+  // 트랙 안에 각 층의 카드를 가로로 배치
+  const track=document.getElementById('floor-swipe-track');
+  const wrapWidth=document.getElementById('floor-swipe-wrap').clientWidth;
+  track.innerHTML=floors.map(floor=>{
+    const items=shops.filter(s=>s['층']===floor);
+    return `<div class="floor-page" style="flex:0 0 ${wrapWidth}px;width:${wrapWidth}px;padding:0 4px;box-sizing:border-box;">
+      ${renderFloorPageContent(floor,items)}
+    </div>`;
+  }).join('');
+
+  updateFloorIndicator();
+  setupSwipeHandlers();
+  scrollToFloor(currentFloorIndex,false);
+}
+
+function renderFloorPageContent(floor,items){
+  if(!items.length)return '<div style="text-align:center;padding:60px 0;color:#737685;">이 층에는 상가가 없어요</div>';
+  // 층별 색상
+  const fcMap={'B1':'#2E7D32','B2':'#1B5E20','1F':'#1565C0','2F':'#6A1B9A','3F':'#E65100','4F':'#AD1457'};
+  const color=fcMap[floor]||'#37474F';
+  // 카운트
+  const totalCnt=items.length;
+  const vacantCnt=items.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim()).length;
+  const activeCnt=totalCnt-vacantCnt;
+
+  let html=`<div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm p-4 mb-3" style="border-top:4px solid ${color}">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="font-display font-extrabold text-3xl" style="color:${color}">${floor}</div>
+        <div class="font-mono text-[10px] text-[#737685] mt-0.5">${floor==='B1'?'지하 1층':floor==='B2'?'지하 2층':floor.replace('F','')+'층'}</div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-center">
+        <div class="bg-[#EFF4FF] rounded-xl px-3 py-2">
+          <div class="font-display font-extrabold text-lg text-primary">${activeCnt}</div>
+          <div class="text-[9px] text-[#737685] font-semibold uppercase tracking-wider">영업중</div>
+        </div>
+        <div class="bg-red-50 rounded-xl px-3 py-2">
+          <div class="font-display font-extrabold text-lg text-red-400">${vacantCnt}</div>
+          <div class="text-[9px] text-[#737685] font-semibold uppercase tracking-wider">공실</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  html+='<div class="space-y-1.5">'+items.map(s=>{
+    const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
+    const cat=getCat(s['업종분류']);
+    if(isV){
+      return `<div class="flex items-center gap-3 p-3 rounded-xl border border-dashed border-red-200 bg-red-50/50 cursor-pointer active:scale-[.98] transition-all" onclick='openShopDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
+        <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined ms text-red-400" style="font-size:18px;">do_not_disturb_on</span></div>
+        <div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-red-400">공실</div>
+        <div class="flex items-center gap-1.5 mt-0.5">
+          <span class="font-mono text-[9px] text-white px-1.5 py-px rounded ${floorCls(floor)}">${floor}</span>
+          <span class="font-mono text-[9px] text-[#737685] bg-[#D3E4FE] px-1.5 py-px rounded">${s['호수']||''}</span>
+          <span class="text-[10px] bg-red-100 text-red-500 font-bold px-2 py-px rounded-full">입점 문의</span>
+        </div></div>
+        <span class="material-symbols-outlined ms text-red-300" style="font-size:18px;">chevron_right</span>
+      </div>`;
+    }
+    const matIcon=getMatIcon(s['업종분류']);
+    return `<div class="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] hover:border-primary/20 transition-all cursor-pointer shadow-sm active:scale-[.98]" onclick='openShopDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
+      <div class="w-10 h-10 rounded-xl ${cat.bg} flex items-center justify-center flex-shrink-0">
+        <span class="material-symbols-outlined ms-fill text-[#0B1C30]/70" style="font-size:20px;">${matIcon}</span>
+      </div>
+      <div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-[#0B1C30] truncate">${s['업체명']}</div>
+      <div class="flex items-center gap-1.5 mt-0.5">
+        <span class="font-mono text-[9px] text-white px-1.5 py-px rounded ${floorCls(floor)}">${floor}</span>
+        <span class="font-mono text-[9px] text-[#737685] bg-[#D3E4FE] px-1.5 py-px rounded">${s['호수']||''}</span>
+        <span class="text-[11px] text-[#737685]">${s['업종분류']||''}</span>
+      </div></div>
+      <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
+    </div>`;
+  }).join('')+'</div>';
+  return html;
+}
+
+function updateFloorIndicator(){
+  if(!floorList.length)return;
+  const cur=floorList[currentFloorIndex];
+  document.getElementById('floor-label').textContent=cur;
+  document.getElementById('floor-sub').textContent=`${currentFloorIndex+1} / ${floorList.length}`;
+  // 점 인디케이터
+  const dots=document.getElementById('floor-dots');
+  dots.innerHTML=floorList.map((f,i)=>`<button onclick="scrollToFloor(${i})" style="width:${i===currentFloorIndex?'20px':'6px'};height:6px;border-radius:3px;background:${i===currentFloorIndex?'#003D9B':'#C3C6D6'};transition:all .25s;border:none;cursor:pointer;"></button>`).join('');
+  // 이전/다음 버튼 비활성
+  document.getElementById('floor-prev').disabled=currentFloorIndex===0;
+  document.getElementById('floor-next').disabled=currentFloorIndex===floorList.length-1;
+}
+
+function scrollToFloor(idx,animate=true){
+  if(idx<0||idx>=floorList.length)return;
+  currentFloorIndex=idx;
+  const wrap=document.getElementById('floor-swipe-wrap');
+  const track=document.getElementById('floor-swipe-track');
+  if(!wrap||!track)return;
+  const w=wrap.clientWidth;
+  trackOffsetX=-idx*w;
+  track.style.transition=animate?'transform .35s cubic-bezier(.2,.8,.3,1)':'none';
+  track.style.transform=`translateX(${trackOffsetX}px)`;
+  updateFloorIndicator();
+}
+
+function prevFloor(){if(currentFloorIndex>0)scrollToFloor(currentFloorIndex-1);}
+function nextFloor(){if(currentFloorIndex<floorList.length-1)scrollToFloor(currentFloorIndex+1);}
+
+function setupSwipeHandlers(){
+  const wrap=document.getElementById('floor-swipe-wrap');
+  const track=document.getElementById('floor-swipe-track');
+  if(!wrap||!track||wrap.dataset.swipeReady)return;
+  wrap.dataset.swipeReady='1';
+
+  let startX=0,startY=0,dx=0,dy=0,locked=null;
+  wrap.addEventListener('touchstart',(e)=>{
+    startX=e.touches[0].clientX;startY=e.touches[0].clientY;dx=0;dy=0;locked=null;
+    track.style.transition='none';
+  },{passive:true});
+  wrap.addEventListener('touchmove',(e)=>{
+    dx=e.touches[0].clientX-startX;
+    dy=e.touches[0].clientY-startY;
+    if(locked===null){
+      if(Math.abs(dx)>10||Math.abs(dy)>10){
+        locked=Math.abs(dx)>Math.abs(dy)?'x':'y';
+      }
+    }
+    if(locked==='x'){
+      e.preventDefault();
+      const w=wrap.clientWidth;
+      // 끝에서는 저항감
+      let offset=trackOffsetX+dx;
+      const minOffset=-(floorList.length-1)*w;
+      if(offset>0)offset=offset*0.3;
+      else if(offset<minOffset)offset=minOffset+(offset-minOffset)*0.3;
+      track.style.transform=`translateX(${offset}px)`;
+    }
+  },{passive:false});
+  wrap.addEventListener('touchend',()=>{
+    if(locked!=='x'){track.style.transform=`translateX(${trackOffsetX}px)`;return;}
+    const w=wrap.clientWidth;
+    const threshold=w*0.2;
+    if(dx<-threshold&&currentFloorIndex<floorList.length-1)scrollToFloor(currentFloorIndex+1);
+    else if(dx>threshold&&currentFloorIndex>0)scrollToFloor(currentFloorIndex-1);
+    else scrollToFloor(currentFloorIndex);
+  });
+
+  // 화면 회전/리사이즈 대응
+  window.addEventListener('resize',()=>{
+    if(currentViewMode==='floor'&&floorList.length)renderFloorSwipe();
+  });
+}
+
+
 function applyFilter(shops){
   let f=shops;
   // 층 필터 먼저
@@ -900,9 +1191,14 @@ async function openShopDetail(s){
         <div class="w-2 h-2 rounded-full" style="background:${floorColor}"></div>
         <span class="font-mono text-xs font-bold text-[#0B1C30]">${floor} · ${s['호수']||''}</span>
       </div>
-      <button onclick="toggleShopLike('${key}')" class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors">
-        <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} ${liked?'text-red-400':'text-[#737685]'} heart-ico-${key}" style="font-size:20px;">favorite</span>
-      </button>
+      <div class="flex items-center gap-1">
+        ${!isV?`<button onclick="openPinModal('${key}','${(s['업체명']||'').replace(/'/g,"&#39;")}')" class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors" title="사장님 인증">
+          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:20px;">key</span>
+        </button>`:''}
+        <button onclick="toggleShopLike('${key}')" class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors">
+          <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} ${liked?'text-red-400':'text-[#737685]'} heart-ico-${key}" style="font-size:20px;">favorite</span>
+        </button>
+      </div>
     </div>
 
     <!-- 상호명 히어로 (컴팩트) -->
@@ -1024,9 +1320,14 @@ async function openShopDetail(s){
           <span class="font-bold text-[13px] text-[#0B1C30] flex-1">${s['상가명']||'-'}</span>
         </div>
         <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
+          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">call</span>
+          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">전화</span>
+          <span class="text-[13px] text-[#737685] flex-1" id="info-phone-${key}">사장님 등록 전</span>
+        </div>
+        <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
           <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">schedule</span>
           <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">영업시간</span>
-          <span class="text-[13px] text-[#737685] flex-1">사장님 등록 전</span>
+          <span class="text-[13px] text-[#737685] flex-1" id="info-hours-${key}">사장님 등록 전</span>
         </div>
         <div class="flex items-center gap-4 px-4 py-3">
           <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">favorite</span>
@@ -1034,6 +1335,9 @@ async function openShopDetail(s){
           <span class="font-bold text-[13px] text-[#0B1C30] flex-1 like-cnt-${key}">—</span>
         </div>
       </div>
+
+      <!-- 사장님 등록 정보 (있을 때만 표시) -->
+      <div id="owner-info-${key}" style="display:none;" class="mb-4"></div>
 
       <!-- 주민 추천 태그 -->
       <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2">주민 추천 태그</div>
@@ -1067,7 +1371,119 @@ async function openShopDetail(s){
     </div>`;
 
   document.getElementById('sheet').classList.add('open');
-  if(!isV){loadShopLike(key);loadShopReviews(key);}
+  if(!isV){loadShopLike(key);loadShopReviews(key);loadShopInfo(key);}
+}
+
+/* ===== 사장님 등록 정보 표시 ===== */
+async function loadShopInfo(key){
+  try{
+    const info=await gasGet({action:'shopInfo',key});
+    if(!info)return;
+    // 정보 박스에 전화/영업시간 표시
+    if(info.phone){const el=document.getElementById('info-phone-'+key);if(el){el.textContent=info.phone;el.classList.remove('text-[#737685]');el.classList.add('text-[#0B1C30]','font-bold');}}
+    if(info.hours){const el=document.getElementById('info-hours-'+key);if(el){el.textContent=info.hours;el.classList.remove('text-[#737685]');el.classList.add('text-[#0B1C30]','font-bold');}}
+    // 소개/메뉴/사진은 별도 카드로
+    const ownerEl=document.getElementById('owner-info-'+key);
+    if(!ownerEl)return;
+    const sections=[];
+    if(info.photoUrl){
+      sections.push(`<img src="${info.photoUrl}" alt="가게 사진" class="w-full aspect-video object-cover" onerror="this.style.display='none'">`);
+    }
+    let body='';
+    if(info.intro){
+      body+=`<div class="px-4 pt-4 pb-3 border-b border-[#C3C6D6]/15">
+        <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms text-primary" style="font-size:13px;">info</span>가게 소개</div>
+        <p class="text-[13px] text-[#0B1C30] leading-relaxed whitespace-pre-wrap">${info.intro}</p>
+      </div>`;
+    }
+    if(info.menu){
+      body+=`<div class="px-4 pt-3 pb-4">
+        <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms text-primary" style="font-size:13px;">restaurant_menu</span>대표 메뉴</div>
+        <pre class="text-[13px] text-[#0B1C30] leading-relaxed whitespace-pre-wrap font-body">${info.menu}</pre>
+      </div>`;
+    }
+    if(sections.length||body){
+      ownerEl.innerHTML=`<div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2 flex items-center gap-1.5"><span class="material-symbols-outlined ms-fill text-primary" style="font-size:13px;">verified</span>사장님이 등록한 정보</div>
+        <div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden">${sections.join('')}${body}</div>`;
+      ownerEl.style.display='block';
+    }
+  }catch(e){console.warn('shopInfo load failed',e);}
+}
+
+/* ===== 사장님 PIN 인증 모달 ===== */
+let _pinKey=null,_pinShopName=null,_verifiedPin=null;
+
+function openPinModal(key,shopName){
+  _pinKey=key;_pinShopName=shopName;
+  document.getElementById('pin-input').value='';
+  document.getElementById('pin-msg').classList.add('hidden');
+  document.getElementById('pin-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('pin-input').focus(),300);
+}
+function closePinModal(){document.getElementById('pin-modal').classList.remove('open');}
+
+async function submitPin(){
+  const pin=document.getElementById('pin-input').value.trim();
+  const msg=document.getElementById('pin-msg');
+  msg.classList.add('hidden');
+  if(!pin||pin.length<3){msg.textContent='PIN을 입력해주세요';msg.style.color='#EF4444';msg.classList.remove('hidden');return;}
+  const btn=document.getElementById('pin-submit');btn.textContent='인증 중...';btn.style.opacity='.6';
+  const res=await gasPost({action:'verifyPin',key:_pinKey,pin});
+  btn.textContent='인증하기';btn.style.opacity='1';
+  if(res&&res.ok){
+    _verifiedPin=pin;
+    closePinModal();
+    openShopEditModal();
+  }else{
+    msg.textContent=(res&&res.msg)||'PIN이 일치하지 않아요 ❌';
+    msg.style.color='#EF4444';
+    msg.classList.remove('hidden');
+  }
+}
+
+/* ===== 사장님 정보 수정 모달 ===== */
+async function openShopEditModal(){
+  document.getElementById('se-shopname').textContent=_pinShopName||'';
+  // 기존 정보 불러와서 채우기
+  document.getElementById('se-phone').value='';
+  document.getElementById('se-hours').value='';
+  document.getElementById('se-intro').value='';
+  document.getElementById('se-menu').value='';
+  document.getElementById('se-photo').value='';
+  try{
+    const info=await gasGet({action:'shopInfo',key:_pinKey});
+    if(info){
+      document.getElementById('se-phone').value=info.phone||'';
+      document.getElementById('se-hours').value=info.hours||'';
+      document.getElementById('se-intro').value=info.intro||'';
+      document.getElementById('se-menu').value=info.menu||'';
+      document.getElementById('se-photo').value=info.photoUrl||'';
+    }
+  }catch(e){}
+  document.getElementById('shop-edit-modal').classList.add('open');
+}
+function closeShopEditModal(){document.getElementById('shop-edit-modal').classList.remove('open');}
+
+async function submitShopEdit(){
+  const phone=document.getElementById('se-phone').value.trim();
+  const hours=document.getElementById('se-hours').value.trim();
+  const intro=document.getElementById('se-intro').value.trim();
+  const menu=document.getElementById('se-menu').value.trim();
+  const photoUrl=document.getElementById('se-photo').value.trim();
+  const btn=document.getElementById('se-submit');btn.textContent='저장 중...';btn.style.opacity='.6';
+  const res=await gasPost({
+    action:'updateShop',key:_pinKey,pin:_verifiedPin,
+    phone,hours,intro,menu,photoUrl,nickname:myNickname
+  });
+  btn.textContent='💾 저장하기';btn.style.opacity='1';
+  if(res&&res.ok){
+    closeShopEditModal();
+    alert('✅ 저장됐어요!');
+    // 상세 다시 로드
+    loadShopInfo(_pinKey);
+  }else{
+    alert((res&&res.msg)||'저장에 실패했어요.');
+  }
 }
 
 function submitTag(key,tag,el){
