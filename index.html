@@ -489,7 +489,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
 
 <!-- MODALS -->
 <div class="modal" id="sheet" onclick="if(event.target===this)closeSheet()">
-  <div class="modal-inner" id="sheet-inner" style="padding:0;border-radius:24px 24px 0 0;overflow:hidden;"></div>
+  <div class="modal-inner" id="sheet-inner" style="padding:0;border-radius:24px 24px 0 0;overflow-y:auto;-webkit-overflow-scrolling:touch;"></div>
 </div>
 <div class="modal" id="post-sheet" onclick="if(event.target===this)document.getElementById('post-sheet').classList.remove('open')">
   <div class="modal-inner" id="post-sheet-inner"></div>
@@ -670,8 +670,61 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
         <input id="se-photo" placeholder="https://..." class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
         <div class="text-[10px] text-[#737685] mt-1">📌 이미지 업로드는 imgbb.com 등 무료 호스팅 후 URL 붙여넣기</div>
       </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms" style="font-size:14px;">photo_camera</span>인스타그램 URL</label>
+        <input id="se-insta" placeholder="https://instagram.com/..." class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms" style="font-size:14px;">language</span>홈페이지 URL</label>
+        <input id="se-homepage" placeholder="https://..." class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms" style="font-size:14px;">checklist</span>편의정보</label>
+        <input id="se-amenities" placeholder="주차 가능, 와이파이, 포장 가능 등" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      </div>
     </div>
     <button onclick="submitShopEdit()" id="se-submit" class="w-full bg-primary text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95 shadow-md shadow-primary/20 mt-4">💾 저장하기</button>
+  </div>
+</div>
+
+<!-- 주민 사진 등록 모달 -->
+<div class="modal" id="photo-upload-modal" onclick="if(event.target===this)closePhotoUploadModal()">
+  <div class="modal-inner">
+    <div class="modal-handle"></div>
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined ms-fill text-primary" style="font-size:22px;">add_a_photo</span>
+        <h3 class="font-display font-extrabold text-xl text-[#0B1C30]">사진 등록</h3>
+      </div>
+      <button onclick="closePhotoUploadModal()" class="w-8 h-8 rounded-xl bg-[#EFF4FF] flex items-center justify-center">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">close</span>
+      </button>
+    </div>
+    <div class="bg-[#EFF4FF] border border-[#C3C6D6]/30 rounded-xl px-3 py-2 mb-4 flex items-start gap-2">
+      <span class="material-symbols-outlined ms-fill text-primary mt-0.5" style="font-size:16px;">storefront</span>
+      <div>
+        <div class="text-[12px] text-[#0B1C30] font-bold" id="pu-shopname">—</div>
+        <div class="text-[10px] text-[#737685] mt-0.5">방문하신 사진을 공유해주세요</div>
+      </div>
+    </div>
+    <div class="space-y-3">
+      <div class="bg-[#FFF8E1] border border-[#FFE0B2] rounded-xl px-3 py-2.5 text-[11px] text-[#8B6914] leading-relaxed">
+        <div class="font-bold mb-1 flex items-center gap-1"><span class="material-symbols-outlined ms-fill text-[#FF9800]" style="font-size:14px;">tips_and_updates</span>사진 올리는 법</div>
+        1. <a href="https://imgbb.com" target="_blank" class="text-primary font-bold underline">imgbb.com</a>에 사진 업로드<br>
+        2. "Direct link" URL 복사<br>
+        3. 아래에 붙여넣기
+      </div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">사진 URL</label>
+        <input id="pu-url" oninput="previewPhotoUrl()" placeholder="https://i.ibb.co/..." class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      </div>
+      <div id="pu-preview" style="display:none;"></div>
+      <div>
+        <label class="font-mono text-[11px] text-[#737685] uppercase tracking-widest block mb-1.5">한줄 코멘트 (선택)</label>
+        <input id="pu-caption" maxlength="50" placeholder="예: 라떼 너무 맛있어요" class="w-full bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-4 py-3 text-sm text-[#0B1C30] outline-none focus:border-primary">
+      </div>
+      <button onclick="submitPhoto()" id="pu-submit" class="w-full bg-primary text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-[#0052CC] transition-colors active:scale-95 shadow-md shadow-primary/20">✅ 등록하기</button>
+    </div>
   </div>
 </div>
 
@@ -1290,47 +1343,46 @@ async function openShopDetail(s){
         </button>
       </div>
 
-      <!-- 상가 정보 리스트 (폴더창 스타일) -->
-      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2">상가 정보</div>
+      <!-- 상가 기본 정보 (단순화: 층/호수, 영업시간만) -->
       <div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-4">
         <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
           <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">layers</span>
           <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">층 / 호수</span>
-          <span class="font-bold text-[13px] text-[#0B1C30] flex-1">${floor} · ${s['호수']||'-'}</span>
+          <span class="font-bold text-[13px] text-[#0B1C30] flex-1">${floor} · ${s['호수']||'-'} · ${s['상가명']||''}</span>
           <span class="font-mono text-[10px] text-white px-1.5 py-0.5 rounded font-bold" style="background:${floorColor}">${floor}</span>
         </div>
-        <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
-          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">${catIcon}</span>
-          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">업종</span>
-          <span class="font-bold text-[13px] text-[#0B1C30] flex-1">${catName}</span>
-        </div>
-        <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
-          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">domain</span>
-          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">상가동</span>
-          <span class="font-bold text-[13px] text-[#0B1C30] flex-1">${s['상가명']||'-'}</span>
-        </div>
-        <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
-          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">call</span>
-          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">전화</span>
-          <span class="text-[13px] text-[#737685] flex-1" id="info-phone-${key}">사장님 등록 전</span>
-        </div>
-        <div class="flex items-center gap-4 px-4 py-3 border-b border-[#C3C6D6]/15">
+        <div class="flex items-center gap-4 px-4 py-3" id="info-hours-row-${key}">
           <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">schedule</span>
           <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">영업시간</span>
           <span class="text-[13px] text-[#737685] flex-1" id="info-hours-${key}">사장님 등록 전</span>
         </div>
-        <div class="flex items-center gap-4 px-4 py-3">
-          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">favorite</span>
-          <span class="text-[13px] text-[#737685] w-16 flex-shrink-0">주민 찜</span>
-          <span class="font-bold text-[13px] text-[#0B1C30] flex-1 like-cnt-${key}">—</span>
-        </div>
       </div>
 
-      <!-- 사장님 등록 정보 (있을 때만 표시) -->
+      <!-- 사장님 등록 정보 (전화/홈페이지/인스타/소개/메뉴 - 사장님이 등록 시) -->
       <div id="owner-info-${key}" style="display:none;" class="mb-4"></div>
 
-      <!-- 주민 추천 태그 -->
-      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2">주민 추천 태그</div>
+      <!-- 주민 사진 그리드 -->
+      <div class="flex items-center justify-between mb-2">
+        <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest flex items-center gap-1.5">
+          <span class="material-symbols-outlined ms" style="font-size:14px;">photo_library</span>
+          주민 사진 <span class="text-primary" id="photo-cnt-${key}"></span>
+        </div>
+        <button onclick="openPhotoUploadModal('${key}','${(s['업체명']||'').replace(/'/g,"&#39;")}')" class="flex items-center gap-1 text-primary text-[12px] font-bold hover:underline">
+          <span class="material-symbols-outlined ms" style="font-size:14px;">add_a_photo</span>사진 등록
+        </button>
+      </div>
+      <div id="photo-grid-${key}" class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-4 min-h-[80px] flex items-center justify-center">
+        <div class="text-[12px] text-[#737685] py-4">불러오는 중...</div>
+      </div>
+
+      <!-- 리뷰 키워드 통계 (네이버 스타일) -->
+      <div id="tag-stats-${key}" class="mb-4" style="display:none;"></div>
+
+      <!-- 주민 추천 태그 (입력) -->
+      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2 flex items-center gap-1.5">
+        <span class="material-symbols-outlined ms" style="font-size:14px;">add_reaction</span>
+        이 상가는 어땠나요?
+      </div>
       <div class="flex flex-wrap gap-2 mb-4">
         ${tags.map((t,i)=>`<button onclick="submitTag('${key}','${t}',this)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#C3C6D6]/50 bg-white text-[12px] font-semibold text-[#434654] hover:border-primary hover:text-primary hover:bg-[#EFF4FF] transition-all active:scale-95">
           <span class="material-symbols-outlined ms text-[#737685]" style="font-size:13px;">${['thumb_up','star','favorite','local_fire_department','child_care'][i%5]}</span>${t}
@@ -1361,43 +1413,194 @@ async function openShopDetail(s){
     </div>`;
 
   document.getElementById('sheet').classList.add('open');
-  if(!isV){loadShopLike(key);loadShopReviews(key);loadShopInfo(key);}
+  if(!isV){loadShopLike(key);loadShopReviews(key);loadShopInfo(key);loadShopPhotos(key);loadTagStats(key);}
 }
 
-/* ===== 사장님 등록 정보 표시 ===== */
+/* ===== 사장님 등록 정보 표시 (네이버 스타일) ===== */
 async function loadShopInfo(key){
   try{
     const info=await gasGet({action:'shopInfo',key});
-    if(!info)return;
-    // 정보 박스에 전화/영업시간 표시
-    if(info.phone){const el=document.getElementById('info-phone-'+key);if(el){el.textContent=info.phone;el.classList.remove('text-[#737685]');el.classList.add('text-[#0B1C30]','font-bold');}}
-    if(info.hours){const el=document.getElementById('info-hours-'+key);if(el){el.textContent=info.hours;el.classList.remove('text-[#737685]');el.classList.add('text-[#0B1C30]','font-bold');}}
-    // 소개/메뉴/사진은 별도 카드로
-    const ownerEl=document.getElementById('owner-info-'+key);
-    if(!ownerEl)return;
-    const sections=[];
-    if(info.photoUrl){
-      sections.push(`<img src="${info.photoUrl}" alt="가게 사진" class="w-full aspect-video object-cover" onerror="this.style.display='none'">`);
+    if(!info){renderOwnerInfo(key,null);return;}
+    // 영업시간만 동적으로
+    if(info.hours){
+      const el=document.getElementById('info-hours-'+key);
+      if(el){
+        el.innerHTML='<span class="inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span><span class="text-green-600 font-bold text-[12px]">영업 중</span></span> · <span class="text-[#737685] text-[12px]">'+info.hours+'</span>';
+        el.classList.remove('text-[#737685]');
+      }
     }
-    let body='';
-    if(info.intro){
-      body+=`<div class="px-4 pt-4 pb-3 border-b border-[#C3C6D6]/15">
-        <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms text-primary" style="font-size:13px;">info</span>가게 소개</div>
-        <p class="text-[13px] text-[#0B1C30] leading-relaxed whitespace-pre-wrap">${info.intro}</p>
-      </div>`;
-    }
-    if(info.menu){
-      body+=`<div class="px-4 pt-3 pb-4">
-        <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms text-primary" style="font-size:13px;">restaurant_menu</span>대표 메뉴</div>
-        <pre class="text-[13px] text-[#0B1C30] leading-relaxed whitespace-pre-wrap font-body">${info.menu}</pre>
-      </div>`;
-    }
-    if(sections.length||body){
-      ownerEl.innerHTML=`<div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2 flex items-center gap-1.5"><span class="material-symbols-outlined ms-fill text-primary" style="font-size:13px;">verified</span>사장님이 등록한 정보</div>
-        <div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden">${sections.join('')}${body}</div>`;
-      ownerEl.style.display='block';
-    }
+    renderOwnerInfo(key,info);
   }catch(e){console.warn('shopInfo load failed',e);}
+}
+
+function renderOwnerInfo(key,info){
+  const ownerEl=document.getElementById('owner-info-'+key);
+  if(!ownerEl)return;
+  if(!info||(!info.phone&&!info.intro&&!info.menu&&!info.photoUrl&&!info.instaUrl&&!info.homepageUrl&&!info.amenities)){
+    ownerEl.style.display='none';return;
+  }
+
+  let html=`<div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-2 flex items-center gap-1.5"><span class="material-symbols-outlined ms-fill text-primary" style="font-size:13px;">verified</span>사장님이 등록한 정보</div>`;
+
+  // 사진
+  if(info.photoUrl){
+    html+=`<div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-3">
+      <img src="${info.photoUrl}" alt="가게 사진" class="w-full aspect-video object-cover" onerror="this.style.display='none'">
+    </div>`;
+  }
+
+  // 빠른 액션 (전화/홈페이지/인스타) - 가로 배치
+  const actions=[];
+  if(info.phone){
+    actions.push(`<a href="tel:${info.phone}" class="flex flex-col items-center gap-1 py-3 hover:bg-[#EFF4FF] transition-colors">
+      <span class="material-symbols-outlined ms-fill text-primary" style="font-size:20px;">call</span>
+      <span class="text-[11px] font-semibold text-[#434654]">전화</span>
+    </a>`);
+  }
+  if(info.homepageUrl){
+    actions.push(`<a href="${info.homepageUrl}" target="_blank" class="flex flex-col items-center gap-1 py-3 hover:bg-[#EFF4FF] transition-colors">
+      <span class="material-symbols-outlined ms-fill text-primary" style="font-size:20px;">language</span>
+      <span class="text-[11px] font-semibold text-[#434654]">홈페이지</span>
+    </a>`);
+  }
+  if(info.instaUrl){
+    actions.push(`<a href="${info.instaUrl}" target="_blank" class="flex flex-col items-center gap-1 py-3 hover:bg-[#EFF4FF] transition-colors">
+      <span class="material-symbols-outlined ms-fill text-pink-500" style="font-size:20px;">photo_camera</span>
+      <span class="text-[11px] font-semibold text-[#434654]">인스타</span>
+    </a>`);
+  }
+  if(actions.length){
+    html+=`<div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-3 grid" style="grid-template-columns:repeat(${actions.length},1fr);">${actions.join('')}</div>`;
+  }
+
+  // 메뉴 (가로 스크롤 카드)
+  if(info.menu){
+    const menuItems=parseMenu(info.menu);
+    if(menuItems.length){
+      html+=`<div class="mb-3">
+        <div class="flex items-center justify-between mb-2 px-1">
+          <span class="font-display font-bold text-[14px] text-[#0B1C30] flex items-center gap-1.5"><span class="material-symbols-outlined ms-fill text-primary" style="font-size:16px;">restaurant_menu</span>메뉴 <span class="text-[#737685] font-mono text-[11px]">${menuItems.length}</span></span>
+        </div>
+        <div class="scroll-x" style="margin:0 -20px;padding:4px 20px 8px;">
+          ${menuItems.map(m=>`<div style="flex:0 0 130px;width:130px;" class="bg-white rounded-xl border border-[#C3C6D6]/20 shadow-sm p-3">
+            <div class="w-full aspect-square rounded-lg bg-gradient-to-br from-[#FFF3E0] to-[#FFE0B2] flex items-center justify-center mb-2">
+              <span class="material-symbols-outlined ms-fill text-[#FF9800]/40" style="font-size:36px;">restaurant</span>
+            </div>
+            <div class="font-bold text-[12px] text-[#0B1C30] leading-tight" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${m.name}</div>
+            ${m.price?`<div class="font-display font-extrabold text-[13px] text-primary mt-1">${m.price}</div>`:''}
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }
+  }
+
+  // 소개
+  if(info.intro){
+    html+=`<div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-3 px-4 py-3">
+      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms text-primary" style="font-size:13px;">info</span>가게 소개</div>
+      <p class="text-[13px] text-[#0B1C30] leading-relaxed whitespace-pre-wrap">${info.intro}</p>
+    </div>`;
+  }
+
+  // 편의정보
+  if(info.amenities){
+    html+=`<div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-3 px-4 py-3">
+      <div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><span class="material-symbols-outlined ms text-primary" style="font-size:13px;">checklist</span>편의정보</div>
+      <p class="text-[13px] text-[#0B1C30] leading-relaxed whitespace-pre-wrap">${info.amenities}</p>
+    </div>`;
+  }
+
+  ownerEl.innerHTML=html;
+  ownerEl.style.display='block';
+}
+
+function parseMenu(menuText){
+  const lines=menuText.split('\n').filter(l=>l.trim());
+  return lines.map(line=>{
+    const m=line.match(/^(.+?)[\s\-:]+([\d,]+\s*원?)$/);
+    if(m)return{name:m[1].trim(),price:m[2].trim()};
+    return{name:line.trim(),price:''};
+  }).slice(0,10);
+}
+
+/* ===== 주민 사진 ===== */
+async function loadShopPhotos(key){
+  try{
+    const photos=await gasGet({action:'shopPhotos',key});
+    renderPhotoGrid(key,photos||[]);
+  }catch(e){renderPhotoGrid(key,[]);}
+}
+
+function renderPhotoGrid(key,photos){
+  const el=document.getElementById('photo-grid-'+key);
+  const cntEl=document.getElementById('photo-cnt-'+key);
+  if(!el)return;
+  if(cntEl)cntEl.textContent=photos.length?photos.length:'';
+  if(!photos.length){
+    el.classList.add('flex','items-center','justify-center');
+    el.innerHTML='<div class="flex flex-col items-center py-6 text-[#737685] text-[12px]"><span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:32px;">photo_camera</span><span class="mt-1">아직 등록된 사진이 없어요</span><span class="text-[10px] mt-0.5">첫 사진을 등록해보세요!</span></div>';
+    return;
+  }
+  el.classList.remove('min-h-[80px]','flex','items-center','justify-center');
+  el.innerHTML='<div class="grid grid-cols-3 gap-px bg-[#C3C6D6]/30">'+
+    photos.slice(0,9).map(p=>'<div class="aspect-square overflow-hidden bg-white cursor-pointer active:opacity-80" onclick="window.open(\''+p.photoUrl+'\',\'_blank\')"><img src="'+p.photoUrl+'" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.innerHTML=\'<div class=&quot;w-full h-full flex items-center justify-center bg-[#EFF4FF]&quot;><span class=&quot;material-symbols-outlined ms text-[#C3C6D6]&quot; style=&quot;font-size:24px&quot;>broken_image</span></div>\'"></div>').join('')+
+    '</div>'+
+    (photos.length>9?'<div class="text-center py-2 border-t border-[#C3C6D6]/20"><button onclick="alert(\'전체 사진 보기는 추후 예정\')" class="text-[12px] text-primary font-bold">전체 '+photos.length+'장 보기 →</button></div>':'');
+}
+
+/* ===== 태그 통계 ===== */
+async function loadTagStats(key){
+  try{
+    const tags=await gasGet({action:'tags',key});
+    renderTagStats(key,tags||[]);
+  }catch(e){}
+}
+
+function renderTagStats(key,tags){
+  const el=document.getElementById('tag-stats-'+key);
+  if(!el)return;
+  if(!tags.length){el.style.display='none';return;}
+  const tagIcons={'맛있어요':'restaurant','친절해요':'sentiment_very_satisfied','가성비 좋아요':'savings','자주 가요':'favorite','아이랑 가기 좋아요':'child_care','실력 좋아요':'star','예약 빠르게 돼요':'schedule','위생적이에요':'cleaning_services','선생님이 친절해요':'school','믿을 수 있어요':'verified','빠르게 처리해요':'bolt','정보가 많아요':'lightbulb','신선해요':'eco','가격 합리적':'savings','다양한 상품':'inventory','배달도 돼요':'delivery_dining','선생님이 좋아요':'school','성적 올랐어요':'trending_up','숙제 적절해요':'assignment','위치 좋아요':'place','커피가 맛있어요':'coffee','음료가 맛있어요':'local_cafe','추천해요':'thumb_up'};
+  el.style.display='block';
+  el.innerHTML='<div class="flex items-center justify-between mb-2"><div class="font-mono text-[10px] text-[#737685] uppercase tracking-widest flex items-center gap-1.5"><span class="material-symbols-outlined ms" style="font-size:14px;">insights</span>주민 리뷰 키워드 <span class="text-primary">'+tags.length+'</span></div></div>'+
+    '<div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden">'+
+    tags.slice(0,6).map((t,i)=>{
+      const ico=tagIcons[t.tag]||'thumb_up';
+      const isLast=i===Math.min(tags.length,6)-1;
+      return '<div class="flex items-center gap-3 px-4 py-2.5 '+(isLast?'':'border-b border-[#C3C6D6]/15')+'"><div class="w-8 h-8 rounded-xl bg-[#EFF4FF] flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined ms-fill text-primary" style="font-size:16px;">'+ico+'</span></div><div class="flex-1"><div class="font-bold text-[13px] text-[#0B1C30]">"'+t.tag+'"</div></div><div class="font-display font-extrabold text-[14px] text-primary">'+t.count+'</div></div>';
+    }).join('')+
+    '</div>';
+}
+
+/* ===== 주민 사진 등록 모달 ===== */
+let _photoKey=null,_photoShopName=null;
+function openPhotoUploadModal(key,shopName){
+  _photoKey=key;_photoShopName=shopName;
+  document.getElementById('pu-shopname').textContent=shopName;
+  document.getElementById('pu-url').value='';
+  document.getElementById('pu-caption').value='';
+  document.getElementById('pu-preview').style.display='none';
+  document.getElementById('photo-upload-modal').classList.add('open');
+}
+function closePhotoUploadModal(){document.getElementById('photo-upload-modal').classList.remove('open');}
+function previewPhotoUrl(){
+  const url=document.getElementById('pu-url').value.trim();
+  const preview=document.getElementById('pu-preview');
+  if(!url){preview.style.display='none';return;}
+  preview.style.display='block';
+  preview.innerHTML='<img src="'+url+'" class="w-full aspect-video object-cover rounded-xl" onerror="this.parentElement.innerHTML=\'<div class=&quot;text-center py-4 text-red-400 text-[12px]&quot;>이미지를 불러올 수 없어요. URL을 다시 확인해주세요.</div>\'">';
+}
+async function submitPhoto(){
+  const url=document.getElementById('pu-url').value.trim();
+  const caption=document.getElementById('pu-caption').value.trim();
+  if(!url){alert('사진 URL을 입력해주세요');return;}
+  if(!url.match(/^https?:\/\//)){alert('http:// 또는 https://로 시작하는 URL만 가능해요');return;}
+  const btn=document.getElementById('pu-submit');btn.textContent='업로드 중...';btn.style.opacity='.6';
+  await gasPost({action:'addPhoto',key:_photoKey,nickname:myNickname,photoUrl:url,caption});
+  btn.textContent='✅ 등록하기';btn.style.opacity='1';
+  closePhotoUploadModal();
+  alert('✅ 사진이 등록됐어요!');
+  loadShopPhotos(_photoKey);
 }
 
 /* ===== 사장님 PIN 인증 모달 ===== */
@@ -1440,6 +1643,9 @@ async function openShopEditModal(){
   document.getElementById('se-intro').value='';
   document.getElementById('se-menu').value='';
   document.getElementById('se-photo').value='';
+  document.getElementById('se-insta').value='';
+  document.getElementById('se-homepage').value='';
+  document.getElementById('se-amenities').value='';
   try{
     const info=await gasGet({action:'shopInfo',key:_pinKey});
     if(info){
@@ -1448,6 +1654,9 @@ async function openShopEditModal(){
       document.getElementById('se-intro').value=info.intro||'';
       document.getElementById('se-menu').value=info.menu||'';
       document.getElementById('se-photo').value=info.photoUrl||'';
+      document.getElementById('se-insta').value=info.instaUrl||'';
+      document.getElementById('se-homepage').value=info.homepageUrl||'';
+      document.getElementById('se-amenities').value=info.amenities||'';
     }
   }catch(e){}
   document.getElementById('shop-edit-modal').classList.add('open');
@@ -1460,28 +1669,32 @@ async function submitShopEdit(){
   const intro=document.getElementById('se-intro').value.trim();
   const menu=document.getElementById('se-menu').value.trim();
   const photoUrl=document.getElementById('se-photo').value.trim();
+  const instaUrl=document.getElementById('se-insta').value.trim();
+  const homepageUrl=document.getElementById('se-homepage').value.trim();
+  const amenities=document.getElementById('se-amenities').value.trim();
   const btn=document.getElementById('se-submit');btn.textContent='저장 중...';btn.style.opacity='.6';
   const res=await gasPost({
     action:'updateShop',key:_pinKey,pin:_verifiedPin,
-    phone,hours,intro,menu,photoUrl,nickname:myNickname
+    phone,hours,intro,menu,photoUrl,instaUrl,homepageUrl,amenities,nickname:myNickname
   });
   btn.textContent='💾 저장하기';btn.style.opacity='1';
   if(res&&res.ok){
     closeShopEditModal();
     alert('✅ 저장됐어요!');
-    // 상세 다시 로드
     loadShopInfo(_pinKey);
   }else{
     alert((res&&res.msg)||'저장에 실패했어요.');
   }
 }
 
-function submitTag(key,tag,el){
+async function submitTag(key,tag,el){
   el.classList.add('border-primary','text-primary','bg-[#EFF4FF]');
   el.classList.remove('border-[#C3C6D6]/50','text-[#434654]','bg-white');
   const ico=el.querySelector('.material-symbols-outlined');
   if(ico){ico.classList.add('ms-fill','text-primary');ico.classList.remove('ms','text-[#737685]');}
   el.disabled=true;
+  await gasPost({action:'addTag',key,tag});
+  loadTagStats(key);
 }
 
 async function loadShopLike(key){
