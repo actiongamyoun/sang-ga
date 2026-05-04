@@ -136,29 +136,41 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
   </div>
   <!-- PANEL: 상가 -->
   <div class="panel" id="panel-shop">
-    <div class="relative overflow-hidden rounded-2xl mb-5 p-5 cursor-pointer" style="background:linear-gradient(135deg,#003D9B,#0066FF);" onclick="switchTab('match')">
-      <div class="relative z-10 flex items-center justify-between">
-        <div>
-          <div class="text-white/70 text-[10px] font-bold uppercase tracking-widest mb-1 font-mono">공실 현황</div>
-          <div class="font-display font-extrabold text-white text-4xl leading-none" id="vacant-count">—</div>
-          <div class="text-white/80 text-sm mt-1" id="shop-apt-name">아파트 상가</div>
-        </div>
-        <div class="bg-white/15 text-white text-sm font-bold px-4 py-2 rounded-xl">매칭 보기 →</div>
-      </div>
-      <div class="absolute right-2 top-1/2 -translate-y-1/2 opacity-10">
-        <span class="material-symbols-outlined ms-fill" style="font-size:100px;">store</span>
-      </div>
+    <!-- 층별 필터 -->
+    <div class="flex items-center gap-2 mb-2">
+      <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">layers</span>
+      <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest font-semibold">층별 보기</span>
+    </div>
+    <div class="scroll-x pb-1 mb-3" id="floor-filter">
+      <!-- JS 동적 렌더 -->
+    </div>
+    <!-- 업종별 필터 -->
+    <div class="flex items-center gap-2 mb-2">
+      <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">category</span>
+      <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest font-semibold">업종별 보기</span>
     </div>
     <div class="scroll-x pb-1 mb-5" id="cat-filter">
       <button onclick="setFilter('all',this)" data-f="all" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary text-white text-xs font-bold whitespace-nowrap flex-shrink-0">
         <span class="material-symbols-outlined ms text-white" style="font-size:14px;">apps</span>전체
       </button>
-      <button onclick="setFilter('food',this)" data-f="food" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">🍜 음식/카페</button>
-      <button onclick="setFilter('beauty',this)" data-f="beauty" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">💇 미용/운동</button>
-      <button onclick="setFilter('realestate',this)" data-f="realestate" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">🏡 부동산</button>
-      <button onclick="setFilter('mart',this)" data-f="mart" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">🥬 마트</button>
-      <button onclick="setFilter('edu',this)" data-f="edu" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">📚 교육</button>
-      <button onclick="setFilter('vacant',this)" data-f="vacant" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">❓ 공실</button>
+      <button onclick="setFilter('food',this)" data-f="food" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">restaurant</span>음식/카페
+      </button>
+      <button onclick="setFilter('beauty',this)" data-f="beauty" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">content_cut</span>미용/운동
+      </button>
+      <button onclick="setFilter('realestate',this)" data-f="realestate" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">house</span>부동산
+      </button>
+      <button onclick="setFilter('mart',this)" data-f="mart" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">local_grocery_store</span>마트
+      </button>
+      <button onclick="setFilter('edu',this)" data-f="edu" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">school</span>교육
+      </button>
+      <button onclick="setFilter('vacant',this)" data-f="vacant" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
+        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">do_not_disturb_on</span>공실
+      </button>
     </div>
     <div id="shop-list" class="space-y-1.5"></div>
   </div>
@@ -566,7 +578,7 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
 const SHEET_URL='https://docs.google.com/spreadsheets/d/1mfP3BQ1EbVO__xZO4MA0FMtUC3OqMf8Kp30hyuj9ymE/export?format=csv&gid=39887238';
 const GAS_URL='https://script.google.com/macros/s/AKfycbzIc4i7dtndXruXO4bs0HOosYxwhnmTSjTocBpmJPcMVnNIS8dDmMHiqxOZIDp8qRA_/exec';
 
-let allData=[],selectedGu=null,selectedDong=null,selectedApt=null,currentFilter='all';
+let allData=[],selectedGu=null,selectedDong=null,selectedApt=null,currentFilter='all',currentFloor='all';
 let currentUser=null,authMode='login',currentCat='all',allPosts=[];
 let navHistory=[];
 
@@ -586,6 +598,16 @@ const CAT_MAP={
   '기타':{icon:'🏪',bg:'bg-gray-50',tag:'etc'},
 };
 function getCat(n){return n?(CAT_MAP[n]||CAT_MAP['기타']):CAT_MAP['기타'];}
+const MAT_ICON_MAP={
+  '음식/카페':'restaurant','음식':'restaurant','카페':'coffee',
+  '미용/뷰티/운동':'content_cut','미용':'content_cut','운동':'fitness_center',
+  '부동산/인테리어':'house','부동산':'house','인테리어':'design_services',
+  '마트/식료품':'local_grocery_store','마트':'local_grocery_store',
+  '학원/교육':'school','교육':'school',
+  '패션/잡화':'checkroom','생활서비스':'home_repair_service',
+  '의료/건강':'local_hospital','기타':'storefront',
+};
+function getMatIcon(n){return n?(MAT_ICON_MAP[n]||'storefront'):'storefront';}
 function floorCls(f){if(!f)return'fc-etc';const u=f.toUpperCase();if(u.includes('B'))return'fc-b';if(u==='1F'||u==='1층')return'fc-1';if(u==='2F'||u==='2층')return'fc-2';if(u==='3F'||u==='3층')return'fc-3';if(u==='4F'||u==='4층')return'fc-4';return'fc-etc';}
 const APT_GRADES=['g-a','g-b','g-c','g-d','g-e','g-f','g-g','g-h'];
 const APT_ICONS=['apartment','domain','location_city','business','other_houses','villa','holiday_village','corporate_fare'];
@@ -710,23 +732,55 @@ function selectApt(apt){
 
 function renderShops(){
   const shops=allData.filter(d=>d['아파트명']===selectedApt);
-  const vacants=shops.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
-  document.getElementById('vacant-count').textContent=vacants.length;
   setCount(shops.length+'개 상가');
   const allV=allData.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
-  document.getElementById('match-total-cnt').textContent=allData.length;
-  document.getElementById('match-vacant-cnt').textContent=allV.length;
-  renderVacantList(allV);applyFilter(shops);
+  const matchTotal=document.getElementById('match-total-cnt');if(matchTotal)matchTotal.textContent=allData.length;
+  const matchVacant=document.getElementById('match-vacant-cnt');if(matchVacant)matchVacant.textContent=allV.length;
+  buildFloorFilter(shops);
+  applyFilter(shops);
+}
+
+function buildFloorFilter(shops){
+  // 모든 층 추출
+  const floors=[...new Set(shops.map(s=>s['층']).filter(Boolean))];
+  // 정렬: B2,B1,1F,2F,3F,4F,...
+  floors.sort((a,b)=>{
+    const order=v=>{const u=(v||'').toUpperCase();if(u.startsWith('B'))return -parseInt(u.replace('B','')||0);return parseInt(u.replace(/[^0-9]/g,''))||99;};
+    return order(a)-order(b);
+  });
+  const cont=document.getElementById('floor-filter');if(!cont)return;
+  // 전체 + 각 층
+  const allCnt=shops.length;
+  let html='<button onclick="setFloorFilter(\'all\',this)" data-fl="all" class="floor-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary text-white text-xs font-bold whitespace-nowrap flex-shrink-0">'+
+    '<span class="material-symbols-outlined ms text-white" style="font-size:14px;">layers</span>전체 <span class="font-mono text-[10px] opacity-80">'+allCnt+'</span></button>';
+  floors.forEach(f=>{
+    const cnt=shops.filter(s=>s['층']===f).length;
+    html+='<button onclick="setFloorFilter(\''+f+'\',this)" data-fl="'+f+'" class="floor-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">'+
+      '<span class="font-mono text-[10px] text-white px-1.5 py-px rounded '+floorCls(f)+'">'+f+'</span>'+
+      '<span class="font-mono text-[10px] text-[#737685]">'+cnt+'</span></button>';
+  });
+  cont.innerHTML=html;
+}
+
+function setFloorFilter(f,el){
+  currentFloor=f;
+  document.querySelectorAll('.floor-btn').forEach(b=>{b.classList.remove('bg-primary','text-white');b.classList.add('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');const layerIco=b.querySelector('.material-symbols-outlined.ms');if(layerIco)layerIco.classList.replace('text-white','text-[#737685]');});
+  el.classList.add('bg-primary','text-white');el.classList.remove('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');
+  const lico=el.querySelector('.material-symbols-outlined.ms');if(lico){lico.classList.remove('text-[#737685]');lico.classList.add('text-white');}
+  if(selectedApt){applyFilter(allData.filter(d=>d['아파트명']===selectedApt));}
 }
 
 function applyFilter(shops){
   let f=shops;
-  if(currentFilter==='food')f=shops.filter(s=>(s['업종분류']||'').includes('음식'));
-  else if(currentFilter==='beauty')f=shops.filter(s=>(s['업종분류']||'').includes('미용'));
-  else if(currentFilter==='realestate')f=shops.filter(s=>(s['업종분류']||'').includes('부동산'));
-  else if(currentFilter==='mart')f=shops.filter(s=>(s['업종분류']||'').includes('마트'));
-  else if(currentFilter==='edu')f=shops.filter(s=>(s['업종분류']||'').includes('교육'));
-  else if(currentFilter==='vacant')f=shops.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
+  // 층 필터 먼저
+  if(currentFloor!=='all')f=f.filter(s=>s['층']===currentFloor);
+  // 업종 필터
+  if(currentFilter==='food')f=f.filter(s=>(s['업종분류']||'').includes('음식'));
+  else if(currentFilter==='beauty')f=f.filter(s=>(s['업종분류']||'').includes('미용'));
+  else if(currentFilter==='realestate')f=f.filter(s=>(s['업종분류']||'').includes('부동산'));
+  else if(currentFilter==='mart')f=f.filter(s=>(s['업종분류']||'').includes('마트'));
+  else if(currentFilter==='edu')f=f.filter(s=>(s['업종분류']||'').includes('교육'));
+  else if(currentFilter==='vacant')f=f.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
   const grouped={};
   f.forEach(s=>{const k=s['층']||'?';if(!grouped[k])grouped[k]=[];grouped[k].push(s);});
   const list=document.getElementById('shop-list');
@@ -751,8 +805,11 @@ function applyFilter(shops){
           </div></div>
           <span class="material-symbols-outlined ms text-red-300" style="font-size:18px;">chevron_right</span>
         </div>`;
+        const matIcon=getMatIcon(s['업종분류']);
         return `<div class="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] hover:border-primary/20 transition-all cursor-pointer shadow-sm active:scale-[.98]" onclick='openShopDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
-          <div class="w-10 h-10 rounded-xl ${cat.bg} flex items-center justify-center flex-shrink-0 text-xl">${cat.icon}</div>
+          <div class="w-10 h-10 rounded-xl ${cat.bg} flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined ms-fill text-[#0B1C30]/70" style="font-size:20px;">${matIcon}</span>
+          </div>
           <div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-[#0B1C30] truncate">${s['업체명']}</div>
           <div class="flex items-center gap-1.5 mt-0.5">
             <span class="font-mono text-[9px] text-white px-1.5 py-px rounded ${floorCls(floor)}">${floor}</span>
