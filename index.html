@@ -60,12 +60,11 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
       <h1 class="font-display font-extrabold text-primary text-lg tracking-tight">우리동네상가</h1>
     </div>
     <div class="flex gap-1">
-      <button class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors">
+      <button onclick="openSearchModal()" class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors">
         <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">search</span>
       </button>
-      <button class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors relative">
+      <button onclick="alert('곧 알림 기능이 추가될 예정이에요 🔔')" class="w-9 h-9 rounded-xl hover:bg-[#DCE9FF] flex items-center justify-center transition-colors relative">
         <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">notifications</span>
-        <div class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-[#F8F9FF]"></div>
       </button>
     </div>
   </div>
@@ -472,8 +471,11 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
       </div>
       <span class="text-[10px] font-bold text-primary tracking-wide">탐색</span>
     </button>
-    <button onclick="switchTab('community')" data-tab="community" class="nav-btn flex flex-col items-center justify-center py-3 gap-1 opacity-50">
-      <span class="material-symbols-outlined ms text-[#434654]" style="font-size:24px;">chat_bubble</span>
+    <button onclick="switchTab('community')" data-tab="community" class="nav-btn flex flex-col items-center justify-center py-3 gap-1 opacity-50 relative">
+      <div class="relative">
+        <span class="material-symbols-outlined ms text-[#434654]" style="font-size:24px;">chat_bubble</span>
+        <div id="community-badge" class="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-extrabold flex items-center justify-center font-mono" style="display:none;">0</div>
+      </div>
       <span class="text-[10px] font-semibold text-[#737685]">사랑방</span>
     </button>
     <button onclick="switchTab('match')" data-tab="match" class="nav-btn flex flex-col items-center justify-center py-3 gap-1 opacity-50">
@@ -719,6 +721,34 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
 </div>
 
 <!-- 주민 사진 등록 모달 -->
+<!-- 상가명 검색 모달 -->
+<div class="modal" id="search-modal" onclick="if(event.target===this)closeSearchModal()">
+  <div class="modal-inner" style="padding:0;border-radius:24px 24px 0 0;display:flex;flex-direction:column;max-height:92dvh;">
+    <div class="px-5 pt-3 pb-2 border-b border-[#C3C6D6]/20 flex-shrink-0">
+      <div class="modal-handle"></div>
+      <div class="flex items-center gap-2">
+        <button onclick="closeSearchModal()" class="w-9 h-9 rounded-xl hover:bg-[#EFF4FF] flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">arrow_back</span>
+        </button>
+        <div class="flex-1 flex items-center gap-2 bg-[#EFF4FF] border border-[#C3C6D6]/50 rounded-xl px-3 py-2.5">
+          <span class="material-symbols-outlined ms text-[#737685]" style="font-size:18px;">search</span>
+          <input id="search-input" oninput="runSearch()" placeholder="상가명, 업종으로 검색" class="flex-1 bg-transparent text-sm text-[#0B1C30] placeholder-[#737685] outline-none">
+          <button onclick="document.getElementById('search-input').value='';runSearch()" id="search-clear" class="w-5 h-5 rounded-full bg-[#C3C6D6] flex items-center justify-center" style="display:none;">
+            <span class="material-symbols-outlined ms text-white" style="font-size:14px;">close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="search-results" class="flex-1 overflow-y-auto px-5 py-3" style="-webkit-overflow-scrolling:touch;">
+      <div class="text-center py-12 text-[#737685]">
+        <span class="material-symbols-outlined ms text-4xl block mb-2">search</span>
+        <div class="text-sm">상가명이나 업종으로 검색해보세요</div>
+        <div class="text-[11px] mt-1">예: "블루삭", "카페", "치킨"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="photo-upload-modal" onclick="if(event.target===this)closePhotoUploadModal()">
   <div class="modal-inner">
     <div class="modal-handle"></div>
@@ -1422,7 +1452,7 @@ async function openShopDetail(s){
           <span class="material-symbols-outlined ms" style="font-size:14px;">add_a_photo</span>사진 등록
         </button>
       </div>
-      <div id="photo-grid-${key}" class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-4 min-h-[80px] flex items-center justify-center">
+      <div id="photo-grid-${key}" data-shopname="${(s['업체명']||'').replace(/'/g,"&#39;").replace(/"/g,'&quot;')}" class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden mb-4 min-h-[80px] flex items-center justify-center">
         <div class="text-[12px] text-[#737685] py-4">불러오는 중...</div>
       </div>
 
@@ -1587,9 +1617,10 @@ function renderPhotoGrid(key,photos){
   const cntEl=document.getElementById('photo-cnt-'+key);
   if(!el)return;
   if(cntEl)cntEl.textContent=photos.length?photos.length:'';
+  const shopName=(el.dataset.shopname||'').replace(/&#39;/g,"'").replace(/&quot;/g,'"');
   if(!photos.length){
     el.classList.add('flex','items-center','justify-center');
-    el.innerHTML='<div class="flex flex-col items-center py-6 text-[#737685] text-[12px]"><span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:32px;">photo_camera</span><span class="mt-1">아직 등록된 사진이 없어요</span><span class="text-[10px] mt-0.5">첫 사진을 등록해보세요!</span></div>';
+    el.innerHTML='<button onclick="openPhotoUploadModal(\''+key+'\',\''+shopName.replace(/'/g,"\\'")+'\')" class="w-full flex flex-col items-center py-6 text-[#737685] text-[12px] hover:bg-[#EFF4FF] active:bg-[#DCE9FF] transition-colors cursor-pointer group"><div class="w-12 h-12 rounded-2xl bg-[#EFF4FF] group-hover:bg-white flex items-center justify-center mb-2 transition-colors"><span class="material-symbols-outlined ms-fill text-primary" style="font-size:26px;">add_a_photo</span></div><span class="font-bold text-[#0B1C30]">사진 등록하기</span><span class="text-[10px] text-[#737685] mt-0.5">첫 사진을 등록해보세요!</span></button>';
     return;
   }
   el.classList.remove('min-h-[80px]','flex','items-center','justify-center');
@@ -2002,7 +2033,32 @@ function closeSheet(){document.getElementById('sheet').classList.remove('open');
 
 /* COMMUNITY */
 async function loadPosts(){
-  try{const data=await gasGet({action:'posts',apt:selectedApt||''});allPosts=data||[];}catch(e){allPosts=[];}renderPosts();
+  try{const data=await gasGet({action:'posts',apt:selectedApt||''});allPosts=data||[];}catch(e){allPosts=[];}
+  renderPosts();
+  updateCommunityBadge();
+}
+
+function updateCommunityBadge(){
+  // 마지막으로 본 시점 이후의 새 글 개수
+  const lastSeen=parseInt(localStorage.getItem('community_last_seen'))||0;
+  const newCount=allPosts.filter(p=>{
+    const ts=p.date?new Date(p.date).getTime():0;
+    return ts>lastSeen;
+  }).length;
+  const badge=document.getElementById('community-badge');
+  if(!badge)return;
+  if(newCount>0){
+    badge.textContent=newCount>99?'99+':newCount;
+    badge.style.display='flex';
+  }else{
+    badge.style.display='none';
+  }
+}
+
+function markCommunityAsSeen(){
+  localStorage.setItem('community_last_seen',Date.now().toString());
+  const badge=document.getElementById('community-badge');
+  if(badge)badge.style.display='none';
 }
 function renderPosts(){
   const list=document.getElementById('post-list');
@@ -2188,7 +2244,7 @@ function switchTab(name){
   document.getElementById('view-'+name).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.style.opacity=b.dataset.tab===name?'1':'0.5');
   window.scrollTo(0,0);
-  if(name==='community')loadPosts();
+  if(name==='community'){loadPosts();markCommunityAsSeen();}
   if(name==='match')loadAllVacants();
   if(name==='my')renderMyTab();
 }
@@ -2428,10 +2484,83 @@ function goCity(){while(navHistory.length>1)navHistory.pop();goBack();}
 function goGu(){while(navHistory.length>2)navHistory.pop();goBack();}
 function setCount(txt){document.getElementById('item-count').textContent=txt;}
 
+/* ===== 상가명 검색 ===== */
+function openSearchModal(){
+  document.getElementById('search-input').value='';
+  document.getElementById('search-clear').style.display='none';
+  document.getElementById('search-results').innerHTML='<div class="text-center py-12 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">search</span><div class="text-sm">상가명이나 업종으로 검색해보세요</div><div class="text-[11px] mt-1">예: "블루삭", "카페", "치킨"</div></div>';
+  document.getElementById('search-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('search-input').focus(),300);
+}
+function closeSearchModal(){document.getElementById('search-modal').classList.remove('open');}
+
+let _searchDebounce=null;
+function runSearch(){
+  const q=document.getElementById('search-input').value.trim();
+  document.getElementById('search-clear').style.display=q?'flex':'none';
+  clearTimeout(_searchDebounce);
+  _searchDebounce=setTimeout(()=>doSearch(q),150);
+}
+
+function doSearch(q){
+  const results=document.getElementById('search-results');
+  if(!q){
+    results.innerHTML='<div class="text-center py-12 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">search</span><div class="text-sm">상가명이나 업종으로 검색해보세요</div><div class="text-[11px] mt-1">예: "블루삭", "카페", "치킨"</div></div>';
+    return;
+  }
+  const lower=q.toLowerCase();
+  const matched=allData.filter(s=>{
+    const name=(s['업체명']||'').toLowerCase();
+    const cat=(s['업종분류']||'').toLowerCase();
+    const apt=(s['아파트명']||'').toLowerCase();
+    return name.includes(lower)||cat.includes(lower)||apt.includes(lower);
+  }).slice(0,30);
+
+  if(!matched.length){
+    results.innerHTML='<div class="text-center py-12 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">search_off</span><div class="text-sm">"'+q+'" 검색 결과가 없어요</div></div>';
+    return;
+  }
+
+  results.innerHTML='<div class="font-mono text-[11px] text-[#737685] mb-3 px-1">검색결과 '+matched.length+'개</div><div class="space-y-1.5">'+
+    matched.map(s=>{
+      const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
+      if(isV)return'';
+      const cat=getCat(s['업종분류']);
+      const matIcon=getMatIcon(s['업종분류']);
+      const floor=s['층']||'';
+      // 검색어 하이라이트
+      const highlight=(text)=>{
+        if(!text)return'';
+        const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+        return text.replace(re,'<mark style="background:#FEF3C7;color:#0B1C30;padding:0 2px;border-radius:2px;">$1</mark>');
+      };
+      return '<div class="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] hover:border-primary/20 transition-all cursor-pointer shadow-sm active:scale-[.98]" onclick=\'closeSearchModal();openShopDetail('+JSON.stringify(s).replace(/'/g,"&#39;")+')\'>'+
+        '<div class="w-10 h-10 rounded-xl '+cat.bg+' flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined ms-fill text-[#0B1C30]/70" style="font-size:20px;">'+matIcon+'</span></div>'+
+        '<div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-[#0B1C30] truncate">'+highlight(s['업체명'])+'</div>'+
+        '<div class="flex items-center gap-1.5 mt-0.5"><span class="font-mono text-[9px] text-white px-1.5 py-px rounded '+floorCls(floor)+'">'+floor+'</span><span class="font-mono text-[9px] text-[#737685] bg-[#D3E4FE] px-1.5 py-px rounded">'+(s['호수']||'')+'</span><span class="text-[11px] text-[#737685] truncate">'+highlight(s['아파트명']||'')+'</span></div></div>'+
+        '<span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>'+
+        '</div>';
+    }).join('')+
+    '</div>';
+}
+
+/* ===== 사랑방 백그라운드 폴링 ===== */
+async function checkCommunityUpdates(){
+  try{
+    const data=await gasGet({action:'posts',apt:selectedApt||''});
+    allPosts=data||[];
+    updateCommunityBadge();
+  }catch(e){}
+}
+
 /* INIT */
 loadData();
 loadNotices();
 renderMyTab();
+// 페이지 로드 시 사랑방 글 미리 가져와서 뱃지 표시
+setTimeout(checkCommunityUpdates,1500);
+// 5분마다 새 글 확인
+setInterval(checkCommunityUpdates,5*60*1000);
 </script>
 </body>
 </html>
