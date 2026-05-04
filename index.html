@@ -1278,23 +1278,13 @@ async function openShopDetail(s){
           </div>
           <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
         </button>
-        <button onclick="alert('채팅 연결!')" class="w-full flex items-center gap-4 px-4 py-3.5 hover:bg-[#EFF4FF] transition-colors active:bg-[#DCE9FF] border-b border-[#C3C6D6]/20">
+        <button onclick="alert('채팅 연결!')" class="w-full flex items-center gap-4 px-4 py-3.5 hover:bg-[#EFF4FF] transition-colors active:bg-[#DCE9FF]">
           <div class="w-9 h-9 rounded-xl bg-[#006C49] flex items-center justify-center flex-shrink-0">
             <span class="material-symbols-outlined ms-fill text-white" style="font-size:18px;">chat_bubble</span>
           </div>
           <div class="flex-1 text-left">
             <div class="font-bold text-[14px] text-[#0B1C30]">채팅</div>
             <div class="text-[11px] text-[#737685]">메시지로 문의하기</div>
-          </div>
-          <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
-        </button>
-        <button onclick="toggleShopLike('${key}')" class="w-full flex items-center gap-4 px-4 py-3.5 hover:bg-[#EFF4FF] transition-colors active:bg-[#DCE9FF]">
-          <div class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined ${liked?'ms-fill':'ms'} text-red-400 heart-btn-${key}" style="font-size:18px;">favorite</span>
-          </div>
-          <div class="flex-1 text-left">
-            <div class="font-bold text-[14px] text-[#0B1C30] save-txt-${key}">${liked?'찜 취소하기':'이 상가 찜하기'}</div>
-            <div class="text-[11px] text-[#737685]">MY탭에서 확인 가능</div>
           </div>
           <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
         </button>
