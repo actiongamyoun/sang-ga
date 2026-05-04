@@ -726,7 +726,7 @@ function selectDong(city,gu,dong){
 function selectApt(apt){
   navHistory.push(3);selectedApt=apt;
   document.getElementById('crumb-apt').textContent=apt;showCrumbs(4);
-  document.getElementById('shop-apt-name').textContent=apt+' 상가';
+  const shopAptName=document.getElementById('shop-apt-name');if(shopAptName)shopAptName.textContent=apt+' 상가';
   renderShops();showPanel('panel-shop');
 }
 
