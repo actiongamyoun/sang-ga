@@ -853,6 +853,70 @@ const MAT_ICON_MAP={
   '의료/건강':'local_hospital','기타':'storefront',
 };
 function getMatIcon(n){return n?(MAT_ICON_MAP[n]||'storefront'):'storefront';}
+
+// 업종별 그라데이션 색상 (당근마켓 스타일 사진 자리)
+const CAT_GRADIENT={
+  '음식/카페':['#FF6B35','#FFA552'],'음식':['#FF6B35','#FFA552'],
+  '미용/뷰티/운동':['#E91E63','#F48FB1'],'미용':['#E91E63','#F48FB1'],
+  '부동산/인테리어':['#1976D2','#64B5F6'],'부동산':['#1976D2','#64B5F6'],
+  '마트/식료품':['#2E7D32','#66BB6A'],'마트':['#2E7D32','#66BB6A'],
+  '학원/교육':['#7B1FA2','#BA68C8'],'교육':['#7B1FA2','#BA68C8'],
+  '의료/건강':['#D32F2F','#EF5350'],
+  '패션/잡화':['#F57C00','#FFB74D'],
+  '생활서비스':['#455A64','#90A4AE'],
+  '기타':['#5D4037','#A1887F'],
+};
+function getGradient(cat){
+  const g=CAT_GRADIENT[cat]||CAT_GRADIENT['기타'];
+  return 'linear-gradient(135deg,'+g[0]+','+g[1]+')';
+}
+
+// 당근마켓 스타일 상가 카드 (공통)
+function shopCardHTML(s,opts){
+  opts=opts||{};
+  const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
+  const floor=s['층']||'';
+  const matIcon=isV?'do_not_disturb_on':getMatIcon(s['업종분류']);
+  const cat=s['업종분류']||'';
+  const gradient=isV?'linear-gradient(135deg,#FCA5A5,#FECACA)':getGradient(cat);
+  const key=(s['아파트명']+'_'+s['상가명']+'_'+floor+'_'+s['호수']).replace(/\s/g,'');
+  const liked=localStorage.getItem('liked_'+key)==='1';
+  const showApt=opts.showApt;
+  const dataStr=JSON.stringify(s).replace(/'/g,"&#39;");
+
+  // 영업 상태 배지 또는 가격 자리
+  const statusBadge=isV
+    ? '<span class="inline-flex items-center gap-1 bg-red-50 text-red-500 text-[11px] font-bold px-2 py-0.5 rounded-md border border-red-200"><span class="material-symbols-outlined ms" style="font-size:11px;">do_not_disturb_on</span>입점 문의</span>'
+    : '<span class="inline-flex items-center gap-1 text-green-600 text-[11px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>영업중</span>';
+
+  return '<div class="bg-white border-b border-[#C3C6D6]/20 cursor-pointer active:bg-[#EFF4FF]/50 transition-colors" onclick=\'openShopDetail('+dataStr+')\'>'+
+    '<div class="flex gap-3 px-4 py-4">'+
+      // 왼쪽 정사각형 사진/아이콘
+      '<div class="w-[110px] h-[110px] rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden" style="background:'+gradient+'">'+
+        '<span class="material-symbols-outlined ms-fill text-white" style="font-size:48px;opacity:.85;">'+matIcon+'</span>'+
+        '<div class="absolute top-1.5 left-1.5 font-mono text-[9px] text-white bg-black/40 backdrop-blur px-1.5 py-0.5 rounded">'+floor+'</div>'+
+      '</div>'+
+      // 오른쪽 텍스트
+      '<div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">'+
+        '<div>'+
+          '<div class="font-bold text-[15px] text-[#0B1C30] leading-tight mb-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">'+(isV?'공실 ('+(s['상가명']||'')+' '+(s['호수']||'')+')':s['업체명'])+'</div>'+
+          '<div class="text-[12px] text-[#737685] truncate">'+
+            (showApt?(s['아파트명']||'')+' · ':'')+
+            (s['상가명']||'')+' · '+(s['호수']||'')+'호'+
+          '</div>'+
+          (cat&&!isV?'<div class="text-[12px] text-[#737685] mt-0.5">'+cat+'</div>':'')+
+        '</div>'+
+        '<div class="flex items-center justify-between mt-1">'+
+          statusBadge+
+          '<div class="flex items-center gap-1 text-[#737685]">'+
+            '<span class="material-symbols-outlined '+(liked?'ms-fill text-red-400':'ms')+'" style="font-size:15px;">favorite</span>'+
+            '<span class="font-mono text-[11px] like-cnt-'+key+'">0</span>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '</div>';
+}
 function floorCls(f){if(!f)return'fc-etc';const u=f.toUpperCase();if(u.includes('B'))return'fc-b';if(u==='1F'||u==='1층')return'fc-1';if(u==='2F'||u==='2층')return'fc-2';if(u==='3F'||u==='3층')return'fc-3';if(u==='4F'||u==='4층')return'fc-4';return'fc-etc';}
 const APT_GRADES=['g-a','g-b','g-c','g-d','g-e','g-f','g-g','g-h'];
 const APT_ICONS=['apartment','domain','location_city','business','other_houses','villa','holiday_village','corporate_fare'];
@@ -1175,35 +1239,18 @@ function renderFloorPageContent(floor,items){
     </div>
   </div>`;
 
-  html+='<div class="space-y-1.5">'+items.map(s=>{
-    const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
-    const cat=getCat(s['업종분류']);
-    if(isV){
-      return `<div class="flex items-center gap-3 p-3 rounded-xl border border-dashed border-red-200 bg-red-50/50 cursor-pointer active:scale-[.98] transition-all" onclick='openShopDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
-        <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined ms text-red-400" style="font-size:18px;">do_not_disturb_on</span></div>
-        <div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-red-400">공실</div>
-        <div class="flex items-center gap-1.5 mt-0.5">
-          <span class="font-mono text-[9px] text-white px-1.5 py-px rounded ${floorCls(floor)}">${floor}</span>
-          <span class="font-mono text-[9px] text-[#737685] bg-[#D3E4FE] px-1.5 py-px rounded">${s['호수']||''}</span>
-          <span class="text-[10px] bg-red-100 text-red-500 font-bold px-2 py-px rounded-full">입점 문의</span>
-        </div></div>
-        <span class="material-symbols-outlined ms text-red-300" style="font-size:18px;">chevron_right</span>
-      </div>`;
-    }
-    const matIcon=getMatIcon(s['업종분류']);
-    return `<div class="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] hover:border-primary/20 transition-all cursor-pointer shadow-sm active:scale-[.98]" onclick='openShopDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
-      <div class="w-10 h-10 rounded-xl ${cat.bg} flex items-center justify-center flex-shrink-0">
-        <span class="material-symbols-outlined ms-fill text-[#0B1C30]/70" style="font-size:20px;">${matIcon}</span>
-      </div>
-      <div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-[#0B1C30] truncate">${s['업체명']}</div>
-      <div class="flex items-center gap-1.5 mt-0.5">
-        <span class="font-mono text-[9px] text-white px-1.5 py-px rounded ${floorCls(floor)}">${floor}</span>
-        <span class="font-mono text-[9px] text-[#737685] bg-[#D3E4FE] px-1.5 py-px rounded">${s['호수']||''}</span>
-        <span class="text-[11px] text-[#737685]">${s['업종분류']||''}</span>
-      </div></div>
-      <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
-    </div>`;
-  }).join('')+'</div>';
+  html+='<div class="bg-white rounded-2xl overflow-hidden border border-[#C3C6D6]/20 shadow-sm">'+items.map(s=>shopCardHTML(s)).join('')+'</div>';
+  // 좋아요 카운트 백그라운드 로드
+  setTimeout(()=>{
+    items.forEach(s=>{
+      const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
+      if(isV)return;
+      const k=(s['아파트명']+'_'+s['상가명']+'_'+s['층']+'_'+s['호수']).replace(/\s/g,'');
+      gasGet({action:'likes',key:k}).then(d=>{
+        document.querySelectorAll('.like-cnt-'+k).forEach(el=>el.textContent=(d&&d.count)||0);
+      }).catch(()=>{});
+    });
+  },200);
   return html;
 }
 
@@ -1297,41 +1344,30 @@ function applyFilter(shops){
   f.forEach(s=>{const k=s['층']||'?';if(!grouped[k])grouped[k]=[];grouped[k].push(s);});
   const list=document.getElementById('shop-list');
   if(!f.length){list.innerHTML='<div class="text-center py-12 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">search_off</span>조건에 맞는 상가가 없어요</div>';return;}
-  list.innerHTML=Object.entries(grouped).map(([floor,items])=>`
-    <div class="mb-4">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="font-mono text-[10px] font-bold text-white px-2 py-0.5 rounded-md ${floorCls(floor)}">${floor}</span>
-        <div class="flex-1 h-px bg-[#C3C6D6]/40"></div>
-        <span class="font-mono text-[10px] text-[#737685]">${items.length}개</span>
-      </div>
-      <div class="space-y-1.5">${items.map(s=>{
-        const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
-        const cat=getCat(s['업종분류']);
-        if(isV)return `<div class="flex items-center gap-3 p-3 rounded-xl border border-dashed border-red-200 bg-red-50/50 cursor-pointer active:scale-[.98] transition-all" onclick='openShopDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
-          <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined ms text-red-400" style="font-size:18px;">do_not_disturb_on</span></div>
-          <div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-red-400">공실</div>
-          <div class="flex items-center gap-1.5 mt-0.5">
-            <span class="font-mono text-[9px] text-white px-1.5 py-px rounded ${floorCls(floor)}">${floor}</span>
-            <span class="font-mono text-[9px] text-[#737685] bg-[#D3E4FE] px-1.5 py-px rounded">${s['호수']||''}</span>
-            <span class="text-[10px] bg-red-100 text-red-500 font-bold px-2 py-px rounded-full">입점 문의</span>
-          </div></div>
-          <span class="material-symbols-outlined ms text-red-300" style="font-size:18px;">chevron_right</span>
-        </div>`;
-        const matIcon=getMatIcon(s['업종분류']);
-        return `<div class="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#C3C6D6]/20 hover:bg-[#EFF4FF] hover:border-primary/20 transition-all cursor-pointer shadow-sm active:scale-[.98]" onclick='openShopDetail(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
-          <div class="w-10 h-10 rounded-xl ${cat.bg} flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined ms-fill text-[#0B1C30]/70" style="font-size:20px;">${matIcon}</span>
-          </div>
-          <div class="flex-1 min-w-0"><div class="font-bold text-[13px] text-[#0B1C30] truncate">${s['업체명']}</div>
-          <div class="flex items-center gap-1.5 mt-0.5">
-            <span class="font-mono text-[9px] text-white px-1.5 py-px rounded ${floorCls(floor)}">${floor}</span>
-            <span class="font-mono text-[9px] text-[#737685] bg-[#D3E4FE] px-1.5 py-px rounded">${s['호수']||''}</span>
-            <span class="text-[11px] text-[#737685]">${s['업종분류']||''}</span>
-          </div></div>
-          <span class="material-symbols-outlined ms text-[#C3C6D6]" style="font-size:18px;">chevron_right</span>
-        </div>`;
-      }).join('')}</div>
-    </div>`).join('');
+  // 층별 그룹 + 당근마켓 스타일 카드
+  list.innerHTML='<div class="bg-white rounded-2xl overflow-hidden border border-[#C3C6D6]/20 shadow-sm" style="margin:0 -4px;">'+
+    Object.entries(grouped).map(([floor,items],gi)=>{
+      const isFirst=gi===0;
+      return '<div>'+
+        '<div class="px-4 py-2.5 bg-[#EFF4FF] flex items-center gap-2'+(isFirst?'':' border-t border-[#C3C6D6]/20')+'">'+
+          '<span class="font-mono text-[10px] font-bold text-white px-2 py-0.5 rounded-md '+floorCls(floor)+'">'+floor+'</span>'+
+          '<span class="font-mono text-[11px] text-[#737685]">'+items.length+'개</span>'+
+        '</div>'+
+        items.map(s=>shopCardHTML(s)).join('')+
+      '</div>';
+    }).join('')+
+  '</div>';
+  // 좋아요 카운트 미리 가져오기 (백그라운드)
+  setTimeout(()=>{
+    f.forEach(s=>{
+      const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
+      if(isV)return;
+      const k=(s['아파트명']+'_'+s['상가명']+'_'+s['층']+'_'+s['호수']).replace(/\s/g,'');
+      gasGet({action:'likes',key:k}).then(d=>{
+        document.querySelectorAll('.like-cnt-'+k).forEach(el=>el.textContent=(d&&d.count)||0);
+      }).catch(()=>{});
+    });
+  },100);
 }
 
 function setFilter(f,el){
@@ -2408,34 +2444,48 @@ function renderGroupGrid(){
   else if(currentGroupFilter!=='all')groups=groups.filter(p=>p.category===currentGroupFilter);
   document.getElementById('grp-count').textContent=allMatchPosts.filter(p=>p.type==='group').length;
   const grid=document.getElementById('group-grid');
-  if(!groups.length){grid.innerHTML='<div class="col-span-2 text-center py-10 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">groups</span>해당 카테고리에 모집글이 없어요</div>';return;}
-  grid.innerHTML=groups.map(p=>{
+  if(!groups.length){grid.innerHTML='<div class="text-center py-10 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">groups</span>해당 카테고리에 모집글이 없어요</div>';return;}
+  // grid-cols-2 제거하고 리스트로
+  grid.className='bg-white rounded-2xl overflow-hidden border border-[#C3C6D6]/20 shadow-sm';
+  grid.innerHTML=groups.map((p,i)=>{
     const remaining=p.deadline-Date.now();
     const hours=Math.floor(remaining/3600000);
     const mins=Math.floor((remaining%3600000)/60000);
     const isUrgent=remaining<14400000;
     const progress=Math.round((p.current/p.target)*100);
-    const timeStr=remaining<0?'마감':(hours>0?hours+'시간 '+mins+'분':mins+'분')+' 남음';
-    return `<button onclick="openMatchDetail('${p.id}')" class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden text-left hover:border-primary/30 active:scale-[.98] transition-all">
-      <div class="relative aspect-square flex items-center justify-center" style="background:linear-gradient(135deg,${p.color}22,${p.color}11)">
-        <span style="font-size:64px;">${p.emoji}</span>
-        <div class="absolute top-2 left-2 ${isUrgent?'bg-red-500':'bg-[#0B1C30]/80'} text-white text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">${isUrgent?'🔥 ':''}${timeStr}</div>
-        <div class="absolute top-2 right-2 bg-white text-[#FF6B35] text-[10px] font-extrabold px-2 py-0.5 rounded-full">${p.discount}% OFF</div>
-      </div>
-      <div class="p-3">
-        <div class="font-bold text-[12px] text-[#0B1C30] leading-tight line-clamp-2 mb-2" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title}</div>
-        <div class="flex items-center justify-between mb-1.5">
-          <div class="flex items-center gap-1">
-            <span class="material-symbols-outlined ms-fill text-primary" style="font-size:13px;">groups</span>
-            <span class="text-[11px] font-bold text-primary">${p.current}/${p.target}명</span>
-          </div>
-          <span class="font-mono text-[10px] text-[#737685]">${progress}%</span>
-        </div>
-        <div class="h-1.5 bg-[#EFF4FF] rounded-full overflow-hidden">
-          <div class="h-full bg-primary transition-all" style="width:${progress}%"></div>
-        </div>
-      </div>
-    </button>`;
+    const timeStr=remaining<0?'마감':(hours>0?hours+'시간':mins+'분')+' 남음';
+    const catIconMap={'food':'restaurant','grocery':'local_grocery_store','living':'home_repair_service','life':'home_repair_service'};
+    const matIcon=catIconMap[p.category]||'shopping_cart';
+    const isLast=i===groups.length-1;
+    return '<div onclick="openMatchDetail(\''+p.id+'\')" class="cursor-pointer active:bg-[#EFF4FF]/50 transition-colors '+(isLast?'':'border-b border-[#C3C6D6]/20')+'">'+
+      '<div class="flex gap-3 px-4 py-4">'+
+        // 정사각형 아이콘
+        '<div class="w-[110px] h-[110px] rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden" style="background:linear-gradient(135deg,'+p.color+','+p.color+'CC)">'+
+          '<span class="material-symbols-outlined ms-fill text-white" style="font-size:48px;opacity:.85;">'+matIcon+'</span>'+
+          '<div class="absolute top-1.5 left-1.5 '+(isUrgent?'bg-red-500':'bg-black/50 backdrop-blur')+' text-white text-[9px] font-bold px-1.5 py-0.5 rounded">'+(isUrgent?'🔥 ':'')+timeStr+'</div>'+
+          '<div class="absolute bottom-1.5 right-1.5 bg-white text-[#FF6B35] text-[10px] font-extrabold px-1.5 py-0.5 rounded">-'+p.discount+'%</div>'+
+        '</div>'+
+        // 오른쪽 텍스트
+        '<div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">'+
+          '<div>'+
+            '<div class="font-bold text-[15px] text-[#0B1C30] leading-tight mb-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">'+p.title+'</div>'+
+            '<div class="text-[12px] text-[#737685] truncate">'+(p.apt||'')+' · '+p.nickname+'</div>'+
+          '</div>'+
+          '<div>'+
+            '<div class="flex items-center justify-between mb-1">'+
+              '<div class="flex items-center gap-1">'+
+                '<span class="material-symbols-outlined ms-fill text-primary" style="font-size:13px;">groups</span>'+
+                '<span class="text-[11px] font-bold text-primary">'+p.current+'/'+p.target+'명</span>'+
+              '</div>'+
+              '<span class="font-mono text-[10px] text-[#737685]">'+progress+'%</span>'+
+            '</div>'+
+            '<div class="h-1 bg-[#EFF4FF] rounded-full overflow-hidden">'+
+              '<div class="h-full bg-primary transition-all" style="width:'+progress+'%"></div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
   }).join('');
 }
 
@@ -2452,23 +2502,32 @@ function renderOwnerGrid(){
   if(currentOwnerFilter!=='all')owners=owners.filter(p=>p.category===currentOwnerFilter);
   document.getElementById('owner-count').textContent=allMatchPosts.filter(p=>p.type==='owner').length;
   const grid=document.getElementById('owner-grid');
-  if(!owners.length){grid.innerHTML='<div class="col-span-2 text-center py-10 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">campaign</span>해당 소식이 없어요</div>';return;}
-  const catBadge={discount:'🎟 할인',new:'✨ 신메뉴',event:'🎉 이벤트'};
-  grid.innerHTML=owners.map(p=>{
-    return `<button onclick="openMatchDetail('${p.id}')" class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm overflow-hidden text-left hover:border-primary/30 active:scale-[.98] transition-all">
-      <div class="relative aspect-square flex items-center justify-center" style="background:linear-gradient(135deg,${p.color}22,${p.color}11)">
-        <span style="font-size:64px;">${p.emoji}</span>
-        <div class="absolute top-2 left-2 bg-white text-[#0B1C30] text-[10px] font-bold px-2 py-0.5 rounded-full">${catBadge[p.category]||''}</div>
-        ${p.discount?`<div class="absolute top-2 right-2 bg-[#FF6B35] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">-${p.discount}%</div>`:''}
-      </div>
-      <div class="p-3">
-        <div class="font-bold text-[12px] text-[#0B1C30] leading-tight mb-1.5" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.title}</div>
-        <div class="flex items-center gap-1 text-[10px] text-[#737685]">
-          <span class="material-symbols-outlined ms-fill text-primary" style="font-size:11px;">store</span>
-          <span class="font-semibold truncate">${p.shopName||p.nickname}</span>
-        </div>
-      </div>
-    </button>`;
+  if(!owners.length){grid.innerHTML='<div class="text-center py-10 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">campaign</span>해당 소식이 없어요</div>';return;}
+  const catBadge={discount:'할인',new:'신메뉴',event:'이벤트'};
+  const catIcon={discount:'sell',new:'auto_awesome',event:'celebration'};
+  grid.className='bg-white rounded-2xl overflow-hidden border border-[#C3C6D6]/20 shadow-sm';
+  grid.innerHTML=owners.map((p,i)=>{
+    const isLast=i===owners.length-1;
+    const ico=catIcon[p.category]||'campaign';
+    return '<div onclick="openMatchDetail(\''+p.id+'\')" class="cursor-pointer active:bg-[#EFF4FF]/50 transition-colors '+(isLast?'':'border-b border-[#C3C6D6]/20')+'">'+
+      '<div class="flex gap-3 px-4 py-4">'+
+        '<div class="w-[110px] h-[110px] rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden" style="background:linear-gradient(135deg,'+p.color+','+p.color+'CC)">'+
+          '<span class="material-symbols-outlined ms-fill text-white" style="font-size:48px;opacity:.85;">'+ico+'</span>'+
+          '<div class="absolute top-1.5 left-1.5 bg-white text-[#0B1C30] text-[9px] font-bold px-1.5 py-0.5 rounded">'+(catBadge[p.category]||'')+'</div>'+
+          (p.discount?'<div class="absolute bottom-1.5 right-1.5 bg-[#FF6B35] text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded">-'+p.discount+'%</div>':'')+
+        '</div>'+
+        '<div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">'+
+          '<div>'+
+            '<div class="font-bold text-[15px] text-[#0B1C30] leading-tight mb-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">'+p.title+'</div>'+
+            '<div class="text-[12px] text-[#737685] line-clamp-2" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">'+(p.content||'')+'</div>'+
+          '</div>'+
+          '<div class="flex items-center gap-1 text-[11px] text-[#737685] mt-1">'+
+            '<span class="material-symbols-outlined ms-fill text-primary" style="font-size:12px;">store</span>'+
+            '<span class="font-semibold truncate">'+(p.shopName||p.nickname)+'</span>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
   }).join('');
 }
 
