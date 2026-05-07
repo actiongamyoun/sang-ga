@@ -143,79 +143,8 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
   </div>
   <!-- PANEL: 상가 -->
   <div class="panel" id="panel-shop">
-    <!-- 뷰 모드 토글 -->
-    <div class="bg-[#EFF4FF] rounded-2xl p-1 grid grid-cols-2 gap-1 mb-4">
-      <button onclick="setViewMode('list',this)" id="vm-list" class="vm-btn flex items-center justify-center gap-1.5 py-2 rounded-xl bg-white shadow-sm transition-all">
-        <span class="material-symbols-outlined ms-fill text-primary" style="font-size:16px;">view_list</span>
-        <span class="text-[12px] font-bold text-primary">전체 보기</span>
-      </button>
-      <button onclick="setViewMode('floor',this)" id="vm-floor" class="vm-btn flex items-center justify-center gap-1.5 py-2 rounded-xl transition-all">
-        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">layers</span>
-        <span class="text-[12px] font-bold text-[#737685]">층별 보기</span>
-      </button>
-    </div>
-
-    <!-- 전체 보기 모드 -->
-    <div id="view-all">
-      <!-- 층별 필터 -->
-      <div class="flex items-center gap-2 mb-2">
-        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">layers</span>
-        <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest font-semibold">층별 필터</span>
-      </div>
-      <div class="scroll-x pb-1 mb-3" id="floor-filter"></div>
-      <!-- 업종별 필터 -->
-      <div class="flex items-center gap-2 mb-2">
-        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:16px;">category</span>
-        <span class="font-mono text-[10px] text-[#737685] uppercase tracking-widest font-semibold">업종별 보기</span>
-      </div>
-      <div class="scroll-x pb-1 mb-5" id="cat-filter">
-      <button onclick="setFilter('all',this)" data-f="all" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary text-white text-xs font-bold whitespace-nowrap flex-shrink-0">
-        <span class="material-symbols-outlined ms text-white" style="font-size:14px;">apps</span>전체
-      </button>
-      <button onclick="setFilter('food',this)" data-f="food" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
-        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">restaurant</span>음식/카페
-      </button>
-      <button onclick="setFilter('beauty',this)" data-f="beauty" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
-        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">content_cut</span>미용/운동
-      </button>
-      <button onclick="setFilter('realestate',this)" data-f="realestate" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
-        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">house</span>부동산
-      </button>
-      <button onclick="setFilter('mart',this)" data-f="mart" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
-        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">local_grocery_store</span>마트
-      </button>
-      <button onclick="setFilter('edu',this)" data-f="edu" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
-        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">school</span>교육
-      </button>
-      <button onclick="setFilter('vacant',this)" data-f="vacant" class="cat-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">
-        <span class="material-symbols-outlined ms text-[#737685]" style="font-size:14px;">do_not_disturb_on</span>공실
-      </button>
-      </div>
-      <div id="shop-list" class="space-y-1.5"></div>
-    </div>
-
-    <!-- 층별 보기 모드 (좌우 스와이프) -->
-    <div id="view-floor" style="display:none;">
-      <!-- 현재 층 표시 (상단 고정) -->
-      <div class="flex items-center justify-between mb-3 px-1">
-        <button onclick="prevFloor()" id="floor-prev" class="w-9 h-9 rounded-xl bg-white border border-[#C3C6D6]/30 flex items-center justify-center hover:bg-[#EFF4FF] transition-colors active:scale-95 disabled:opacity-30">
-          <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">chevron_left</span>
-        </button>
-        <div class="flex flex-col items-center">
-          <div id="floor-label" class="font-display font-extrabold text-2xl text-[#0B1C30] tracking-tight leading-none">—</div>
-          <div id="floor-sub" class="font-mono text-[10px] text-[#737685] mt-1">— / —</div>
-        </div>
-        <button onclick="nextFloor()" id="floor-next" class="w-9 h-9 rounded-xl bg-white border border-[#C3C6D6]/30 flex items-center justify-center hover:bg-[#EFF4FF] transition-colors active:scale-95 disabled:opacity-30">
-          <span class="material-symbols-outlined ms text-[#434654]" style="font-size:20px;">chevron_right</span>
-        </button>
-      </div>
-      <!-- 인디케이터 점 -->
-      <div id="floor-dots" class="flex items-center justify-center gap-1.5 mb-4"></div>
-      <!-- 좌우 스와이프 영역 -->
-      <div id="floor-swipe-wrap" style="overflow:hidden;margin:0 -20px;padding:0 20px;">
-        <div id="floor-swipe-track" style="display:flex;transition:transform .35s cubic-bezier(.2,.8,.3,1);will-change:transform;"></div>
-      </div>
-    </div>
+    <!-- 상가 리스트만 (당근마켓 스타일) -->
+    <div id="shop-list" style="margin:0 -4px;"></div>
   </div>
 </main>
 </div>
@@ -1093,29 +1022,12 @@ function buildCategoryGrid(apt){
 
 function selectCategory(catId){
   navHistory.push(4);
-  // catId를 currentFilter에 매핑 (기존 필터 시스템 재활용)
   currentFilter=catId;
   const def=CATEGORY_DEFS.find(c=>c.id===catId);
   document.getElementById('crumb-cat').textContent=def?def.label:'';
   showCrumbs(5);
   renderShops();
   showPanel('panel-shop');
-  // 업종 필터 칩 UI도 동기화
-  setTimeout(()=>{
-    document.querySelectorAll('.cat-btn').forEach(b=>{
-      const isActive=b.dataset.f===catId;
-      b.classList.remove('bg-primary','text-white','bg-white','border','border-[#C3C6D6]/50','text-[#434654]');
-      if(isActive){
-        b.classList.add('bg-primary','text-white');
-        const ico=b.querySelector('.material-symbols-outlined');
-        if(ico){ico.classList.remove('text-[#737685]');ico.classList.add('text-white');}
-      }else{
-        b.classList.add('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');
-        const ico=b.querySelector('.material-symbols-outlined');
-        if(ico){ico.classList.remove('text-white');ico.classList.add('text-[#737685]');}
-      }
-    });
-  },50);
 }
 
 function renderShops(){
@@ -1124,238 +1036,34 @@ function renderShops(){
   const allV=allData.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
   const matchTotal=document.getElementById('match-total-cnt');if(matchTotal)matchTotal.textContent=allData.length;
   const matchVacant=document.getElementById('match-vacant-cnt');if(matchVacant)matchVacant.textContent=allV.length;
-  buildFloorFilter(shops);
   applyFilter(shops);
 }
 
-function buildFloorFilter(shops){
-  // 모든 층 추출
-  const floors=[...new Set(shops.map(s=>s['층']).filter(Boolean))];
-  // 정렬: B2,B1,1F,2F,3F,4F,...
-  floors.sort((a,b)=>{
-    const order=v=>{const u=(v||'').toUpperCase();if(u.startsWith('B'))return -parseInt(u.replace('B','')||0);return parseInt(u.replace(/[^0-9]/g,''))||99;};
-    return order(a)-order(b);
-  });
-  const cont=document.getElementById('floor-filter');if(!cont)return;
-  // 전체 + 각 층
-  const allCnt=shops.length;
-  let html='<button onclick="setFloorFilter(\'all\',this)" data-fl="all" class="floor-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary text-white text-xs font-bold whitespace-nowrap flex-shrink-0">'+
-    '<span class="material-symbols-outlined ms text-white" style="font-size:14px;">layers</span>전체 <span class="font-mono text-[10px] opacity-80">'+allCnt+'</span></button>';
-  floors.forEach(f=>{
-    const cnt=shops.filter(s=>s['층']===f).length;
-    html+='<button onclick="setFloorFilter(\''+f+'\',this)" data-fl="'+f+'" class="floor-btn flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#C3C6D6]/50 text-[#434654] text-xs font-bold whitespace-nowrap flex-shrink-0">'+
-      '<span class="font-mono text-[10px] text-white px-1.5 py-px rounded '+floorCls(f)+'">'+f+'</span>'+
-      '<span class="font-mono text-[10px] text-[#737685]">'+cnt+'</span></button>';
-  });
-  cont.innerHTML=html;
-}
-
-function setFloorFilter(f,el){
-  currentFloor=f;
-  document.querySelectorAll('.floor-btn').forEach(b=>{b.classList.remove('bg-primary','text-white');b.classList.add('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');const layerIco=b.querySelector('.material-symbols-outlined.ms');if(layerIco)layerIco.classList.replace('text-white','text-[#737685]');});
-  el.classList.add('bg-primary','text-white');el.classList.remove('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');
-  const lico=el.querySelector('.material-symbols-outlined.ms');if(lico){lico.classList.remove('text-[#737685]');lico.classList.add('text-white');}
-  if(selectedApt){applyFilter(allData.filter(d=>d['아파트명']===selectedApt));}
-}
-
-/* ===== 뷰 모드 토글 ===== */
-function setViewMode(mode,el){
-  currentViewMode=mode;
-  document.querySelectorAll('.vm-btn').forEach(b=>{
-    b.classList.remove('bg-white','shadow-sm');
-    const ico=b.querySelector('.material-symbols-outlined');
-    const txt=b.querySelector('span:last-child');
-    if(ico){ico.classList.remove('ms-fill','text-primary');ico.classList.add('ms','text-[#737685]');}
-    if(txt){txt.classList.remove('text-primary');txt.classList.add('text-[#737685]');}
-  });
-  el.classList.add('bg-white','shadow-sm');
-  const ico=el.querySelector('.material-symbols-outlined');
-  const txt=el.querySelector('span:last-child');
-  if(ico){ico.classList.add('ms-fill','text-primary');ico.classList.remove('ms','text-[#737685]');}
-  if(txt){txt.classList.add('text-primary');txt.classList.remove('text-[#737685]');}
-
-  document.getElementById('view-all').style.display=mode==='list'?'block':'none';
-  document.getElementById('view-floor').style.display=mode==='floor'?'block':'none';
-  if(mode==='floor')renderFloorSwipe();
-}
-
-/* ===== 층별 스와이프 렌더 ===== */
-function renderFloorSwipe(){
-  const shops=allData.filter(d=>d['아파트명']===selectedApt);
-  // 층 정렬
-  const floors=[...new Set(shops.map(s=>s['층']).filter(Boolean))];
-  floors.sort((a,b)=>{
-    const order=v=>{const u=(v||'').toUpperCase();if(u.startsWith('B'))return -parseInt(u.replace('B','')||0);return parseInt(u.replace(/[^0-9]/g,''))||99;};
-    return order(a)-order(b);
-  });
-  floorList=floors;
-  if(currentFloorIndex>=floors.length)currentFloorIndex=0;
-  if(!floors.length){
-    document.getElementById('floor-swipe-track').innerHTML='<div style="width:100%;text-align:center;padding:60px 0;color:#737685;">상가가 없어요</div>';
-    return;
-  }
-
-  // 트랙 안에 각 층의 카드를 가로로 배치
-  const track=document.getElementById('floor-swipe-track');
-  const wrapWidth=document.getElementById('floor-swipe-wrap').clientWidth;
-  track.innerHTML=floors.map(floor=>{
-    const items=shops.filter(s=>s['층']===floor);
-    return `<div class="floor-page" style="flex:0 0 ${wrapWidth}px;width:${wrapWidth}px;padding:0 4px;box-sizing:border-box;">
-      ${renderFloorPageContent(floor,items)}
-    </div>`;
-  }).join('');
-
-  updateFloorIndicator();
-  setupSwipeHandlers();
-  scrollToFloor(currentFloorIndex,false);
-}
-
-function renderFloorPageContent(floor,items){
-  if(!items.length)return '<div style="text-align:center;padding:60px 0;color:#737685;">이 층에는 상가가 없어요</div>';
-  // 층별 색상
-  const fcMap={'B1':'#2E7D32','B2':'#1B5E20','1F':'#1565C0','2F':'#6A1B9A','3F':'#E65100','4F':'#AD1457'};
-  const color=fcMap[floor]||'#37474F';
-  // 카운트
-  const totalCnt=items.length;
-  const vacantCnt=items.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim()).length;
-  const activeCnt=totalCnt-vacantCnt;
-
-  let html=`<div class="bg-white rounded-2xl border border-[#C3C6D6]/20 shadow-sm p-4 mb-3" style="border-top:4px solid ${color}">
-    <div class="flex items-center justify-between">
-      <div>
-        <div class="font-display font-extrabold text-3xl" style="color:${color}">${floor}</div>
-        <div class="font-mono text-[10px] text-[#737685] mt-0.5">${floor==='B1'?'지하 1층':floor==='B2'?'지하 2층':floor.replace('F','')+'층'}</div>
-      </div>
-      <div class="grid grid-cols-2 gap-2 text-center">
-        <div class="bg-[#EFF4FF] rounded-xl px-3 py-2">
-          <div class="font-display font-extrabold text-lg text-primary">${activeCnt}</div>
-          <div class="text-[9px] text-[#737685] font-semibold uppercase tracking-wider">영업중</div>
-        </div>
-        <div class="bg-red-50 rounded-xl px-3 py-2">
-          <div class="font-display font-extrabold text-lg text-red-400">${vacantCnt}</div>
-          <div class="text-[9px] text-[#737685] font-semibold uppercase tracking-wider">공실</div>
-        </div>
-      </div>
-    </div>
-  </div>`;
-
-  html+='<div class="bg-white rounded-2xl overflow-hidden border border-[#C3C6D6]/20 shadow-sm">'+items.map(s=>shopCardHTML(s)).join('')+'</div>';
-  // 좋아요 카운트 백그라운드 로드
-  setTimeout(()=>{
-    items.forEach(s=>{
-      const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
-      if(isV)return;
-      const k=(s['아파트명']+'_'+s['상가명']+'_'+s['층']+'_'+s['호수']).replace(/\s/g,'');
-      gasGet({action:'likes',key:k}).then(d=>{
-        document.querySelectorAll('.like-cnt-'+k).forEach(el=>el.textContent=(d&&d.count)||0);
-      }).catch(()=>{});
-    });
-  },200);
-  return html;
-}
-
-function updateFloorIndicator(){
-  if(!floorList.length)return;
-  const cur=floorList[currentFloorIndex];
-  document.getElementById('floor-label').textContent=cur;
-  document.getElementById('floor-sub').textContent=`${currentFloorIndex+1} / ${floorList.length}`;
-  // 점 인디케이터
-  const dots=document.getElementById('floor-dots');
-  dots.innerHTML=floorList.map((f,i)=>`<button onclick="scrollToFloor(${i})" style="width:${i===currentFloorIndex?'20px':'6px'};height:6px;border-radius:3px;background:${i===currentFloorIndex?'#003D9B':'#C3C6D6'};transition:all .25s;border:none;cursor:pointer;"></button>`).join('');
-  // 이전/다음 버튼 비활성
-  document.getElementById('floor-prev').disabled=currentFloorIndex===0;
-  document.getElementById('floor-next').disabled=currentFloorIndex===floorList.length-1;
-}
-
-function scrollToFloor(idx,animate=true){
-  if(idx<0||idx>=floorList.length)return;
-  currentFloorIndex=idx;
-  const wrap=document.getElementById('floor-swipe-wrap');
-  const track=document.getElementById('floor-swipe-track');
-  if(!wrap||!track)return;
-  const w=wrap.clientWidth;
-  trackOffsetX=-idx*w;
-  track.style.transition=animate?'transform .35s cubic-bezier(.2,.8,.3,1)':'none';
-  track.style.transform=`translateX(${trackOffsetX}px)`;
-  updateFloorIndicator();
-}
-
-function prevFloor(){if(currentFloorIndex>0)scrollToFloor(currentFloorIndex-1);}
-function nextFloor(){if(currentFloorIndex<floorList.length-1)scrollToFloor(currentFloorIndex+1);}
-
-function setupSwipeHandlers(){
-  const wrap=document.getElementById('floor-swipe-wrap');
-  const track=document.getElementById('floor-swipe-track');
-  if(!wrap||!track||wrap.dataset.swipeReady)return;
-  wrap.dataset.swipeReady='1';
-
-  let startX=0,startY=0,dx=0,dy=0,locked=null;
-  wrap.addEventListener('touchstart',(e)=>{
-    startX=e.touches[0].clientX;startY=e.touches[0].clientY;dx=0;dy=0;locked=null;
-    track.style.transition='none';
-  },{passive:true});
-  wrap.addEventListener('touchmove',(e)=>{
-    dx=e.touches[0].clientX-startX;
-    dy=e.touches[0].clientY-startY;
-    if(locked===null){
-      if(Math.abs(dx)>10||Math.abs(dy)>10){
-        locked=Math.abs(dx)>Math.abs(dy)?'x':'y';
-      }
-    }
-    if(locked==='x'){
-      e.preventDefault();
-      const w=wrap.clientWidth;
-      // 끝에서는 저항감
-      let offset=trackOffsetX+dx;
-      const minOffset=-(floorList.length-1)*w;
-      if(offset>0)offset=offset*0.3;
-      else if(offset<minOffset)offset=minOffset+(offset-minOffset)*0.3;
-      track.style.transform=`translateX(${offset}px)`;
-    }
-  },{passive:false});
-  wrap.addEventListener('touchend',()=>{
-    if(locked!=='x'){track.style.transform=`translateX(${trackOffsetX}px)`;return;}
-    const w=wrap.clientWidth;
-    const threshold=w*0.2;
-    if(dx<-threshold&&currentFloorIndex<floorList.length-1)scrollToFloor(currentFloorIndex+1);
-    else if(dx>threshold&&currentFloorIndex>0)scrollToFloor(currentFloorIndex-1);
-    else scrollToFloor(currentFloorIndex);
-  });
-
-  // 화면 회전/리사이즈 대응
-  window.addEventListener('resize',()=>{
-    if(currentViewMode==='floor'&&floorList.length)renderFloorSwipe();
-  });
-}
-
-
 function applyFilter(shops){
   let f=shops;
-  // 층 필터 먼저
-  if(currentFloor!=='all')f=f.filter(s=>s['층']===currentFloor);
   // 업종 필터
   if(currentFilter==='food')f=f.filter(s=>(s['업종분류']||'').includes('음식'));
   else if(currentFilter==='beauty')f=f.filter(s=>(s['업종분류']||'').includes('미용'));
   else if(currentFilter==='realestate')f=f.filter(s=>(s['업종분류']||'').includes('부동산'));
   else if(currentFilter==='mart')f=f.filter(s=>(s['업종분류']||'').includes('마트'));
   else if(currentFilter==='edu')f=f.filter(s=>(s['업종분류']||'').includes('교육'));
+  else if(currentFilter==='medical')f=f.filter(s=>(s['업종분류']||'').includes('의료'));
+  else if(currentFilter==='fashion')f=f.filter(s=>(s['업종분류']||'').includes('패션'));
+  else if(currentFilter==='life')f=f.filter(s=>(s['업종분류']||'').includes('생활'));
+  else if(currentFilter==='etc')f=f.filter(s=>(s['업종분류']||'').includes('기타'));
   else if(currentFilter==='vacant')f=f.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim());
-  const grouped={};
-  f.forEach(s=>{const k=s['층']||'?';if(!grouped[k])grouped[k]=[];grouped[k].push(s);});
+  // 정렬: 층 → 호수 순
+  f=f.slice().sort((a,b)=>{
+    const fa=(a['층']||'').toUpperCase(),fb=(b['층']||'').toUpperCase();
+    const order=v=>{if(v.startsWith('B'))return -parseInt(v.replace('B','')||0);return parseInt(v.replace(/[^0-9]/g,''))||99;};
+    if(fa!==fb)return order(fa)-order(fb);
+    return (a['호수']||'').localeCompare(b['호수']||'');
+  });
   const list=document.getElementById('shop-list');
   if(!f.length){list.innerHTML='<div class="text-center py-12 text-[#737685]"><span class="material-symbols-outlined ms text-4xl block mb-2">search_off</span>조건에 맞는 상가가 없어요</div>';return;}
-  // 층별 그룹 + 당근마켓 스타일 카드
-  list.innerHTML='<div class="bg-white rounded-2xl overflow-hidden border border-[#C3C6D6]/20 shadow-sm" style="margin:0 -4px;">'+
-    Object.entries(grouped).map(([floor,items],gi)=>{
-      const isFirst=gi===0;
-      return '<div>'+
-        '<div class="px-4 py-2.5 bg-[#EFF4FF] flex items-center gap-2'+(isFirst?'':' border-t border-[#C3C6D6]/20')+'">'+
-          '<span class="font-mono text-[10px] font-bold text-white px-2 py-0.5 rounded-md '+floorCls(floor)+'">'+floor+'</span>'+
-          '<span class="font-mono text-[11px] text-[#737685]">'+items.length+'개</span>'+
-        '</div>'+
-        items.map(s=>shopCardHTML(s)).join('')+
-      '</div>';
-    }).join('')+
+  // 평평한 당근마켓 스타일 카드 리스트
+  list.innerHTML='<div class="bg-white rounded-2xl overflow-hidden border border-[#C3C6D6]/20 shadow-sm">'+
+    f.map(s=>shopCardHTML(s)).join('')+
   '</div>';
   // 좋아요 카운트 미리 가져오기 (백그라운드)
   setTimeout(()=>{
