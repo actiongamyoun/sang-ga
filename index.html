@@ -82,7 +82,9 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
         <span id="sep3" style="display:none" class="text-[#737685]">/</span>
         <span class="text-primary font-semibold cursor-pointer hover:underline truncate" id="crumb-dong" style="display:none" onclick="goDong()"></span>
         <span id="sep4" style="display:none" class="text-[#737685]">/</span>
-        <span class="font-semibold text-[#0B1C30] truncate" id="crumb-apt"></span>
+        <span class="text-primary font-semibold cursor-pointer hover:underline truncate" id="crumb-apt" style="display:none" onclick="goApt()"></span>
+        <span id="sep5" style="display:none" class="text-[#737685]">/</span>
+        <span class="font-semibold text-[#0B1C30] truncate" id="crumb-cat"></span>
       </div>
       <div class="font-mono text-[10px] text-[#737685] bg-[#D3E4FE] px-2 py-0.5 rounded-md whitespace-nowrap flex-shrink-0" id="item-count">로딩중...</div>
     </div>
@@ -132,6 +134,12 @@ h1,h2,h3{font-family:'Manrope',sans-serif;}
     <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight mb-1">아파트 선택</h2>
     <p class="text-[#434654] text-sm mb-6" id="apt-sub">1,000세대 이상 단지</p>
     <div class="grid grid-cols-3 gap-3" id="apt-grid"></div>
+  </div>
+  <!-- PANEL: 업종 (폴더 단계) -->
+  <div class="panel" id="panel-category">
+    <h2 class="font-display font-extrabold text-3xl text-[#0B1C30] tracking-tight mb-1">업종 선택</h2>
+    <p class="text-[#434654] text-sm mb-6" id="cat-sub">어떤 업종을 보실래요?</p>
+    <div class="grid grid-cols-3 gap-3" id="category-grid"></div>
   </div>
   <!-- PANEL: 상가 -->
   <div class="panel" id="panel-shop">
@@ -963,8 +971,87 @@ function selectDong(city,gu,dong){
 function selectApt(apt){
   navHistory.push(3);selectedApt=apt;
   document.getElementById('crumb-apt').textContent=apt;showCrumbs(4);
-  const shopAptName=document.getElementById('shop-apt-name');if(shopAptName)shopAptName.textContent=apt+' 상가';
-  renderShops();showPanel('panel-shop');
+  buildCategoryGrid(apt);
+  setCount('업종 선택');
+  showPanel('panel-category');
+}
+
+const CATEGORY_DEFS=[
+  {id:'all',label:'전체',icon:'apps',color:'#003D9B',bg:'#EFF4FF'},
+  {id:'food',label:'음식·카페',icon:'restaurant',color:'#FF6B35',bg:'#FFF3E0',match:'음식'},
+  {id:'beauty',label:'미용·운동',icon:'content_cut',color:'#E91E63',bg:'#FCE4EC',match:'미용'},
+  {id:'realestate',label:'부동산',icon:'house',color:'#1976D2',bg:'#E3F2FD',match:'부동산'},
+  {id:'mart',label:'마트',icon:'local_grocery_store',color:'#2E7D32',bg:'#E8F5E9',match:'마트'},
+  {id:'edu',label:'교육·학원',icon:'school',color:'#7B1FA2',bg:'#F3E5F5',match:'교육'},
+  {id:'medical',label:'의료·건강',icon:'local_hospital',color:'#D32F2F',bg:'#FFEBEE',match:'의료'},
+  {id:'fashion',label:'패션·잡화',icon:'checkroom',color:'#F57C00',bg:'#FFF3E0',match:'패션'},
+  {id:'life',label:'생활서비스',icon:'home_repair_service',color:'#455A64',bg:'#ECEFF1',match:'생활'},
+  {id:'etc',label:'기타',icon:'storefront',color:'#5D4037',bg:'#EFEBE9',match:'기타'},
+  {id:'vacant',label:'공실',icon:'do_not_disturb_on',color:'#EF4444',bg:'#FEE2E2'},
+];
+
+function buildCategoryGrid(apt){
+  const shops=allData.filter(d=>d['아파트명']===apt);
+  const grid=document.getElementById('category-grid');
+  if(!grid)return;
+
+  // 각 카테고리별 개수 계산
+  const counts={all:shops.length,vacant:0};
+  CATEGORY_DEFS.forEach(c=>{
+    if(c.id==='all'||c.id==='vacant')return;
+    counts[c.id]=shops.filter(s=>{
+      const cat=(s['업종분류']||'');
+      const isV=(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim();
+      if(isV)return false;
+      return c.match&&cat.includes(c.match);
+    }).length;
+  });
+  counts.vacant=shops.filter(s=>(s['공실여부']||'').includes('공실')||!(s['업체명']||'').trim()).length;
+
+  document.getElementById('cat-sub').textContent=apt+' · 총 '+shops.length+'개 상가';
+
+  // 개수 0인 카테고리는 숨기되, 전체/공실은 항상 표시
+  grid.innerHTML=CATEGORY_DEFS.filter(c=>c.id==='all'||c.id==='vacant'||counts[c.id]>0).map(c=>{
+    const cnt=counts[c.id]||0;
+    const disabled=cnt===0;
+    const badge=cnt>0?'<div class="absolute -top-1 -right-1 bg-primary text-white font-mono text-[9px] font-bold px-1.5 py-0.5 rounded-md border-2 border-white">'+cnt+'</div>':'';
+    return '<button onclick="selectCategory(\''+c.id+'\')" '+(disabled?'disabled':'')+' class="group flex flex-col items-center p-4 rounded-2xl bg-white hover:bg-[#DCE9FF] border border-[#C3C6D6]/20 hover:border-primary/30 transition-all duration-200 active:scale-95 shadow-sm '+(disabled?'opacity-40 cursor-not-allowed':'')+'">'+
+      '<div class="relative mb-3">'+
+        '<div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-md" style="background:linear-gradient(135deg,'+c.color+','+c.color+'CC);">'+
+          '<span class="material-symbols-outlined ms-fill text-white" style="font-size:28px;">'+c.icon+'</span>'+
+        '</div>'+
+        badge+
+      '</div>'+
+      '<span class="font-display font-bold text-[#0B1C30] text-[12px] group-hover:text-primary transition-colors text-center leading-tight">'+c.label+'</span>'+
+      '</button>';
+  }).join('');
+}
+
+function selectCategory(catId){
+  navHistory.push(4);
+  // catId를 currentFilter에 매핑 (기존 필터 시스템 재활용)
+  currentFilter=catId;
+  const def=CATEGORY_DEFS.find(c=>c.id===catId);
+  document.getElementById('crumb-cat').textContent=def?def.label:'';
+  showCrumbs(5);
+  renderShops();
+  showPanel('panel-shop');
+  // 업종 필터 칩 UI도 동기화
+  setTimeout(()=>{
+    document.querySelectorAll('.cat-btn').forEach(b=>{
+      const isActive=b.dataset.f===catId;
+      b.classList.remove('bg-primary','text-white','bg-white','border','border-[#C3C6D6]/50','text-[#434654]');
+      if(isActive){
+        b.classList.add('bg-primary','text-white');
+        const ico=b.querySelector('.material-symbols-outlined');
+        if(ico){ico.classList.remove('text-[#737685]');ico.classList.add('text-white');}
+      }else{
+        b.classList.add('bg-white','border','border-[#C3C6D6]/50','text-[#434654]');
+        const ico=b.querySelector('.material-symbols-outlined');
+        if(ico){ico.classList.remove('text-white');ico.classList.add('text-[#737685]');}
+      }
+    });
+  },50);
 }
 
 function renderShops(){
@@ -2466,7 +2553,7 @@ function showPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classLis
 function goBack(){
   if(!navHistory.length)return;
   const prev=navHistory.pop();
-  const panels=['panel-city','panel-gu','panel-dong','panel-apt','panel-shop'];
+  const panels=['panel-city','panel-gu','panel-dong','panel-apt','panel-category','panel-shop'];
   showPanel(panels[prev]);showCrumbs(prev);
 }
 function showCrumbs(lv){
@@ -2476,10 +2563,14 @@ function showCrumbs(lv){
   document.getElementById('sep3').style.display=lv>=3?'':'none';
   document.getElementById('crumb-dong').style.display=lv>=3?'':'none';
   document.getElementById('sep4').style.display=lv>=4?'':'none';
+  document.getElementById('crumb-apt').style.display=lv>=4?'':'none';
+  document.getElementById('sep5').style.display=lv>=5?'':'none';
   if(lv<4)document.getElementById('crumb-apt').textContent='';
+  if(lv<5)document.getElementById('crumb-cat').textContent='';
   document.getElementById('back-btn').style.opacity=lv>0?'1':'0.35';
 }
 function goDong(){while(navHistory.length>3)navHistory.pop();goBack();}
+function goApt(){while(navHistory.length>4)navHistory.pop();goBack();}
 function goCity(){while(navHistory.length>1)navHistory.pop();goBack();}
 function goGu(){while(navHistory.length>2)navHistory.pop();goBack();}
 function setCount(txt){document.getElementById('item-count').textContent=txt;}
